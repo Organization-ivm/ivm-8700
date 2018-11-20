@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    >
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/dp40"
+    android:gravity="center"
+    android:background="#0093FD">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#FFFFFF"
+        android:textSize="@dimen/dp20"
+        android:text="@string/app_name" />
+
+</RelativeLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp40"
+        android:background="#0093FD"
+        android:orientation="horizontal">
+       <LinearLayout
+           android:layout_width="@dimen/dp0"
+           android:layout_height="match_parent"
+           android:layout_weight="1"
+           android:gravity="center"
+           android:orientation="vertical">
+          <TextView
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:textSize="@dimen/dp18"
+              android:textColor="#FFFFFF"
+              android:text="@string/realtime_preview" />
+           <View
+               android:layout_width="@dimen/dp28"
+               android:layout_height="2dp"
+               android:layout_marginTop="@dimen/dp2"
+               android:background="#FFFFFF"/>
+       </LinearLayout>
+        <LinearLayout
+            android:layout_width="@dimen/dp0"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/dp18"
+                android:textColor="#FFFFFF"
+                android:text="@string/remote_playback" />
+            <View
+                android:layout_width="@dimen/dp28"
+                android:layout_height="2dp"
+                android:visibility="invisible"
+                android:layout_marginTop="@dimen/dp2"
+                android:background="#FFFFFF"/>
+        </LinearLayout>
+    </LinearLayout>
+    <RelativeLayout
+        android:id="@+id/rl_select_btn"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp40"
+        android:background="#F6F6F6"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp16"
+            android:textSize="@dimen/dp16"
+            android:text="@string/select_monitoringpoint"/>
+        <ImageView
+            android:layout_width="@dimen/dp22"
+            android:layout_height="@dimen/dp12"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="@dimen/dp16"
+            android:background="@drawable/arrow1"/>
+
+        
+    </RelativeLayout>
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp370"
+         >
+        <com.ivms.ivms8700.view.customui.CustomSurfaceView
+            android:id="@+id/surfaceView"
+            android:layout_width="fill_parent"
+            android:layout_height="match_parent" />
+
+        <ProgressBar
+            android:id="@+id/live_progress_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="invisible" />
+
+        <LinearLayout
+            android:id="@+id/ll_jiankong"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"
+            android:background="#ffffff">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="我是监控列表"/>
+        </LinearLayout>
+    </FrameLayout>
+</LinearLayout>
