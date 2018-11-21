@@ -48,8 +48,7 @@ public class SetingActivity extends Activity implements View.OnClickListener {
                 String url=url_et.getText().toString().trim();
                 String port=port_et.getText().toString().trim();
                  if(checkData(url,port)){
-                     localDbUtil.setString("local_url",url);
-                     localDbUtil.setString("local_port",port);
+                     localDbUtil.setString("local_url",url+":"+port);
                      finish();
                  }
                 break;
