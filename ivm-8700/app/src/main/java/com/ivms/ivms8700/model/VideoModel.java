@@ -9,7 +9,6 @@ import com.hikvision.sdk.net.bean.SubResourceNodeBean;
 import com.hikvision.sdk.net.business.OnVMSNetSDKBusiness;
 import com.hikvision.sdk.utils.HttpConstants;
 import com.ivms.ivms8700.control.Constants;
-import com.ivms.ivms8700.entity.ClassA;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -29,7 +28,7 @@ public class VideoModel {
     private ArrayList<String> data = new ArrayList<String>();
     private ArrayList<String> data_tier = new ArrayList<String>();
 
-    List<ClassA> list = new ArrayList<>();
+//    List<ClassA> list = new ArrayList<>();
 
     private static int source_index=0;
     public final class ViewHandler extends Handler {
@@ -167,11 +166,11 @@ public class VideoModel {
     //将刚获取的子节点数据加到list里
     private void addListToSource() {
 
-        for (int i = 0; i < data.size(); i++) {
-            ClassA a = new ClassA(i, " A" + i);
-            a.setChildren(new ArrayList());
-            list.add(a);
-        }
+//        for (int i = 0; i < data.size(); i++) {
+//            ClassA a = new ClassA(i, " A" + i);
+//            a.setChildren(new ArrayList());
+//            list.add(a);
+//        }
 
     }
 
