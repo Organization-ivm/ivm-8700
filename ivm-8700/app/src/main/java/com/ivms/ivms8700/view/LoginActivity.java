@@ -48,7 +48,6 @@ public class LoginActivity extends Activity implements ILoginView, View.OnClickL
                presenter.login(url,userName,password,macAddress,passwordLevel);
                break;
            case R.id.set_btn:
-
                Intent intent = new Intent(this, SetingActivity.class);
                startActivity(intent);
 

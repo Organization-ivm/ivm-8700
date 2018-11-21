@@ -28,9 +28,11 @@
             android:text="@string/adress"/>
 
         <EditText
+            android:id="@+id/url_et"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:textSize="@dimen/dp18"
+            android:digits="@string/rule_text"
             android:layout_marginLeft="@dimen/dp10"
             android:hint="@string/daress_hint"
             android:background="@null"/>
@@ -56,11 +58,13 @@
             android:text="@string/port"/>
 
         <EditText
+            android:id="@+id/port_et"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:textSize="@dimen/dp18"
             android:layout_marginLeft="@dimen/dp10"
             android:hint="@string/port_hint"
+            android:numeric="integer"
             android:background="@null"/>
 
     </LinearLayout>
