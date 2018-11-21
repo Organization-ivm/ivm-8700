@@ -36,4 +36,5 @@ dependencies {
     implementation files('libs/PlayerSDK.jar')
     implementation files('libs/simple-xml-core.jar')
     implementation files('libs/vmsNetSdk.jar')
+    compile project(':multilevellist_lib')
 }

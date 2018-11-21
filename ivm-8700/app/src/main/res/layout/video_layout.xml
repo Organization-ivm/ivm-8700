@@ -85,29 +85,38 @@
     </RelativeLayout>
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp370"
-         >
-        <com.ivms.ivms8700.view.customui.CustomSurfaceView
-            android:id="@+id/surfaceView"
-            android:layout_width="fill_parent"
-            android:layout_height="match_parent" />
+        android:layout_height="match_parent">
+       <LinearLayout
+           android:layout_width="match_parent"
+           android:layout_height="match_parent"
+           android:orientation="vertical">
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp370"
+                 >
+                <com.ivms.ivms8700.view.customui.CustomSurfaceView
+                    android:id="@+id/surfaceView"
+                    android:layout_width="fill_parent"
+                    android:layout_height="match_parent" />
 
-        <ProgressBar
-            android:id="@+id/live_progress_bar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:visibility="invisible" />
+                <ProgressBar
+                    android:id="@+id/live_progress_bar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="invisible" />
+            </FrameLayout>
 
+       </LinearLayout>
         <LinearLayout
             android:id="@+id/ll_jiankong"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:visibility="gone"
             android:background="#ffffff">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="我是监控列表"/>
+            <ListView
+                android:id="@+id/video_listView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
         </LinearLayout>
     </FrameLayout>
 </LinearLayout>

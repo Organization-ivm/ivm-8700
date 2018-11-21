@@ -97,6 +97,11 @@ public final class Constants {
          * 加载成功
          */
         int LOADING_SUCCESS = 2;
+
+        /**
+         * 加载成功—子节点
+         */
+        int LOADING_SUCCESS_TIER = 4;
         /**
          * 加载失败
          */

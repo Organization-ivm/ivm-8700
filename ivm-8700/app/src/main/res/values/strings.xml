@@ -65,5 +65,8 @@
     <string name="shexiangji_huizong">摄像机实时在线汇总</string>
     <string name="isjieshouxiaoxi">是否接收消息</string>
     <string name="outapp">注销登录</string>
-
+    <string-array name="camera_select_items">
+        <item>预览</item>
+        <item>回放</item>
+    </string-array>
 </resources>
