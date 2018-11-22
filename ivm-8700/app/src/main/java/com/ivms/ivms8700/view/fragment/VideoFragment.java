@@ -224,7 +224,7 @@ public class VideoFragment extends Fragment implements View.OnClickListener {
                         if (!treePoint.isExpand()) {//点击项有子数据但未展开，展开操作。
                             for (int i = 0; i < subList.size(); i++) {
                                 pointMap.put(subList.get(i).getID() + "", subList.get(i));
-                                genList.add(new TreePoint(subList.get(i).getID(), getSubmitResult(subList.get(i)), treePoint.getID(), i, false, getLayer(treePoint) + 1, true));
+                                genList.add(new TreePoint(subList.get(i).getID(), getSubmitResult(subList.get(i)), treePoint.getID(), i, false, getLayer(treePoint) + 1, true,subList.get(i).getSubResourceNodeBean(),null));
                             }
                             int g = position;
                             for (int j = 1; j < genList.size(); j++) {
