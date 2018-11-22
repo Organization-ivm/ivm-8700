@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,9 +15,11 @@ import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
+
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 
+import com.google.gson.Gson;
 import com.hikvision.sdk.VMSNetSDK;
 import com.hikvision.sdk.net.bean.RootCtrlCenter;
 import com.hikvision.sdk.net.bean.SubResourceNodeBean;
@@ -43,6 +46,10 @@ public class VideoFragment extends Fragment implements View.OnClickListener {
     private ListView video_listView;
     //    List<ClassA> list = new ArrayList<>();
     TreeAdapter adapter;
+    /**
+     * 列表map。唯一索引。
+     */
+    private int ID = 100;
 
 //    /**
 //     * listitem显示数据
@@ -95,6 +102,9 @@ public class VideoFragment extends Fragment implements View.OnClickListener {
                     cancelLoadingProgress();
                     onloadingFailed();
                     break;
+                    case Constants.Resource.LOADING_SUCCESS_TIER:
+                    cancelLoadingProgress();
+                    break;
             }
         }
     }
@@ -111,7 +121,7 @@ public class VideoFragment extends Fragment implements View.OnClickListener {
 
             //监控点列表
             video_listView = (ListView) view.findViewById(R.id.video_listView);
-            adapter = new TreeAdapter(getContext(), genList,pointMap);
+            adapter = new TreeAdapter(getContext(), genList, pointMap);
             video_listView.setAdapter(adapter);
             setListener();
         }
@@ -127,10 +137,10 @@ public class VideoFragment extends Fragment implements View.OnClickListener {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (position == 0) {
                     getSubResourceList(Integer.parseInt(showList.get(position).getRootCtrlCenter().getNodeType()), showList.get(position).getRootCtrlCenter().getId()
-                    ,position,showList.get(position));
+                            , position, showList.get(position));
                 } else {
-                    getSubResourceList(showList.get(position).getSubResourceNodeBean().getNodeType(), showList.get(position).getRootCtrlCenter().getId()
-                            ,position,showList.get(position));
+                    getSubResourceList(showList.get(position).getSubResourceNodeBean().getNodeType(), showList.get(position).getSubResourceNodeBean().getId()
+                            , position, showList.get(position));
                 }
 
 
@@ -159,6 +169,7 @@ public class VideoFragment extends Fragment implements View.OnClickListener {
     public void getRootControlCenter() {
         mHandler = new ViewHandler();
         boolean flag = false;
+//        showLoadingProgress();
         VMSNetSDK.getInstance().setOnVMSNetSDKBusiness(new OnVMSNetSDKBusiness() {
             /* (non-Javadoc)
              * @see com.hikvision.sdk.net.business.OnVMSNetSDKBusiness#onSuccess(java.lang.Object)
@@ -166,19 +177,24 @@ public class VideoFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onSuccess(Object obj) {
                 super.onSuccess(obj);
+
                 if (obj instanceof RootCtrlCenter) {
+                    video_listView.setVisibility(View.VISIBLE);
                     genList.clear();
                     showList.clear();
-                    TreePoint t = new TreePoint(((RootCtrlCenter) obj).getId(), ((RootCtrlCenter) obj).getName(), 0, 0, false, 0, true, null, (RootCtrlCenter) obj);
-                    pointMap.put(((RootCtrlCenter) obj).getId() + "", t);
+//                    TreePoint t = new TreePoint(((RootCtrlCenter) obj).getId(), ((RootCtrlCenter) obj).getName(), 0, 0, false, 0, true, null, (RootCtrlCenter) obj);
+                    TreePoint t = new TreePoint(ID, ((RootCtrlCenter) obj).getName(), 0, 0, false, 0, true, null, (RootCtrlCenter) obj);
+                    pointMap.put(t.getID() + "", t);
                     genList.add(t);
                     showList.add(t);
+                    adapter.setPointList(showList);
+                    adapter.setPointMap(pointMap);
 //                    source.clear();
 //                    data_all.clear();
 //                    source.add((RootCtrlCenter) obj);
 //                    data_all.add(((RootCtrlCenter) obj).getName());
-                    mHandler.sendEmptyMessage(Constants.Resource.LOADING_SUCCESS);
                 }
+                mHandler.sendEmptyMessage(Constants.Resource.LOADING_SUCCESS);
             }
 
             /* (non-Javadoc)
@@ -202,6 +218,7 @@ public class VideoFragment extends Fragment implements View.OnClickListener {
      */
     private void getSubResourceList(int parentNodeType, int pId, final int position, final TreePoint treePoint) {
         boolean flag = false;
+        showLoadingProgress();
 
         VMSNetSDK.getInstance().setOnVMSNetSDKBusiness(new OnVMSNetSDKBusiness() {
             /* (non-Javadoc)
@@ -214,18 +231,23 @@ public class VideoFragment extends Fragment implements View.OnClickListener {
                     List<SubResourceNodeBean> list = new ArrayList<SubResourceNodeBean>();
                     list.addAll((Collection<? extends SubResourceNodeBean>) obj);
                     List<TreePoint> subList = new ArrayList<>();
+                    Log.i("ivm-8700", new Gson().toJson(list).toString());
 
 
                     if (null != list && list.size() > 0) {
                         for (int i = 0; i < list.size(); i++) {
-                            subList.add(new TreePoint(((SubResourceNodeBean) obj).getId(), ((SubResourceNodeBean) obj).getName(),
-                                    treePoint.getID(), i, false, 0, true, (SubResourceNodeBean) obj, null));
+                            ID++;
+                            subList.add(new TreePoint(ID, list.get(i).getName(),
+                                    treePoint.getID(), i, false, 0, true, list.get(i), null));
                         }
                         if (!treePoint.isExpand()) {//点击项有子数据但未展开，展开操作。
                             for (int i = 0; i < subList.size(); i++) {
                                 pointMap.put(subList.get(i).getID() + "", subList.get(i));
-                                genList.add(new TreePoint(subList.get(i).getID(), getSubmitResult(subList.get(i)), treePoint.getID(), i, false, getLayer(treePoint) + 1, true,subList.get(i).getSubResourceNodeBean(),null));
+                                Log.i("ivm-8700", "" + new Gson().toJson(genList).toString());
+                                genList.add(new TreePoint(subList.get(i).getID(), subList.get(i).getNNAME(), treePoint.getID(), i, false, getLayer(subList.get(i), pointMap), true, subList.get(i).getSubResourceNodeBean(), null));
                             }
+
+
                             int g = position;
                             for (int j = 1; j < genList.size(); j++) {
                                 if (genList.get(j).getPARENTID() == treePoint.getID()) {
@@ -262,11 +284,12 @@ public class VideoFragment extends Fragment implements View.OnClickListener {
 ////                            data_tier.add(bean.getName());
 ////                            source_tier.add(bean);
 //                        }
-                        mHandler.sendEmptyMessage(Constants.Resource.LOADING_SUCCESS_TIER);
                     } else {
+
                         showList.get(position).setHasSubDatas(false);
                         return;
                     }
+                    mHandler.sendEmptyMessage(Constants.Resource.LOADING_SUCCESS_TIER);
                 }
             }
 
@@ -349,7 +372,7 @@ public class VideoFragment extends Fragment implements View.OnClickListener {
     }
 
 
-    private int getLayer(TreePoint treePoint) {
+    private int getLayer(TreePoint treePoint, HashMap<String, TreePoint> pointMap) {
         return TreeUtils.getLevel(treePoint, pointMap);
     }
 

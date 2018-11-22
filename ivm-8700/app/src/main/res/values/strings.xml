@@ -69,4 +69,5 @@
         <item>预览</item>
         <item>回放</item>
     </string-array>
+    <string name="rule_text">0123456789abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ`¬!"£$%^*()~=#{}[];':,./?/*-_+&#060;&#062;&#064;&#038;</string>
 </resources>

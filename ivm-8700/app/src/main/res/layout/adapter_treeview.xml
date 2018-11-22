@@ -6,8 +6,8 @@
     android:paddingRight="10dp"
     android:paddingLeft="10dp"
     android:descendantFocusability="blocksDescendants"
-    android:paddingTop="5dp"
-    android:paddingBottom="5dp">
+    android:paddingTop="15dp"
+    android:paddingBottom="15dp">
 
     <ImageView
         android:id="@+id/icon"
@@ -20,10 +20,12 @@
         android:id="@+id/text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+
         android:layout_centerVertical="true"
         android:layout_toRightOf="@id/icon"
         android:gravity="center_vertical"
-        android:text="123"
+        android:text=""
         android:textColor="#ff595c61"
         android:textSize="13sp" />
 

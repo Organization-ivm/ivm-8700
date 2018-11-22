@@ -83,8 +83,25 @@ public class TreeAdapter extends BaseAdapter {
         }
         final TreePoint tempPoint = (TreePoint) getItem(position);
         int level = TreeUtils.getLevel(tempPoint, pointMap);
+        if (level == 0) {
+            holder.icon.setImageResource(R.drawable.manu_1);
+        } else {
+            holder.icon.setImageResource(R.drawable.manu_2);
+        }
+        if (null != pointList.get(position).getSubResourceNodeBean()) {
+            if (pointList.get(position).getSubResourceNodeBean().isHasPermissionLive()) {
+                holder.text.setTextColor(mcontext.getResources().getColor(R.color.text_noselect_color));
+            } else {
+                holder.text.setTextColor(mcontext.getResources().getColor(R.color.main_text_57576B));
+            }
+
+
+        }
+
+
         holder.icon.setPadding(25 * level, holder.icon.getPaddingTop(), 0, holder.icon.getPaddingBottom());
         holder.text.setCompoundDrawablePadding(DensityUtil.dip2px(mcontext, 10));
+        holder.text.setText(tempPoint.getNNAME());
         return convertView;
     }
 

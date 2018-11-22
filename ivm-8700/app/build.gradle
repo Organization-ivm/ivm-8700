@@ -4,7 +4,7 @@ android {
     compileSdkVersion 27
     defaultConfig {
         applicationId "com.testsdk.testsdk"
-        minSdkVersion 24
+        minSdkVersion 23
         targetSdkVersion 27
         versionCode 1
         versionName "1.0"
@@ -36,4 +36,5 @@ dependencies {
     implementation files('libs/PlayerSDK.jar')
     implementation files('libs/simple-xml-core.jar')
     implementation files('libs/vmsNetSdk.jar')
+    implementation 'com.google.code.gson:gson:2.8.5'
 }
