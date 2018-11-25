@@ -47,16 +47,6 @@ public class TreePoint {
         this.rootCtrlCenter = rootCtrlCenter;
     }
 
-//    public TreePoint(int ID, String NNAME, int PARENTID, int DISPLAY_ORDER, boolean isExpand, int layer, boolean hasSubDatas) {
-//        this.ID = ID;
-//        this.NNAME = NNAME;
-//        this.PARENTID = PARENTID;
-//        this.DISPLAY_ORDER = DISPLAY_ORDER;
-//        this.isExpand = isExpand;
-//        this.layer = layer;
-//        this.hasSubDatas = hasSubDatas;
-//
-//    }
 
     public int getID() {
         return ID;

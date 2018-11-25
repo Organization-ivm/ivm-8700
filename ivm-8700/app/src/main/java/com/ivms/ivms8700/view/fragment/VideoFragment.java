@@ -9,6 +9,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.SurfaceHolder;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -17,53 +18,45 @@ import android.widget.AdapterView;
 import android.widget.LinearLayout;
 
 import android.widget.ListView;
+import android.widget.ProgressBar;
+import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 
 import com.google.gson.Gson;
 import com.hikvision.sdk.VMSNetSDK;
+import com.hikvision.sdk.consts.ConstantLiveSDK;
+import com.hikvision.sdk.net.bean.Camera;
+import com.hikvision.sdk.net.bean.CameraInfo;
+import com.hikvision.sdk.net.bean.DeviceInfo;
 import com.hikvision.sdk.net.bean.RootCtrlCenter;
 import com.hikvision.sdk.net.bean.SubResourceNodeBean;
 import com.hikvision.sdk.net.business.OnVMSNetSDKBusiness;
 import com.hikvision.sdk.utils.HttpConstants;
 import com.ivms.ivms8700.R;
 import com.ivms.ivms8700.control.Constants;
+import com.ivms.ivms8700.live.LiveControl;
 import com.ivms.ivms8700.multilevellist.TreeAdapter;
 import com.ivms.ivms8700.multilevellist.TreePoint;
 import com.ivms.ivms8700.multilevellist.TreeUtils;
 import com.ivms.ivms8700.utils.UIUtil;
+import com.ivms.ivms8700.view.customui.CustomSurfaceView;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
-public class VideoFragment extends Fragment implements View.OnClickListener {
+public class VideoFragment extends Fragment implements View.OnClickListener, RadioGroup.OnCheckedChangeListener, SurfaceHolder.Callback, LiveControl.LiveCallBack{
     private View view;
     private LinearLayout ll_jiankong;
     private RelativeLayout rl_select_btn;
     private TranslateAnimation mShowAction;
     private TranslateAnimation mHiddenAction;
     private ListView video_listView;
-    //    List<ClassA> list = new ArrayList<>();
-    TreeAdapter adapter;
     /**
      * 列表map。唯一索引。
      */
     private int ID = 100;
-
-//    /**
-//     * listitem显示数据
-//     */
-//    private ArrayList<String> data_all = new ArrayList<String>();
-//    private ArrayList<String> data_tier = new ArrayList<String>();
-//    /**
-//     * 资源源数据
-//     */
-//    private ArrayList<Object> source_tier = new ArrayList<Object>();
-//    /**
-//     * 资源源数据
-//     */
-//    private ArrayList<Object> source = new ArrayList<Object>();
 
     /**
      * 跟节点数据
@@ -71,11 +64,80 @@ public class VideoFragment extends Fragment implements View.OnClickListener {
     private List<TreePoint> genList = new ArrayList<>();
     private HashMap<String, TreePoint> pointMap = new HashMap<>();
     private List<TreePoint> showList = new ArrayList<>();
+    /**
+     * 监控点
+     */
+    private Camera mCamera = null;
+    /**
+     * sdk实例
+     */
+    private VMSNetSDK mVMSNetSDK = null;
+    /**
+     * 监控点详细信息
+     */
+    private CameraInfo cameraInfo = new CameraInfo();
+    /**
+     * 监控点关联的监控设备信息
+     */
+    private DeviceInfo deviceInfo = null;
 
+    /**
+     * 预览控件
+     */
+    private CustomSurfaceView mSurfaceView = null;
+    /**
+     * 进度条
+     */
+    private ProgressBar progressBar = null;
 
-    private Dialog dialog = null;
+    /**
+     * 设备账户名
+     */
+    private String username = null;
+    /**
+     * 设备登录密码
+     */
+    private String password = null;
+
+    /**
+     * 码流类型
+     */
+    private int mStreamType  = ConstantLiveSDK.MAIN_HING_STREAM;
+
+    TreeAdapter adapter;
+    /**
+     * 控制层对象
+     */
+    private LiveControl mLiveControl = null;
     private Handler mHandler = null;
+    private Handler liveHandler = null;
 
+    @Override
+    public void surfaceCreated(SurfaceHolder holder) {
+
+    }
+
+    @Override
+    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+
+    }
+
+    @Override
+    public void surfaceDestroyed(SurfaceHolder holder) {
+        if (null != mLiveControl) {
+            mLiveControl.stop();
+        }
+    }
+
+    @Override
+    public void onCheckedChanged(RadioGroup group, int checkedId) {
+
+    }
+
+    @Override
+    public void onMessageCallback(int message) {
+
+    }
 
     private class ViewHandler extends Handler {
 
@@ -109,6 +171,104 @@ public class VideoFragment extends Fragment implements View.OnClickListener {
         }
     }
 
+    /**
+     * 视图更新处理器
+     */
+    class LiveViewHandler extends Handler {
+
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case Constants.Live.getCameraInfo:
+                    UIUtil.showProgressDialog(getActivity(), R.string.loading_camera_info);
+                    break;
+                case Constants.Live.getCameraInfo_Success:
+                    UIUtil.cancelProgressDialog();
+                    getDeviceInfo();
+                    break;
+                case Constants.Live.getCameraInfo_failure:
+                    UIUtil.cancelProgressDialog();
+                    UIUtil.showToast(getActivity(), R.string.loading_camera_info_failure);
+                    break;
+                case Constants.Live.getDeviceInfo:
+                    UIUtil.showProgressDialog(getActivity(), R.string.loading_device_info);
+                    break;
+                case Constants.Live.getDeviceInfo_Success:
+                    UIUtil.cancelProgressDialog();
+                    username = deviceInfo.getUserName();
+                    password = deviceInfo.getPassword();
+                    Log.i("ivms8700", "device infomation : username:" + username + "  password" + password);
+                    clickStartBtn();
+                    break;
+                case Constants.Live.getDeviceInfo_failure:
+                    UIUtil.cancelProgressDialog();
+                    UIUtil.showToast(getActivity(), R.string.loading_device_info_failure);
+                    break;
+
+                // 视频控制层回调的消息
+                case ConstantLiveSDK.RTSP_FAIL:
+                    UIUtil.showToast(getActivity(), R.string.rtsp_fail);
+                    if (null != progressBar) {
+                        progressBar.setVisibility(View.GONE);
+                    }
+                    if (null != mLiveControl) {
+                        mLiveControl.stop();
+                    }
+                    break;
+                case ConstantLiveSDK.RTSP_SUCCESS:
+                    UIUtil.showToast(getActivity(), R.string.rtsp_success);
+                    break;
+                case ConstantLiveSDK.STOP_SUCCESS:
+                    UIUtil.showToast(getActivity(), R.string.live_stop_success);
+                    break;
+                case ConstantLiveSDK.START_OPEN_FAILED:
+                    UIUtil.showToast(getActivity(), R.string.start_open_failed);
+                    break;
+                case ConstantLiveSDK.PLAY_DISPLAY_SUCCESS:
+                    UIUtil.showToast(getActivity(), R.string.play_display_success);
+                    if (null != progressBar) {
+                        progressBar.setVisibility(View.GONE);
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+    /**
+     * 获取设备信息
+     */
+    private void getDeviceInfo() {
+        if (null == cameraInfo) {
+            Log.e("ivms8700", "getDeviceInfo==>>cameraInfo is null");
+            return;
+        }
+
+        mVMSNetSDK.setOnVMSNetSDKBusiness(new OnVMSNetSDKBusiness() {
+
+            @Override
+            public void onFailure() {
+                liveHandler.sendEmptyMessage(Constants.Live.getDeviceInfo_failure);
+
+            }
+
+            @Override
+            public void loading() {
+                liveHandler.sendEmptyMessage(Constants.Login.SHOW_LOGIN_PROGRESS);
+
+            }
+
+            @Override
+            public void onSuccess(Object data) {
+                if (data instanceof DeviceInfo) {
+                    deviceInfo = (DeviceInfo) data;
+                    liveHandler.sendEmptyMessage(Constants.Live.getDeviceInfo_Success);
+                }
+            }
+        });
+
+        boolean flag = mVMSNetSDK.getDeviceInfo(cameraInfo.getDeviceID());
+    }
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -117,13 +277,15 @@ public class VideoFragment extends Fragment implements View.OnClickListener {
             ll_jiankong = (LinearLayout) view.findViewById(R.id.ll_jiankong);
             rl_select_btn = (RelativeLayout) view.findViewById(R.id.rl_select_btn);
             rl_select_btn.setOnClickListener(this);
-            //获取所有层级监控点列表
-
             //监控点列表
             video_listView = (ListView) view.findViewById(R.id.video_listView);
             adapter = new TreeAdapter(getContext(), genList, pointMap);
             video_listView.setAdapter(adapter);
             setListener();
+
+            mSurfaceView = (CustomSurfaceView)view.findViewById(R.id.surfaceView);
+            mSurfaceView.getHolder().addCallback(this);
+            progressBar = (ProgressBar)view.findViewById(R.id.live_progress_bar);
         }
         // 初次加载根节点数据
         getRootControlCenter();
@@ -139,15 +301,108 @@ public class VideoFragment extends Fragment implements View.OnClickListener {
                     getSubResourceList(Integer.parseInt(showList.get(position).getRootCtrlCenter().getNodeType()), showList.get(position).getRootCtrlCenter().getId()
                             , position, showList.get(position));
                 } else {
-                    getSubResourceList(showList.get(position).getSubResourceNodeBean().getNodeType(), showList.get(position).getSubResourceNodeBean().getId()
-                            , position, showList.get(position));
+
+                    int nodeType = 0;
+                    Object node = showList.get(position).getSubResourceNodeBean();
+                    nodeType = ((SubResourceNodeBean)node).getNodeType();
+                    Log.i("ivms8700","nodeType=-="+nodeType);
+
+                    if(HttpConstants.NodeType.TYPE_CAMERA_OR_DOOR == nodeType){
+                        Log.i("ivms8700","=-=准备进入播放");
+                        // 构造camera对象
+                        final Camera camera = VMSNetSDK.getInstance().initCameraInfo((SubResourceNodeBean)node);
+
+//                                    switch (which) {
+//                                        case 0:
+                                            // 预览
+                                            if (VMSNetSDK.getInstance().isHasLivePermission(camera)) {
+                                                gotoLive(camera);
+                                            } else {
+                                                UIUtil.showToast(getActivity(), R.string.no_permission);
+                                            }
+//                                            break;
+//                                        case 1:
+//                                            // 回放
+//                                            if (VMSNetSDK.getInstance().isHasPlayBackPermission(camera)) {
+//                                                gotoPlayBack(camera);
+//                                            } else {
+//                                                UIUtil.showToast(ResourceListActivity.this, R.string.no_permission);
+//                                            }
+//                                            break;
+//                                        default:
+//                                            break;
+//                                    }
+
+                    }else{
+
+                        getSubResourceList(showList.get(position).getSubResourceNodeBean().getNodeType(), showList.get(position).getSubResourceNodeBean().getId()
+                                , position, showList.get(position));
+                    }
+
                 }
 
 
             }
         });
     }
+   //进入预览
+    private void gotoLive(Camera camera) {
+        mCamera = camera;
+        mVMSNetSDK = VMSNetSDK.getInstance();
+        liveHandler = new LiveViewHandler();
+        mLiveControl = new LiveControl();
+        mLiveControl.setLiveCallBack(this);
+        getCameraInfo();
+    }
+    /**
+     * 获取监控点详细信息
+     */
+    private void getCameraInfo() {
+        if (null == mCamera) {
+            Log.e("ivms8700", "getCameraInfo==>>camera is null");
+            return;
+        }
+        liveHandler.sendEmptyMessage(Constants.Live.getCameraInfo);
+        mVMSNetSDK.setOnVMSNetSDKBusiness(new OnVMSNetSDKBusiness() {
 
+            @Override
+            public void onFailure() {
+                liveHandler.sendEmptyMessage(Constants.Live.getCameraInfo_failure);
+
+            }
+
+            @Override
+            public void loading() {
+                liveHandler.sendEmptyMessage(Constants.Live.getCameraInfo);
+
+            }
+            @Override
+            public void onSuccess(Object data) {
+                if (data instanceof CameraInfo) {
+                    cameraInfo = (CameraInfo) data;
+                    liveHandler.sendEmptyMessage(Constants.Live.getCameraInfo_Success);
+                }
+            }
+        });
+        boolean flag = mVMSNetSDK.getCameraInfo(mCamera);
+
+    }
+
+    /**
+     * start play video
+     */
+    private void clickStartBtn() {
+        progressBar.setVisibility(View.VISIBLE);
+        String liveUrl = VMSNetSDK.getInstance().getPlayUrl(cameraInfo, mStreamType);
+        mLiveControl.setLiveParams(liveUrl, null == username ? "" : username, null == password ? "" : password);
+        if (LiveControl.LIVE_PLAY == mLiveControl.getLiveState()) {
+            mLiveControl.stop();
+        }
+
+        if (LiveControl.LIVE_INIT == mLiveControl.getLiveState()) {
+            mLiveControl.startLive(mSurfaceView);
+        }
+    }
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -189,10 +444,6 @@ public class VideoFragment extends Fragment implements View.OnClickListener {
                     showList.add(t);
                     adapter.setPointList(showList);
                     adapter.setPointMap(pointMap);
-//                    source.clear();
-//                    data_all.clear();
-//                    source.add((RootCtrlCenter) obj);
-//                    data_all.add(((RootCtrlCenter) obj).getName());
                 }
                 mHandler.sendEmptyMessage(Constants.Resource.LOADING_SUCCESS);
             }
@@ -279,11 +530,6 @@ public class VideoFragment extends Fragment implements View.OnClickListener {
                             adapter.notifyDataSetChanged();
                         }
 
-
-//                        for (SubResourceNodeBean bean : list) {
-////                            data_tier.add(bean.getName());
-////                            source_tier.add(bean);
-//                        }
                     } else {
 
                         showList.get(position).setHasSubDatas(false);
@@ -308,19 +554,6 @@ public class VideoFragment extends Fragment implements View.OnClickListener {
     }
 
 
-//    private void updateData() {
-//        list.clear();
-//        int count = 0;
-//        for (int i = 0; i < data_all.size(); i++) {
-//            ClassA a = new ClassA(i, data_all.get(i));
-//            a.setChildren(new ArrayList());
-//            list.add(a);
-//            count += 1;
-//            Log.e("TAG 1", a.getName());
-//        }
-//        Log.e("count", "= " + count);
-//        adapter.setList(list);
-//    }
 
 
     /**
