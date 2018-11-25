@@ -1,11 +1,13 @@
 package com.ivms.ivms8700.view;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -26,12 +28,18 @@ public class LoginActivity extends Activity implements ILoginView, View.OnClickL
     private EditText username;
     private EditText pwd;
     private LocalDbUtil localDbUtil=null;
+    private static final int MY_PERMISSION_REQUEST_CODE = 10000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         initView();
+        // 一次请求多个权限, 如果其他有权限是已经授予的将会自动忽略掉
+        ActivityCompat.requestPermissions( this, new String[] {
+                Manifest.permission.WRITE_EXTERNAL_STORAGE}
+                , MY_PERMISSION_REQUEST_CODE );
+
     }
     //初始化控件
     private void initView() {

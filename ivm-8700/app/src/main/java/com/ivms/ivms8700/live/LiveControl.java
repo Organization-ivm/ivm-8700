@@ -607,7 +607,8 @@ public class LiveControl implements RtspClientCallback, PlayerCallBack.PlayerDis
 		}
 		
 		try {
-			mPictureFile = new File(dirPath + File.separator + fileName);
+			String fileStr=dirPath + File.separator + fileName;
+			mPictureFile = new File(fileStr);
 			if ((null != mPictureFile) && (!mPictureFile.exists())) {
 				mPictureFile.createNewFile();
 			}
