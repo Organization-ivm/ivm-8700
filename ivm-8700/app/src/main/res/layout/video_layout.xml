@@ -24,6 +24,7 @@
         android:background="#0093FD"
         android:orientation="horizontal">
        <LinearLayout
+           android:id="@+id/live_lay"
            android:layout_width="@dimen/dp0"
            android:layout_height="match_parent"
            android:layout_weight="1"
@@ -36,12 +37,14 @@
               android:textColor="#FFFFFF"
               android:text="@string/realtime_preview" />
            <View
+               android:id="@+id/live_view"
                android:layout_width="@dimen/dp28"
                android:layout_height="2dp"
                android:layout_marginTop="@dimen/dp2"
                android:background="#FFFFFF"/>
        </LinearLayout>
         <LinearLayout
+            android:id="@+id/huifang_lay"
             android:layout_width="@dimen/dp0"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -54,6 +57,7 @@
                 android:textColor="#FFFFFF"
                 android:text="@string/remote_playback" />
             <View
+                android:id="@+id/huifang_view"
                 android:layout_width="@dimen/dp28"
                 android:layout_height="2dp"
                 android:visibility="invisible"

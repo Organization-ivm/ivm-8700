@@ -111,6 +111,11 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Rad
     private LiveControl mLiveControl = null;
     private Handler mHandler = null;
     private Handler liveHandler = null;
+    private LinearLayout live_lay;
+    private LinearLayout huifang_lay;
+    private View live_view;
+    private View huifang_view;
+    private int palyType=1;//1代表预览，2代表远程回放
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
@@ -198,6 +203,7 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Rad
                     username = deviceInfo.getUserName();
                     password = deviceInfo.getPassword();
                     Log.i("ivms8700", "device infomation : username:" + username + "  password" + password);
+
                     clickStartBtn();
                     break;
                 case Constants.Live.getDeviceInfo_failure:
@@ -286,6 +292,13 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Rad
             mSurfaceView = (CustomSurfaceView)view.findViewById(R.id.surfaceView);
             mSurfaceView.getHolder().addCallback(this);
             progressBar = (ProgressBar)view.findViewById(R.id.live_progress_bar);
+
+            live_lay=(LinearLayout)view.findViewById(R.id.live_lay);
+            huifang_lay=(LinearLayout)view.findViewById(R.id.huifang_lay);
+            live_view=(View)view.findViewById(R.id.live_view);
+            huifang_view=(View)view.findViewById(R.id.huifang_view);
+            live_lay.setOnClickListener(this);
+            huifang_lay.setOnClickListener(this);
         }
         // 初次加载根节点数据
         getRootControlCenter();
@@ -312,26 +325,28 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Rad
                         // 构造camera对象
                         final Camera camera = VMSNetSDK.getInstance().initCameraInfo((SubResourceNodeBean)node);
 
-//                                    switch (which) {
-//                                        case 0:
+                                    switch (palyType) {
+                                        case 1:
                                             // 预览
                                             if (VMSNetSDK.getInstance().isHasLivePermission(camera)) {
+                                                ll_jiankong.startAnimation(mHiddenAction);
+                                                ll_jiankong.setVisibility(View.GONE);
                                                 gotoLive(camera);
                                             } else {
                                                 UIUtil.showToast(getActivity(), R.string.no_permission);
                                             }
-//                                            break;
-//                                        case 1:
-//                                            // 回放
+                                            break;
+                                        case 2:
+                                            // 回放
 //                                            if (VMSNetSDK.getInstance().isHasPlayBackPermission(camera)) {
 //                                                gotoPlayBack(camera);
 //                                            } else {
 //                                                UIUtil.showToast(ResourceListActivity.this, R.string.no_permission);
 //                                            }
-//                                            break;
-//                                        default:
-//                                            break;
-//                                    }
+                                            break;
+                                        default:
+                                            break;
+                                    }
 
                     }else{
 
@@ -400,6 +415,7 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Rad
         }
 
         if (LiveControl.LIVE_INIT == mLiveControl.getLiveState()) {
+            progressBar.setVisibility(View.GONE);
             mLiveControl.startLive(mSurfaceView);
         }
     }
@@ -414,6 +430,16 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Rad
                     ll_jiankong.startAnimation(mHiddenAction);
                     ll_jiankong.setVisibility(View.GONE);
                 }
+                break;
+            case R.id.live_lay:
+                palyType=1;
+                live_view.setVisibility(View.VISIBLE);
+                huifang_view.setVisibility(View.INVISIBLE);
+                break;
+            case R.id.huifang_lay:
+                palyType=2;
+                live_view.setVisibility(View.INVISIBLE);
+                huifang_view.setVisibility(View.VISIBLE);
                 break;
         }
     }
