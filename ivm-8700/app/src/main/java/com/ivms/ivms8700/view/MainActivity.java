@@ -171,7 +171,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
             @Override
             public void run() {
         if(i==0){
-            video_img.setBackgroundResource(R.drawable.xuanzhong);
+            video_img.setBackgroundResource(R.drawable.shipin_1);
             video_txt.setTextColor((getResources().getColor(R.color.text_select_color)));
             image_management_img.setBackgroundResource(R.drawable.tuxiangguanli);
             image_management_txt.setTextColor((getResources().getColor(R.color.text_noselect_color)));

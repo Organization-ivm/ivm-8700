@@ -39,6 +39,8 @@ import com.hikvision.sdk.net.bean.SubResourceNodeBean;
 import com.hikvision.sdk.net.business.OnVMSNetSDKBusiness;
 import com.hikvision.sdk.utils.HttpConstants;
 import com.hikvision.sdk.utils.SDKUtil;
+import com.hikvision.sdk.utils.UtilAudioPlay;
+import com.hikvision.sdk.utils.Utils;
 import com.ivms.ivms8700.R;
 import com.ivms.ivms8700.control.Constants;
 import com.ivms.ivms8700.live.LiveControl;
@@ -59,6 +61,7 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -120,7 +123,6 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Rad
      * 码流类型
      */
     private int mStreamType  = ConstantLiveSDK.MAIN_HING_STREAM;
-
 
 
     //--------回放相关-------
@@ -244,6 +246,8 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Rad
     private View live_view;
     private View huifang_view;
     private int palyType=1;//1代表预览，2代表远程回放
+    private LinearLayout playBackRecord;
+    private LinearLayout playBackCapture;
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
@@ -616,7 +620,7 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Rad
 //                    break;
 //
 //                case com.hikvision.sdk.consts.ConstantPlayBack.PlayBack.RECORD_TYPE_PU:
-//                    rb.setText(com.hikvision.sdk.consts.ConstantPlayBack.PlayBack.RECORD_TYPE_PU_STR);
+//                    rb.setText(com.hikvision.sdk.consts.ConsstantPlayBack.PlayBack.RECORD_TYPE_PU_STR);
 //                    break;
 //
 //                case com.hikvision.sdk.consts.ConstantPlayBack.PlayBack.RECORD_TYPE_NVR:
@@ -792,6 +796,11 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Rad
             huifang_view=(View)view.findViewById(R.id.huifang_view);
             live_lay.setOnClickListener(this);
             huifang_lay.setOnClickListener(this);
+
+            playBackRecord=(LinearLayout)view.findViewById(R.id.playBackRecord); //本地录像
+            playBackCapture=(LinearLayout)view.findViewById(R.id.playBackCapture); //本地截图
+            playBackRecord.setOnClickListener(this);
+            playBackCapture.setOnClickListener(this);
         }
         // 初次加载根节点数据
         getRootControlCenter();
@@ -1001,6 +1010,24 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Rad
                 live_view.setVisibility(View.INVISIBLE);
                 huifang_view.setVisibility(View.VISIBLE);
                 break;
+            case R.id.playBackRecord://本地录像
+                if(palyType==1){
+                    recordBtnOnClick_live();
+                }else{
+                    recordBtnOnClick();
+                }
+
+
+                break;
+            case R.id.playBackCapture://本地截图
+                if(palyType==1){
+                    clickCaptureBtn_live();
+                }else{
+                    captureBtnOnClick();
+                }
+
+                break;
+
         }
     }
 
@@ -1139,6 +1166,93 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Rad
                 15, HttpConstants.SysType.TYPE_VIDEO, parentNodeType, pId + "");
     }
 
+    /**
+     * capture picture from playing video
+     */
+    private void clickCaptureBtn_live() {
+        if (null != mLiveControl) {
+            // 随机生成一个1到10000的数字，用于抓拍图片名称的一部分，区分图片，开发者可以根据实际情况修改
+            // 区分图片名称的方法
+            int recordIndex = new Random().nextInt(10000);
+            boolean ret = mLiveControl.capture(Utils.getPictureDirPath().getAbsolutePath(), "Picture" + recordIndex + ".jpg");
+            if (ret) {
+                UIUtil.showToast(getActivity(), "抓拍成功");
+                UtilAudioPlay.playAudioFile(getActivity(), R.raw.paizhao);
+            } else {
+                UIUtil.showToast(getActivity(), "抓拍失败");
+                Log.e("ivms8700" ,"clickCaptureBtn():: 抓拍失败");
+            }
+        }
+    }
+
+    /**
+     * 录像 void
+     * @author lvlingdi 2016-4-26 下午3:35:57
+     */
+    private void recordBtnOnClick_live() {
+        if (null != mLiveControl) {
+            if (!mIsRecord) {
+                // 随即生成一个1到10000的数字，用于录像名称的一部分，区分图片，开发者可以根据实际情况修改区分录像名称的方法
+                int recordIndex = new Random().nextInt(10000);
+                mLiveControl.startRecord(Utils.getVideoDirPath().getAbsolutePath(), "Video" + recordIndex
+                        + ".mp4");
+                mIsRecord = true;
+                UIUtil.showToast(getActivity(), "启动录像成功");
+//                mRecordBtn.setText("停止录像");
+            } else {
+                mLiveControl.stopRecord();
+                mIsRecord = false;
+                UIUtil.showToast(getActivity(), "停止录像成功");
+//                mRecordBtn.setText("开始录像");
+            }
+        }
+    }
+
+    /**
+     * 抓拍
+     * @author lvlingdi 2016-4-26 下午3:13:33
+     */
+    private void captureBtnOnClick() {
+        if (null != mPlayBackControl) {
+            // 随即生成一个1到10000的数字，用于抓拍图片名称的一部分，区分图片
+            int recordIndex = new Random().nextInt(10000);
+            boolean ret = mPlayBackControl.capture(Utils.getPictureDirPath().getAbsolutePath(), "Picture" + recordIndex
+                    + ".jpg");
+            if (ret) {
+                UIUtil.showToast(getActivity(), "抓拍成功");
+                UtilAudioPlay.playAudioFile(getActivity(), R.raw.paizhao);
+            } else {
+                UIUtil.showToast(getActivity(), "抓拍失败");
+                Log.e("ivms8700", "captureBtnOnClick():: 抓拍失败");
+            }
+        }
+    }
+
+    /**
+     * 录像 void
+     * @author lvlingdi 2016-4-26 下午3:15:38
+     */
+    private void recordBtnOnClick() {
+        if (null != mPlayBackControl) {
+            if (!mIsRecord) {
+                int recordIndex = new Random().nextInt(10000);
+                boolean ret = mPlayBackControl.startRecord(Utils.getVideoDirPath().getAbsolutePath(), "Video" + recordIndex + ".mp4");
+                if (ret) {
+                    mIsRecord = true;
+                    UIUtil.showToast(getActivity(), "启动录像成功");
+//                    mRecordButton.setText("停止录像");
+                } else {
+                    mIsRecord = false;
+                    UIUtil.showToast(getActivity(), "启动录像失败");
+                }
+            } else {
+                mPlayBackControl.stopRecord();
+                mIsRecord = false;
+                UIUtil.showToast(getActivity(), "停止录像成功");
+//                mRecordButton.setText("开始录像");
+            }
+        }
+    }
 
 
 

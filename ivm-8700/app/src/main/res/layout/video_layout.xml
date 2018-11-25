@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#F6F6F6"
     android:orientation="vertical"
     >
 <RelativeLayout
@@ -83,7 +84,7 @@
             android:layout_height="@dimen/dp12"
             android:layout_alignParentRight="true"
             android:layout_marginRight="@dimen/dp16"
-            android:background="@drawable/arrow1"/>
+            android:background="@drawable/down"/>
 
         
     </RelativeLayout>
@@ -97,7 +98,7 @@
            android:orientation="vertical">
             <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dp370"
+                android:layout_height="@dimen/dp260"
                  >
                 <com.ivms.ivms8700.view.customui.CustomSurfaceView
                     android:id="@+id/surfaceView"
@@ -110,13 +111,120 @@
                     android:layout_height="wrap_content"
                     android:visibility="invisible" />
             </FrameLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp48"
+                android:gravity="center"
+                android:background="#ffffff"
+                android:layout_marginTop="@dimen/dp20"
+                android:orientation="horizontal">
+                <ImageView
+                    android:layout_width="@dimen/dp19"
+                    android:layout_height="@dimen/dp16"
+                    android:background="@drawable/one_2"/>
+                <ImageView
+                    android:layout_width="@dimen/dp4"
+                    android:layout_height="@dimen/dp4"
+                    android:layout_marginLeft="@dimen/dp40"
+                    android:layout_marginRight="@dimen/dp40"
+                    android:background="@drawable/yuandian"/>
+                <ImageView
+                    android:layout_width="@dimen/dp19"
+                    android:layout_height="@dimen/dp16"
+                    android:background="@drawable/four_2"
+                    />
+                <ImageView
+                    android:layout_width="@dimen/dp4"
+                    android:layout_height="@dimen/dp4"
+                    android:layout_marginLeft="@dimen/dp40"
+                    android:layout_marginRight="@dimen/dp40"
+                    android:background="@drawable/yuandian"/>
+                <ImageView
+                    android:layout_width="@dimen/dp19"
+                    android:layout_height="@dimen/dp16"
+                    android:background="@drawable/nine_1"/>
 
+            </LinearLayout>
+           <LinearLayout
+               android:layout_width="match_parent"
+               android:layout_height="@dimen/dp60"
+
+               android:background="#ffffff"
+               android:layout_marginTop="@dimen/dp2"
+               android:orientation="horizontal">
+              <LinearLayout
+                  android:layout_width="@dimen/dp0"
+                  android:layout_height="match_parent"
+                  android:gravity="center"
+                  android:layout_marginLeft="@dimen/dp10"
+
+                  android:layout_weight="1">
+                  <ImageView
+                      android:layout_width="@dimen/dp22"
+                      android:layout_height="@dimen/dp20"
+                      android:background="@drawable/fanzhuan"/>
+              </LinearLayout>
+               <LinearLayout
+                   android:layout_width="@dimen/dp0"
+                   android:layout_height="match_parent"
+                   android:gravity="center"
+                   android:layout_weight="1">
+                   <ImageView
+                       android:layout_width="@dimen/dp22"
+                       android:layout_height="@dimen/dp20"
+                       android:background="@drawable/fangda"/>
+               </LinearLayout>
+               <LinearLayout
+                   android:layout_width="@dimen/dp0"
+                   android:layout_height="match_parent"
+                   android:gravity="center"
+                   android:layout_weight="1">
+                   <ImageView
+                       android:layout_width="@dimen/dp22"
+                       android:layout_height="@dimen/dp20"
+                       android:background="@drawable/fanzhuan"/>
+               </LinearLayout>
+               <LinearLayout
+                   android:layout_width="@dimen/dp0"
+                   android:layout_height="match_parent"
+                   android:gravity="center"
+                   android:layout_weight="1">
+                   <ImageView
+                       android:layout_width="@dimen/dp22"
+                       android:layout_height="@dimen/dp20"
+                       android:background="@drawable/luyin"/>
+               </LinearLayout>
+               <LinearLayout
+                   android:id="@+id/playBackRecord"
+                   android:layout_width="@dimen/dp0"
+                   android:layout_height="match_parent"
+                   android:gravity="center"
+                   android:layout_weight="1">
+                   <ImageView
+                       android:layout_width="@dimen/dp20"
+                       android:layout_height="@dimen/dp18"
+                       android:background="@drawable/luxiang"/>
+               </LinearLayout>
+               <LinearLayout
+                   android:id="@+id/playBackCapture"
+                   android:layout_width="@dimen/dp0"
+                   android:layout_height="match_parent"
+                   android:gravity="center"
+                   android:layout_weight="1">
+                   <ImageView
+                       android:layout_width="@dimen/dp20"
+                       android:layout_height="@dimen/dp18"
+                       android:background="@drawable/paizhao"/>
+               </LinearLayout>
+           </LinearLayout>
+           
        </LinearLayout>
         <LinearLayout
             android:id="@+id/ll_jiankong"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:visibility="gone"
+            android:layout_marginRight="@dimen/dp10"
             android:background="#ffffff">
             <ListView
                 android:id="@+id/video_listView"
