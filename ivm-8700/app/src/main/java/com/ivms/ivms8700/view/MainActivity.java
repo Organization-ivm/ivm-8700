@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -36,6 +37,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     private ImageView my_img;
     private ImageView video_img;
     private TextView video_txt;
+    private int select = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,19 +75,23 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.video_lay:
+                select = 0;
 
                 updateUI(0);
                 initFragment(0);
                 break;
             case R.id.image_management_lay:
+                select = 1;
                 updateUI(1);
                 initFragment(1);
                 break;
             case R.id.message_lay:
+                select = 2;
                 updateUI(2);
                 initFragment(2);
                 break;
             case R.id.my_lay:
+                select = 3;
                 updateUI(3);
                 initFragment(3);
                 break;
@@ -212,5 +218,15 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         }
             }
         });
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (select == 1) {
+            imFragment.onKeyDown(keyCode, event);
+
+
+        }
+        return true;
     }
 }

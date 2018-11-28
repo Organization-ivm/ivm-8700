@@ -1,0 +1,61 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.ivms.ivms8700.view.fragment.ScreenshotFragment">
+    <ImageView
+        android:id="@+id/background2"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="fitXY"
+        android:src="@mipmap/filenull"
+        android:visibility="gone" />
+
+    <GridView
+        android:id="@+id/gridview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:horizontalSpacing="2dp"
+        android:numColumns="4"
+        android:verticalSpacing="2dp" />
+
+
+    <RelativeLayout
+        android:id="@+id/rlbottom"
+        android:layout_width="match_parent"
+        android:layout_height="41dp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/main_back_e6e6e6">
+
+        <TextView
+            android:id="@+id/tvdelete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/dp60"
+            android:drawablePadding="5dp"
+            android:drawableTop="@drawable/delete"
+            android:padding="@dimen/dp5"
+            android:text="@string/video_del"
+            android:textColor="@color/main_text_454545"
+            android:textSize="10sp" />
+
+        <TextView
+            android:id="@+id/tvshare"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/dp60"
+            android:drawablePadding="5dp"
+            android:drawableTop="@drawable/share"
+            android:padding="@dimen/dp5"
+            android:text="@string/video_share"
+            android:textColor="@color/main_text_454545"
+            android:textSize="10sp" />
+
+
+    </RelativeLayout>
+
+
+</RelativeLayout>

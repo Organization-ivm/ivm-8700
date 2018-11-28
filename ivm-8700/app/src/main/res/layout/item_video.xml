@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:descendantFocusability="blocksDescendants"
+    android:orientation="horizontal">
+    <!--注意上面这个属性，很关键，不加会导致list无法响应OnItemClickListener中的事件-->
+    <ImageView
+        android:id="@+id/imageView1"
+        android:layout_width="@dimen/dp170"
+        android:layout_height="@dimen/dp88"
+        android:scaleType="centerCrop"
+        android:src="@mipmap/ic_launcher" />
+
+    <CheckBox
+        android:id="@+id/checkBox"
+        style="@style/CustomCheckboxTheme"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp3"
+        android:layout_marginRight="@dimen/dp3"
+        android:layout_alignEnd="@+id/imageView1"
+        android:layout_alignRight="@+id/imageView1"
+        android:clickable="false"
+        android:focusable="false"
+
+        />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp17"
+        android:orientation="horizontal"
+        android:layout_alignBottom="@+id/imageView1"
+        android:layout_alignRight="@+id/imageView1"
+        android:background="@drawable/kuang"
+
+        >
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:src="@drawable/shipin"
+
+            android:layout_marginLeft="@dimen/dp10"
+            />
+        <TextView
+            android:id="@+id/tvtime"
+            android:layout_width="wrap_content"
+            android:textSize="6sp"
+            android:textColor="#D1D0D0"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+
+            />
+
+
+    </RelativeLayout>
+
+</RelativeLayout>

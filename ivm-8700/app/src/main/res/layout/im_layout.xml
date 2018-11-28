@@ -1,9 +1,100 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-    <TextView
-        android:text="@string/image_management"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-</LinearLayout>
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/rltitle"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp40"
+        android:background="#0093FD">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="@string/app_name"
+            android:textColor="#FFFFFF"
+            android:textSize="@dimen/dp20" />
+
+        <ImageView
+            android:id="@+id/ivscreenshot"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/dp20"
+            android:padding="@dimen/dp10"
+            android:src="@drawable/xuanze" />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/titlechoose"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp40"
+        android:layout_below="@+id/rltitle"
+        android:background="#0093FD"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:id="@+id/llVideoScreenshot"
+            android:layout_width="@dimen/dp0"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/video_screenshot"
+                android:textColor="#FFFFFF"
+                android:textSize="@dimen/dp18" />
+
+            <View
+                android:id="@+id/live_view"
+                android:layout_width="@dimen/dp28"
+                android:layout_height="2dp"
+                android:layout_marginTop="@dimen/dp2"
+                android:background="#FFFFFF" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/llVideoVideo"
+            android:layout_width="@dimen/dp0"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/video_video"
+                android:textColor="#FFFFFF"
+                android:textSize="@dimen/dp18" />
+
+            <View
+                android:id="@+id/local_view"
+                android:layout_width="@dimen/dp28"
+                android:layout_height="2dp"
+                android:layout_marginTop="@dimen/dp2"
+                android:background="#FFFFFF"
+                android:visibility="invisible" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/flfragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/titlechoose">
+
+
+    </FrameLayout>
+
+
+
+</RelativeLayout>

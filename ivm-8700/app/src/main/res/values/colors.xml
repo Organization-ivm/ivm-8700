@@ -6,6 +6,8 @@
     <color name="text_select_color">#0093FD</color>
     <color name="text_noselect_color">#000000</color>
     <color name="main_text_57576B">#57576B</color>
+    <color name="main_text_454545">#454545</color>
+    <color name="main_back_e6e6e6">#E6E6E6</color>
 
 
 </resources>
