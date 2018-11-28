@@ -44,6 +44,14 @@ public class ImageAdapter extends BaseAdapter implements OnScrollListener {
         this.items = items;
     }
 
+    public List<String> getImageThumUrls() {
+        return imageThumUrls;
+    }
+
+    public void setImageThumUrls(List<String> imageThumUrls) {
+        this.imageThumUrls = imageThumUrls;
+    }
+
     public ImageAdapter(Context context, List<String> paths, GridView gridView, List<Bean> list) {
         this.items = list;
         Log.i("tag", "===adapter===" + list.size());

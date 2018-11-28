@@ -7,6 +7,7 @@ import android.os.Build
 import android.os.Environment
 import android.support.annotation.RequiresApi
 import android.support.v4.app.Fragment
+import android.support.v4.content.FileProvider
 import android.util.Log
 import android.view.KeyEvent
 import android.view.LayoutInflater
@@ -17,6 +18,7 @@ import com.ivms.ivms8700.R
 import com.ivms.ivms8700.utils.PhotoVideoManager.VideoInfo
 import com.ivms.ivms8700.utils.PhotoVideoManager.adapter.VideoAdapter
 import com.ivms.ivms8700.utils.PhotoVideoManager.utils.VideoUtils
+import com.ivms.ivms8700.utils.ShareUtils
 import com.ivms.ivms8700.utils.UIUtil
 import java.io.File
 import java.util.ArrayList
@@ -97,7 +99,10 @@ class LocalVideoFragment : Fragment(), VideoAdapter.OnShowItemClickListener {
             } else {
                 file = File(videoList[position].path)
                 val intent = Intent(Intent.ACTION_VIEW)
-                intent.setDataAndType(Uri.parse("file://$file"), "image/*")
+                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                var uri = FileProvider.getUriForFile(context!!,"com.ivms.ivms8700.fileprovider",file!!)
+                intent.setDataAndType(uri, "video/*")
                 startActivity(intent)
             }
 
@@ -138,6 +143,22 @@ class LocalVideoFragment : Fragment(), VideoAdapter.OnShowItemClickListener {
                 Toast.makeText(context, "请选择条目", Toast.LENGTH_SHORT).show()
             }
             isshowImage()
+        }
+        tvShare.setOnClickListener {
+
+            if (selectedList != null && selectedList!!.size > 0) {
+                file = File(selectedList!![0].path)
+                if (file!!.exists()) {
+                    var uri = FileProvider.getUriForFile(context!!,"com.ivms.ivms8700.fileprovider",file!!)
+                    ShareUtils.shareVideo(context, "分享", "qwe", "视频", uri)
+                } else {
+
+                    Toast.makeText(context, "文件不存在", Toast.LENGTH_SHORT).show()
+                }
+
+            } else {
+                Toast.makeText(context, "请选择条目", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
