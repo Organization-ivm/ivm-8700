@@ -93,6 +93,8 @@ public class VideoAdapter extends BaseAdapter
         }else{
             holder = (ViewHolder)convertView.getTag();
         }
+        holder.cb.setEnabled(false);
+        holder.cb.setClickable(false);
         bean = items.get(position);
         if (bean.isShow()){
             holder.cb.setVisibility(View.VISIBLE);
@@ -111,17 +113,17 @@ public class VideoAdapter extends BaseAdapter
         {
             holder.img.setImageResource(R.mipmap.ic_launcher);
         }
-        holder.cb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                if (isChecked){
-                    bean.setChecked(true);
-                }else{
-                    bean.setChecked(false);
-                }
-                onShowItemClickListener.onShowItemClick(bean);
-            }
-        });
+//        holder.cb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+//            @Override
+//            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+//                if (isChecked){
+//                    bean.setChecked(true);
+//                }else{
+//                    bean.setChecked(false);
+//                }
+//                onShowItemClickListener.onShowItemClick(bean);
+//            }
+//        });
         holder.tvTime.setText(bean.getLastModifed());
         holder.cb.setChecked(bean.isChecked());
         return convertView;

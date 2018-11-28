@@ -19,6 +19,7 @@ import com.ivms.ivms8700.utils.PhotoVideoManager.bean.Bean
 import com.ivms.ivms8700.view.MainActivity
 import java.io.File
 import java.util.ArrayList
+import java.util.function.UnaryOperator
 
 class ScreenshotFragment : Fragment(), ImageAdapter.OnShowItemClickListener {
 
@@ -86,8 +87,16 @@ class ScreenshotFragment : Fragment(), ImageAdapter.OnShowItemClickListener {
                 Log.i("tag", "===isChecked===$isChecked")
                 if (isChecked) {
                     item.isChecked = false
+                    selectedList!!.remove(item)
                 } else {
+                    if (selectedList != null && selectedList!!.size > 0) {
+                        Toast.makeText(context, getString(R.string.toast_choose_one), Toast.LENGTH_SHORT).show()
+
+                        return@setOnItemClickListener
+
+                    }
                     item.isChecked = true
+                    selectedList!!.add(item)
                 }
                 Log.i("tag", "===isChecked=after==$isChecked")
                 myAdapter!!.notifyDataSetChanged()
@@ -162,14 +171,39 @@ class ScreenshotFragment : Fragment(), ImageAdapter.OnShowItemClickListener {
         myAdapter!!.setOnShowItemClickListener(this)
         gridView.setAdapter(myAdapter)
     }
+    //没啥用暂且留着
+    override fun onShowItemClick(position: Int, bean: Bean?, isChecked: Boolean) {
 
-    override fun onShowItemClick(bean: Bean?) {
+
+//        if (isChecked) {
+//            bean!!.setChecked(true)
+//        } else {
+//            bean!!.setChecked(false)
+//        }
+
+
         if (bean!!.getFilePath().equals(paths[0])) {
             if (bean != null) {
+                if (selectedList!!.size > 0) {
+                    dataList!![position].isChecked = !isChecked
+                    myAdapter!!.setItems(dataList)
+                    myAdapter!!.notifyDataSetChanged()
+                    return
+
+                }
                 selectedList!!.add(bean)
+
+
             }
         }
         if (bean.isChecked()) {
+            if (selectedList!!.size > 0) {
+                dataList!![position].isChecked = !isChecked
+                myAdapter!!.setItems(dataList)
+                myAdapter!!.notifyDataSetChanged()
+                return
+
+            }
             selectedList!!.add(bean)
         } else {
             selectedList!!.remove(bean)

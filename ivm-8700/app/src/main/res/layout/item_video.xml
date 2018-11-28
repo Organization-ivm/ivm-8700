@@ -17,39 +17,42 @@
         style="@style/CustomCheckboxTheme"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp3"
-        android:layout_marginRight="@dimen/dp3"
         android:layout_alignEnd="@+id/imageView1"
         android:layout_alignRight="@+id/imageView1"
+        android:layout_marginRight="@dimen/dp3"
+        android:layout_marginTop="@dimen/dp3"
         android:clickable="false"
+        android:enabled="false"
         android:focusable="false"
 
         />
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp17"
-        android:orientation="horizontal"
         android:layout_alignBottom="@+id/imageView1"
         android:layout_alignRight="@+id/imageView1"
         android:background="@drawable/kuang"
+        android:orientation="horizontal"
 
         >
+
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:src="@drawable/shipin"
-
             android:layout_marginLeft="@dimen/dp10"
-            />
+
+            android:src="@drawable/shipin" />
+
         <TextView
             android:id="@+id/tvtime"
             android:layout_width="wrap_content"
-            android:textSize="6sp"
-            android:textColor="#D1D0D0"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
+            android:textColor="#D1D0D0"
+            android:textSize="6sp"
 
             />
 

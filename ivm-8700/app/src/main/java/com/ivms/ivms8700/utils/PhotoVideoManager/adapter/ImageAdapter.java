@@ -73,8 +73,8 @@ public class ImageAdapter extends BaseAdapter implements OnScrollListener {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        ViewHolder holder;
+    public View getView(final int position, View convertView, ViewGroup parent) {
+        final ViewHolder holder;
         if (convertView == null) {
             holder = new ViewHolder();
             convertView = inflater.inflate(R.layout.item_photo, null);
@@ -84,6 +84,8 @@ public class ImageAdapter extends BaseAdapter implements OnScrollListener {
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
+        holder.cb.setClickable(false);
+        holder.cb.setEnabled(false);
         bean = items.get(position);
         if (bean.isShow()) {
             holder.cb.setVisibility(View.VISIBLE);
@@ -92,27 +94,33 @@ public class ImageAdapter extends BaseAdapter implements OnScrollListener {
         }
         String imageUrl = "" + imageThumUrls.get(position);
         //只显示缓存图片，如果缓存中没有则设置一张默认的图片
-        Bitmap bitmap = mImageDownloader.showCacheBitmap(imageUrl.replaceAll("[^\\w]",""));
-        if(bitmap != null)
-        {
+        Bitmap bitmap = mImageDownloader.showCacheBitmap(imageUrl.replaceAll("[^\\w]", ""));
+        if (bitmap != null) {
 //        Glide.with(context).load(imageUrl).into(holder.img);
             holder.img.setImageBitmap(bitmap);
-        }else
-        {
+        } else {
             holder.img.setImageBitmap(bitmap);
 //            holder.img.setImageResource(R.mipmap.ic_launcher);
         }
-        holder.cb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                if (isChecked) {
-                    bean.setChecked(true);
-                } else {
-                    bean.setChecked(false);
-                }
-                onShowItemClickListener.onShowItemClick(bean);
-            }
-        });
+//        holder.cb.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if (holder.cb.isChecked()) {
+//                    bean.setChecked(true);
+//                } else {
+//                    bean.setChecked(false);
+//                }
+//                onShowItemClickListener.onShowItemClick(position,bean, holder.cb.isChecked());
+//            }
+//        });
+
+//        holder.cb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+//            @Override
+//            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+//
+//
+//            }
+//        });
         holder.cb.setChecked(bean.isChecked());
         return convertView;
     }
@@ -176,7 +184,7 @@ public class ImageAdapter extends BaseAdapter implements OnScrollListener {
     }
 
     public interface OnShowItemClickListener {
-        public void onShowItemClick(Bean bean);
+        public void onShowItemClick(int position, Bean bean, boolean checked);
     }
 
     public void setOnShowItemClickListener(OnShowItemClickListener onShowItemClickListener) {

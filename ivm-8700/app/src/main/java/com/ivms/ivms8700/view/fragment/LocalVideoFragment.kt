@@ -36,11 +36,11 @@ class LocalVideoFragment : Fragment(), VideoAdapter.OnShowItemClickListener {
     lateinit var tvShare: TextView
     lateinit var tvDelete: TextView
     var dataList: MutableList<VideoInfo>? = null
-    var selectedList:MutableList<VideoInfo>? = null
+    var selectedList: MutableList<VideoInfo>? = null
     //    private List<String> paths = new ArrayList<String>();
     //    private List<String> items = new ArrayList<String>();
     private val videoList = ArrayList<VideoInfo>()
-//    private val paths = ArrayList<String>()
+    //    private val paths = ArrayList<String>()
 //    private val items = ArrayList<String>()
     private var myAdapter: VideoAdapter? = null
     public var isShow: Boolean = false
@@ -76,9 +76,21 @@ class LocalVideoFragment : Fragment(), VideoAdapter.OnShowItemClickListener {
                 val isChecked = item.isChecked
                 Log.i("tag", "===isChecked===$isChecked")
                 if (isChecked) {
+
+
                     item.isChecked = false
+                    selectedList!!.remove(item)
                 } else {
+
+                    if (selectedList != null && selectedList!!.size > 0) {
+                        Toast.makeText(context, getString(R.string.toast_choose_one), Toast.LENGTH_SHORT).show()
+
+                        return@setOnItemClickListener
+
+                    }
+
                     item.isChecked = true
+                    selectedList!!.add(item)
                 }
                 Log.i("tag", "===isChecked=after==$isChecked")
                 myAdapter!!.notifyDataSetChanged()
@@ -186,7 +198,7 @@ class LocalVideoFragment : Fragment(), VideoAdapter.OnShowItemClickListener {
 
     override fun onHiddenChanged(hidden: Boolean) {
         super.onHiddenChanged(hidden)
-        if(!hidden){
+        if (!hidden) {
             initDataList()
 
         }
@@ -235,32 +247,33 @@ class LocalVideoFragment : Fragment(), VideoAdapter.OnShowItemClickListener {
 
     private fun getAllFiles(path: String) {
 
-            val file = File(path)
-            videoList!!.clear()
-            val files = file.listFiles()
-            if (files != null) {
-                for (i in files.indices) {
-                    if (files[i].isDirectory) {
-                        val path1 = files[i].path + "/"
-                        getAllFiles(path1)
-                    } else {
-                        val name = files[i].name.split("\\.".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-                        if (name.size == 2 && name[1] == "mp4") {
-                            val videoInfo = VideoInfo()
-                            videoInfo.lastModifed = UIUtil.timeStamp2Date(files[i].lastModified().toString())
-                            videoInfo.name = files[i].name
-                            videoInfo.path = files[i].path
-                            videoInfo.bitmap = VideoUtils.getBitmapFromFile(files[i].path)
-                            videoInfo.time = VideoUtils.getVideoDuration(files[i].path)
-                            videoList.add(videoInfo)
-                        }
+        val file = File(path)
+        videoList!!.clear()
+        val files = file.listFiles()
+        if (files != null) {
+            for (i in files.indices) {
+                if (files[i].isDirectory) {
+                    val path1 = files[i].path + "/"
+                    getAllFiles(path1)
+                } else {
+                    val name = files[i].name.split("\\.".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+                    if (name.size == 2 && name[1] == "mp4") {
+                        val videoInfo = VideoInfo()
+                        videoInfo.lastModifed = UIUtil.timeStamp2Date(files[i].lastModified().toString())
+                        videoInfo.name = files[i].name
+                        videoInfo.path = files[i].path
+                        videoInfo.bitmap = VideoUtils.getBitmapFromFile(files[i].path)
+                        videoInfo.time = VideoUtils.getVideoDuration(files[i].path)
+                        videoList.add(videoInfo)
                     }
                 }
             }
+        }
 
 
     }
 
+    //没啥用可删掉，暂且留着
     override fun onShowItemClick(bean: VideoInfo?) {
         if (bean!!.path.equals(videoList[0].path)) {
             selectedList!!.add(bean)

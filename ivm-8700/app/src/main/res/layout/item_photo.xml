@@ -18,6 +18,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp3"
+        android:enabled="false"
+
         android:layout_marginRight="@dimen/dp3"
         android:layout_alignEnd="@+id/imageView1"
         android:layout_alignRight="@+id/imageView1"
