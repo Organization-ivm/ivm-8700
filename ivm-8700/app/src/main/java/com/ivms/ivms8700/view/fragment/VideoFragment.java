@@ -29,6 +29,7 @@ import com.google.gson.Gson;
 import com.hik.mcrsdk.rtsp.RtspClient;
 import com.hikvision.sdk.VMSNetSDK;
 import com.hikvision.sdk.consts.ConstantLiveSDK;
+import com.hikvision.sdk.consts.PTZCmd;
 import com.hikvision.sdk.net.bean.Camera;
 import com.hikvision.sdk.net.bean.CameraInfo;
 import com.hikvision.sdk.net.bean.DeviceInfo;
@@ -47,6 +48,7 @@ import com.ivms.ivms8700.live.LiveControl;
 import com.ivms.ivms8700.multilevellist.TreeAdapter;
 import com.ivms.ivms8700.multilevellist.TreePoint;
 import com.ivms.ivms8700.multilevellist.TreeUtils;
+import com.ivms.ivms8700.mysdk.MyVMSNetSDK;
 import com.ivms.ivms8700.playback.ConstantPlayBack;
 import com.ivms.ivms8700.playback.PlayBackCallBack;
 import com.ivms.ivms8700.playback.PlayBackControl;
@@ -124,7 +126,13 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Rad
      */
     private int mStreamType  = ConstantLiveSDK.MAIN_HING_STREAM;
 
-
+    /**
+     * 是否正在云台控制
+     */
+    private boolean             mIsPtzStart;  /**
+     * 云台控制命令
+     */
+    private int                 mPtzcommand;
     //--------回放相关-------
 
     private static final int PROGRESS_MAX_VALUE = 100;
@@ -134,30 +142,6 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Rad
      */
     private RadioGroup          mStorageTypesRG;
     /**
-     * 开始按钮
-     */
-    private Button mStartButton;
-    /**
-     * 停止按钮
-     */
-    private Button              mStopButton;
-    /**
-     * 暂停按钮
-     */
-    private Button              mPauseButton;
-    /**
-     * 抓拍按钮
-     */
-    private Button              mCaptureButton;
-    /**
-     * 录像按钮
-     */
-    private Button              mRecordButton;
-    /**
-     * 音频按钮
-     */
-    private Button              mAudioButton;
-    /**
      * 控制层对象
      */
     private PlayBackControl mPlayBackControl;
@@ -165,15 +149,6 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Rad
      * 创建消息对象
      */
     private Handler             mMessageHandler;
-    /**
-     * 是否暂停标签
-     */
-    private boolean             mIsPause;
-
-    /**
-     * 音频是否开启
-     */
-    private boolean             mIsAudioOpen;
     /**
      * 是否正在录像
      */
@@ -248,6 +223,7 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Rad
     private int palyType=1;//1代表预览，2代表远程回放
     private LinearLayout playBackRecord;
     private LinearLayout playBackCapture;
+    private LinearLayout contrl_lay;
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
@@ -446,27 +422,22 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Rad
 
                 case ConstantPlayBack.PAUSE_SUCCESS:
                     UIUtil.showToast(getActivity(), "暂停成功");
-//                    mPauseButton.setText("恢复");
-//                    mIsPause = true;
+
                     break;
 
                 case ConstantPlayBack.PAUSE_FAIL:
                     UIUtil.showToast(getActivity(), "暂停失败");
-//                    mPauseButton.setText("暂停");
-//                    mIsPause = false;
 
                     break;
 
                 case ConstantPlayBack.RESUEM_FAIL:
                     UIUtil.showToast(getActivity(), "恢复播放失败");
-//                    mPauseButton.setText("恢复");
-//                    mIsPause = true;
+
                     break;
 
                 case ConstantPlayBack.RESUEM_SUCCESS:
                     UIUtil.showToast(getActivity(), "恢复播放成功");
-//                    mPauseButton.setText("暂停");
-//                    mIsPause = false;
+
                     break;
 
                 case ConstantPlayBack.START_OPEN_FAILED:
@@ -534,8 +505,6 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Rad
         if (null != deviceInfo) {
             mParamsObj.name = deviceInfo.getUserName() == null ? "" : deviceInfo.getUserName() ;
             mParamsObj.passwrod = deviceInfo.getPassword() == null ? "" : deviceInfo.getPassword();
-
-
 
         }
         if (null != mRecordInfo) {
@@ -608,53 +577,6 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Rad
         if (mRecordPos == null || mRecordPos.length <= 0) {
             return;
         }
-//        for (int i = 0;i < mRecordPos.length;i++) {
-//            RadioButton rb = new RadioButton(getActivity());
-////                if (0 == i) {
-////                    rb.setChecked(true);
-////                }
-//            rb.setTag(i);
-//            switch (mRecordPos[i]) {
-//                case com.hikvision.sdk.consts.ConstantPlayBack.PlayBack.RECORD_TYPE_NVT:
-//                    rb.setText(com.hikvision.sdk.consts.ConstantPlayBack.PlayBack.RECORD_TYPE_NVT_STR);
-//                    break;
-//
-//                case com.hikvision.sdk.consts.ConstantPlayBack.PlayBack.RECORD_TYPE_PU:
-//                    rb.setText(com.hikvision.sdk.consts.ConsstantPlayBack.PlayBack.RECORD_TYPE_PU_STR);
-//                    break;
-//
-//                case com.hikvision.sdk.consts.ConstantPlayBack.PlayBack.RECORD_TYPE_NVR:
-//                    rb.setText(com.hikvision.sdk.consts.ConstantPlayBack.PlayBack.RECORD_TYPE_NVR_STR);
-//                    break;
-//
-//                case com.hikvision.sdk.consts.ConstantPlayBack.PlayBack.RECORD_TYPE_CVM:
-//                    rb.setText(com.hikvision.sdk.consts.ConstantPlayBack.PlayBack.RECORD_TYPE_CVM_STR);
-//                    break;
-//
-//                default:
-//                    break;
-//            }
-//            mStorageTypesRG.addView(rb);
-//            mStorageTypesRG.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-//
-//                @Override
-//                public void onCheckedChanged(RadioGroup arg0, int arg1) {
-//                    int radioButtonId = arg0.getCheckedRadioButtonId();
-//                    RadioButton rb = (RadioButton)findViewById(radioButtonId);
-//                    String type = rb.getTag().toString();
-//                    int index = Integer.valueOf(type);
-//                    if (null != mRecordPos && index < mRecordPos.length) {
-//                        mStorageType = mRecordPos[index];
-//                    }
-//                    if (null != mGuids && index < mGuids.length) {
-//                        mGuid = mGuids[index];
-//                    }
-//                    stopBtnOnClick();
-//                    mProgressBar.setVisibility(View.VISIBLE);
-//                    queryRecordSegment();
-//                }
-//            });
-//        }
 
     }
     /**
@@ -797,10 +719,14 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Rad
             live_lay.setOnClickListener(this);
             huifang_lay.setOnClickListener(this);
 
+            contrl_lay=(LinearLayout)view.findViewById(R.id.contrl_lay); //云台控制
+            mPtzcommand = PTZCmd.CUSTOM_CMD_LEFT;
             playBackRecord=(LinearLayout)view.findViewById(R.id.playBackRecord); //本地录像
             playBackCapture=(LinearLayout)view.findViewById(R.id.playBackCapture); //本地截图
             playBackRecord.setOnClickListener(this);
             playBackCapture.setOnClickListener(this);
+            contrl_lay.setOnClickListener(this);
+
         }
         // 初次加载根节点数据
         getRootControlCenter();
@@ -988,6 +914,7 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Rad
             mLiveControl.startLive(mSurfaceView);
         }
     }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -1027,10 +954,24 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Rad
                 }
 
                 break;
-
+            case R.id.contrl_lay://云台控制
+                ptzBtnOnClick();
+                break;
         }
     }
 
+    //云台控制方法
+    private void ptzBtnOnClick() {
+        if (null != mLiveControl && LiveControl.LIVE_PLAY == mLiveControl.getLiveState()) {
+            if (mIsPtzStart) {
+                MyVMSNetSDK.getInstance().sendPTZCtrlCmd(cameraInfo, PTZCmd.ACTION_STOP, mPtzcommand);
+                mIsPtzStart = false;
+            } else {
+                MyVMSNetSDK.getInstance().sendPTZCtrlCmd(cameraInfo, PTZCmd.ACTION_START, mPtzcommand);
+                mIsPtzStart = true;
+            }
+        }
+    }
     /**
      * 获取根控制中心
      */

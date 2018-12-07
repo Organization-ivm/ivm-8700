@@ -6,6 +6,7 @@ import com.hik.mcrsdk.MCRSDK;
 import com.hik.mcrsdk.rtsp.RtspClient;
 import com.hikvision.sdk.VMSNetSDK;
 import com.hikvision.sdk.net.bean.LoginData;
+import com.ivms.ivms8700.mysdk.MyVMSNetSDK;
 
 public class MyApplication extends Application {
     private static MyApplication ins;
@@ -17,6 +18,7 @@ public class MyApplication extends Application {
         MCRSDK.init();
         RtspClient.initLib();
         MCRSDK.setPrint(1, null);
+        MyVMSNetSDK.init(this);
         VMSNetSDK.init(this);
     }
 
