@@ -66,28 +66,6 @@
                 android:background="#FFFFFF"/>
         </LinearLayout>
     </LinearLayout>
-    <RelativeLayout
-        android:id="@+id/rl_select_btn"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dp40"
-        android:background="#F6F6F6"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp16"
-            android:textSize="@dimen/dp16"
-            android:text="@string/select_monitoringpoint"/>
-        <ImageView
-            android:layout_width="@dimen/dp22"
-            android:layout_height="@dimen/dp12"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="@dimen/dp16"
-            android:background="@drawable/down"/>
-
-        
-    </RelativeLayout>
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -100,7 +78,8 @@
 
             <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dp260">
+                android:layout_height="0dp"
+                android:layout_weight="1">
 
                 <com.ivms.ivms8700.view.customui.CustomSurfaceView
                     android:id="@+id/surfaceView"
@@ -112,12 +91,18 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:visibility="invisible" />
+                <ImageView
+                    android:id="@+id/add_monitory"
+                    android:layout_width="@dimen/dp40"
+                    android:layout_height="@dimen/dp40"
+                    android:layout_gravity="center"
+                    android:background="@drawable/shi"/>
             </FrameLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp48"
-                android:layout_marginTop="@dimen/dp20"
+                android:layout_marginTop="@dimen/dp10"
                 android:background="#ffffff"
                 android:gravity="center"
                 android:orientation="horizontal">
@@ -156,24 +141,10 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp60"
-
-                android:layout_marginTop="@dimen/dp2"
+                android:layout_marginTop="@dimen/dp10"
+                android:layout_marginBottom="@dimen/dp10"
                 android:background="#ffffff"
                 android:orientation="horizontal">
-
-                <LinearLayout
-                    android:layout_width="@dimen/dp0"
-                    android:layout_height="match_parent"
-                    android:layout_marginLeft="@dimen/dp10"
-                    android:layout_weight="1"
-
-                    android:gravity="center">
-
-                    <ImageView
-                        android:layout_width="@dimen/dp22"
-                        android:layout_height="@dimen/dp20"
-                        android:background="@drawable/fanzhuan" />
-                </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="@dimen/dp0"
@@ -239,18 +210,6 @@
                 </LinearLayout>
             </LinearLayout>
 
-        </LinearLayout>
-        <LinearLayout
-            android:id="@+id/ll_jiankong"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="gone"
-            android:layout_marginRight="@dimen/dp10"
-            android:background="#ffffff">
-            <ListView
-                android:id="@+id/video_listView"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
         </LinearLayout>
     </FrameLayout>
 </LinearLayout>

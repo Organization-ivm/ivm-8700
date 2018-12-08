@@ -12,7 +12,7 @@
     <string name="save_btn">保存</string>
     <string name="realtime_preview">实时预览</string>
     <string name="remote_playback">远程回放</string>
-    <string name="select_monitoringpoint">请选择监控点</string>
+    <string name="select_monitoringpoint">选择监控点</string>
     <string name="video">视频</string>
     <string name="image_management">图像管理</string>
     <string name="message">消息</string>

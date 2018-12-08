@@ -1,6 +1,9 @@
 package com.ivms.ivms8700.view.fragment;
 
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -16,6 +19,7 @@ import android.view.animation.TranslateAnimation;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import android.widget.ListView;
@@ -24,6 +28,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.hik.mcrsdk.rtsp.RtspClient;
@@ -54,6 +59,7 @@ import com.ivms.ivms8700.playback.PlayBackCallBack;
 import com.ivms.ivms8700.playback.PlayBackControl;
 import com.ivms.ivms8700.playback.PlayBackParams;
 import com.ivms.ivms8700.utils.UIUtil;
+import com.ivms.ivms8700.view.AddMonitoryActivity;
 import com.ivms.ivms8700.view.customui.CustomSurfaceView;
 
 import org.MediaPlayer.PlayM4.Player;
@@ -67,24 +73,16 @@ import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class VideoFragment extends Fragment implements View.OnClickListener, RadioGroup.OnCheckedChangeListener, SurfaceHolder.Callback, LiveControl.LiveCallBack,PlayBackCallBack {
+import static android.app.Activity.RESULT_OK;
+
+public class VideoFragment extends Fragment implements View.OnClickListener, RadioGroup.OnCheckedChangeListener, SurfaceHolder.Callback, LiveControl.LiveCallBack, PlayBackCallBack {
+
+    private final String TAG="Alan";
+    private final int RECULET_CODE=1;//选择完监控点回调
     private View view;
-    private LinearLayout ll_jiankong;
-    private RelativeLayout rl_select_btn;
     private TranslateAnimation mShowAction;
     private TranslateAnimation mHiddenAction;
-    private ListView video_listView;
-    /**
-     * 列表map。唯一索引。
-     */
-    private int ID = 100;
 
-    /**
-     * 跟节点数据
-     */
-    private List<TreePoint> genList = new ArrayList<>();
-    private HashMap<String, TreePoint> pointMap = new HashMap<>();
-    private List<TreePoint> showList = new ArrayList<>();
     /**
      * 监控点
      */
@@ -124,15 +122,16 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Rad
     /**
      * 码流类型
      */
-    private int mStreamType  = ConstantLiveSDK.MAIN_HING_STREAM;
+    private int mStreamType = ConstantLiveSDK.MAIN_HING_STREAM;
 
     /**
      * 是否正在云台控制
      */
-    private boolean             mIsPtzStart;  /**
+    private boolean mIsPtzStart;
+    /**
      * 云台控制命令
      */
-    private int                 mPtzcommand;
+    private int mPtzcommand;
     //--------回放相关-------
 
     private static final int PROGRESS_MAX_VALUE = 100;
@@ -140,7 +139,7 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Rad
     /**
      * 存储介质选择
      */
-    private RadioGroup          mStorageTypesRG;
+    private RadioGroup mStorageTypesRG;
     /**
      * 控制层对象
      */
@@ -148,12 +147,11 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Rad
     /**
      * 创建消息对象
      */
-    private Handler             mMessageHandler;
+    private Handler mMessageHandler;
     /**
      * 是否正在录像
      */
-    private boolean             mIsRecord;
-
+    private boolean mIsRecord;
 
     /**
      * 录像存储介质
@@ -209,78 +207,120 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Rad
      */
     private CheckBox mZoom;
 
-    TreeAdapter adapter;
     /**
      * 控制层对象
      */
     private LiveControl mLiveControl = null;
-    private Handler mHandler = null;
+
     private Handler liveHandler = null;
     private LinearLayout live_lay;
     private LinearLayout huifang_lay;
     private View live_view;
     private View huifang_view;
-    private int palyType=1;//1代表预览，2代表远程回放
+    private int palyType = 1;//1代表预览，2代表远程回放
     private LinearLayout playBackRecord;
     private LinearLayout playBackCapture;
     private LinearLayout contrl_lay;
+    private AlertDialog alertDialog; //信息框
+    private ImageView add_monitory;
 
+
+    @Nullable
     @Override
-    public void surfaceCreated(SurfaceHolder holder) {
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        if (view == null) {
+            view = inflater.inflate(R.layout.video_layout, container, false);
+            mSurfaceView = (CustomSurfaceView) view.findViewById(R.id.surfaceView);
+            progressBar = (ProgressBar) view.findViewById(R.id.live_progress_bar);
+            live_lay = (LinearLayout) view.findViewById(R.id.live_lay);
+            huifang_lay = (LinearLayout) view.findViewById(R.id.huifang_lay);
+            live_view = (View) view.findViewById(R.id.live_view);
+            huifang_view = (View) view.findViewById(R.id.huifang_view);
+            add_monitory = (ImageView) view.findViewById(R.id.add_monitory);
+            contrl_lay = (LinearLayout) view.findViewById(R.id.contrl_lay); //云台控制
+            playBackRecord = (LinearLayout) view.findViewById(R.id.playBackRecord); //本地录像
+            playBackCapture = (LinearLayout) view.findViewById(R.id.playBackCapture); //本地截图
 
+            mSurfaceView.getHolder().addCallback(this);
+            live_lay.setOnClickListener(this);
+            huifang_lay.setOnClickListener(this);
+            add_monitory.setOnClickListener(this);
+            playBackRecord.setOnClickListener(this);
+            playBackCapture.setOnClickListener(this);
+            contrl_lay.setOnClickListener(this);
+
+        }
+        return view;
     }
 
     @Override
-    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-
-    }
-
-    @Override
-    public void surfaceDestroyed(SurfaceHolder holder) {
-        if (null != mLiveControl) {
-            mLiveControl.stop();
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.live_lay:
+                palyType = 1;
+                live_view.setVisibility(View.VISIBLE);
+                huifang_view.setVisibility(View.INVISIBLE);
+                break;
+            case R.id.huifang_lay:
+                palyType = 2;
+                live_view.setVisibility(View.INVISIBLE);
+                huifang_view.setVisibility(View.VISIBLE);
+                break;
+            case R.id.playBackRecord://本地录像
+                if (palyType == 1) {
+                    recordBtnOnClick_live();
+                } else {
+                    recordBtnOnClick();
+                }
+                break;
+            case R.id.playBackCapture://本地截图
+                if (palyType == 1) {
+                    clickCaptureBtn_live();
+                } else {
+                    captureBtnOnClick();
+                }
+                break;
+            case R.id.contrl_lay://云台控制
+                showList();
+                break;
+            case R.id.add_monitory://添加监控点
+                Intent intent = new Intent(getActivity(), AddMonitoryActivity.class);
+                startActivityForResult(intent,RECULET_CODE);
+                break;
         }
     }
 
     @Override
-    public void onCheckedChanged(RadioGroup group, int checkedId) {
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
 
-    }
-
-    @Override
-    public void onMessageCallback(int message) {
-        sendMessageCase(message);
-    }
-
-    private class ViewHandler extends Handler {
-
-        /**
-         * Handle system messages here.
-         *
-         * @param msg
-         */
-        @Override
-        public void dispatchMessage(Message msg) {
-            super.dispatchMessage(msg);
-            switch (msg.what) {
-                case Constants.Resource.SHOW_LOADING_PROGRESS:
-                    showLoadingProgress();
-                    break;
-                case Constants.Resource.CANCEL_LOADING_PROGRESS:
-                    cancelLoadingProgress();
-                    break;
-                case Constants.Resource.LOADING_SUCCESS:
-                    cancelLoadingProgress();
-                    onloadingSuccess();
-                    break;
-                case Constants.Resource.LOADING_FAILED:
-                    cancelLoadingProgress();
-                    onloadingFailed();
-                    break;
-                    case Constants.Resource.LOADING_SUCCESS_TIER:
-                    cancelLoadingProgress();
-                    break;
-            }
+        switch (requestCode){
+            case RECULET_CODE ://监控列表回调
+                if (resultCode == RESULT_OK) {
+                    Bundle extras = data.getExtras();
+                    Camera camera= (Camera)extras.get("camera");
+                    switch (palyType) {
+                        case 1:
+                            //  预览
+                            if (VMSNetSDK.getInstance().isHasLivePermission(camera)) {
+                                gotoLive(camera);
+                            } else {
+                                UIUtil.showToast(getActivity(), R.string.no_permission);
+                            }
+                            break;
+                        case 2:
+                            // 回放
+                            if (VMSNetSDK.getInstance().isHasPlayBackPermission(camera)) {
+//                                    gotoPlayBack(camera);
+                            } else {
+                                UIUtil.showToast(getActivity(), R.string.no_permission);
+                            }
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                break;
         }
     }
 
@@ -349,11 +389,13 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Rad
             }
         }
     }
+
     private void sendMessageCase(int i) {
         if (null != mMessageHandler) {
             mMessageHandler.sendEmptyMessage(i);
         }
     }
+
     //回放处理
     class HuifangHandler extends Handler {
         public void handleMessage(Message msg) {
@@ -476,6 +518,7 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Rad
             }
         }
     }
+
     private void updateRemotePlayUI() {
         if (null == mPlayBackControl) {
             return;
@@ -487,8 +530,10 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Rad
             handlePlayProgress(osd);
         }
     }
+
     /**
      * 开启播放
+     *
      * @author lvlingdi 2016-4-19 下午5:01:22
      */
     private void startBtnOnClick() {
@@ -497,13 +542,15 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Rad
             mPlayBackControl.startPlayBack(mParamsObj);
         }
     }
+
     /**
      * 设置回放参数
+     *
      * @author lvlingdi 2016-4-21 下午4:41:19
      */
     private void setParamsObj() {
         if (null != deviceInfo) {
-            mParamsObj.name = deviceInfo.getUserName() == null ? "" : deviceInfo.getUserName() ;
+            mParamsObj.name = deviceInfo.getUserName() == null ? "" : deviceInfo.getUserName();
             mParamsObj.passwrod = deviceInfo.getPassword() == null ? "" : deviceInfo.getPassword();
 
         }
@@ -515,10 +562,10 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Rad
 
         }
     }
+
     /**
-     *
-     * @author lvlingdi 2016-4-27 下午3:39:33
      * @param
+     * @author lvlingdi 2016-4-27 下午3:39:33
      */
     private void handlePlayProgress(long osd) {
         Calendar date = Calendar.getInstance();
@@ -557,6 +604,7 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Rad
 
     /**
      * 停止定时器
+     *
      * @author lvlingdi 2016-4-27 下午3:49:36
      */
     private void stopUpdateTimer() {
@@ -570,6 +618,7 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Rad
             mUpdateTimerTask = null;
         }
     }
+
     /**
      * @author lvlingdi 2016-4-21 上午10:20:11
      */
@@ -579,8 +628,10 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Rad
         }
 
     }
+
     /**
      * 查找录像片段
+     *
      * @author lvlingdi 2016-4-21 下午3:30:18
      */
     private void queryRecordSegment() {
@@ -605,10 +656,10 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Rad
             @Override
             public void onSuccess(Object obj) {
                 if (obj instanceof RecordInfo) {
-                    mRecordInfo = ((RecordInfo)obj);
+                    mRecordInfo = ((RecordInfo) obj);
 
                     //级联设备的时候
-                    if (null != mRecordInfo.getSegmentList() && 0 < mRecordInfo.getSegmentList().size())  {
+                    if (null != mRecordInfo.getSegmentList() && 0 < mRecordInfo.getSegmentList().size()) {
                         mRecordSegment = mRecordInfo.getSegmentList().get(0);
                     }
                     mMessageHandler.sendEmptyMessage(Constants.PlayBack.queryRecordSegment_Success);
@@ -618,10 +669,12 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Rad
         });
         mVMSNetSDK.queryRecordSegment(cameraInfo, mStartTime, mEndTime, mStorageType, mGuid);
     }
+
     /**
      * 解析录像存储类型
-     * @author lvlingdi 2016-4-21 上午10:07:33
+     *
      * @param cameraInfo
+     * @author lvlingdi 2016-4-21 上午10:07:33
      */
     private int[] processStorageType(CameraInfo cameraInfo) {
         String pos = cameraInfo.getRecordPos();
@@ -636,10 +689,12 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Rad
         return types;
 
     }
+
     /**
      * 解析Guid
-     * @author lvlingdi 2016-4-21 上午10:09:12
+     *
      * @param cameraInfo
+     * @author lvlingdi 2016-4-21 上午10:09:12
      */
     private String[] processGuid(CameraInfo cameraInfo) {
         String guid = cameraInfo.getGuid();
@@ -649,6 +704,7 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Rad
         String[] guids = guid.split(",");
         return guids;
     }
+
     /**
      * 获取设备信息
      */
@@ -662,18 +718,18 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Rad
 
             @Override
             public void onFailure() {
-                if(palyType==1) {
+                if (palyType == 1) {
                     liveHandler.sendEmptyMessage(Constants.Live.getDeviceInfo_failure);
-                }else{
+                } else {
                     mMessageHandler.sendEmptyMessage(Constants.PlayBack.getDeviceInfo_failure);
                 }
             }
 
             @Override
             public void loading() {
-                if(palyType==1) {
+                if (palyType == 1) {
                     liveHandler.sendEmptyMessage(Constants.Login.SHOW_LOGIN_PROGRESS);
-                }else{
+                } else {
                     mMessageHandler.sendEmptyMessage(Constants.Login.SHOW_LOGIN_PROGRESS);
                 }
             }
@@ -682,9 +738,9 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Rad
             public void onSuccess(Object data) {
                 if (data instanceof DeviceInfo) {
                     deviceInfo = (DeviceInfo) data;
-                    if(palyType==1){
+                    if (palyType == 1) {
                         liveHandler.sendEmptyMessage(Constants.Live.getDeviceInfo_Success);
-                    }else{
+                    } else {
                         mMessageHandler.sendEmptyMessage(Constants.PlayBack.getDeviceInfo_Success);
                     }
 
@@ -694,103 +750,11 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Rad
 
         boolean flag = mVMSNetSDK.getDeviceInfo(cameraInfo.getDeviceID());
     }
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        if (view == null) {
-            view = inflater.inflate(R.layout.video_layout, container, false);
-            ll_jiankong = (LinearLayout) view.findViewById(R.id.ll_jiankong);
-            rl_select_btn = (RelativeLayout) view.findViewById(R.id.rl_select_btn);
-            rl_select_btn.setOnClickListener(this);
-            //监控点列表
-            video_listView = (ListView) view.findViewById(R.id.video_listView);
-            adapter = new TreeAdapter(getContext(), genList, pointMap);
-            video_listView.setAdapter(adapter);
-            setListener();
 
-            mSurfaceView = (CustomSurfaceView)view.findViewById(R.id.surfaceView);
-            mSurfaceView.getHolder().addCallback(this);
-            progressBar = (ProgressBar)view.findViewById(R.id.live_progress_bar);
-
-            live_lay=(LinearLayout)view.findViewById(R.id.live_lay);
-            huifang_lay=(LinearLayout)view.findViewById(R.id.huifang_lay);
-            live_view=(View)view.findViewById(R.id.live_view);
-            huifang_view=(View)view.findViewById(R.id.huifang_view);
-            live_lay.setOnClickListener(this);
-            huifang_lay.setOnClickListener(this);
-
-            contrl_lay=(LinearLayout)view.findViewById(R.id.contrl_lay); //云台控制
-            mPtzcommand = PTZCmd.CUSTOM_CMD_LEFT;
-            playBackRecord=(LinearLayout)view.findViewById(R.id.playBackRecord); //本地录像
-            playBackCapture=(LinearLayout)view.findViewById(R.id.playBackCapture); //本地截图
-            playBackRecord.setOnClickListener(this);
-            playBackCapture.setOnClickListener(this);
-            contrl_lay.setOnClickListener(this);
-
-        }
-        // 初次加载根节点数据
-        getRootControlCenter();
-        setAnimation();
-        return view;
-    }
-
-    private void setListener() {
-        video_listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (position == 0) {
-                    getSubResourceList(Integer.parseInt(showList.get(position).getRootCtrlCenter().getNodeType()), showList.get(position).getRootCtrlCenter().getId()
-                            , position, showList.get(position));
-                } else {
-
-                    int nodeType = 0;
-                    Object node = showList.get(position).getSubResourceNodeBean();
-                    nodeType = ((SubResourceNodeBean)node).getNodeType();
-                    Log.i("ivms8700","nodeType=-="+nodeType);
-
-                    if(HttpConstants.NodeType.TYPE_CAMERA_OR_DOOR == nodeType){
-                        Log.i("ivms8700","=-=准备进入播放");
-                        // 构造camera对象
-                        final Camera camera = VMSNetSDK.getInstance().initCameraInfo((SubResourceNodeBean)node);
-
-                                    switch (palyType) {
-                                        case 1:
-                                            // 预览
-                                            if (VMSNetSDK.getInstance().isHasLivePermission(camera)) {
-                                                ll_jiankong.startAnimation(mHiddenAction);
-                                                ll_jiankong.setVisibility(View.GONE);
-                                                gotoLive(camera);
-                                            } else {
-                                                UIUtil.showToast(getActivity(), R.string.no_permission);
-                                            }
-                                            break;
-                                        case 2:
-                                            // 回放
-                                            if (VMSNetSDK.getInstance().isHasPlayBackPermission(camera)) {
-                                                gotoPlayBack(camera);
-                                            } else {
-                                                UIUtil.showToast(getActivity(), R.string.no_permission);
-                                            }
-                                            break;
-                                        default:
-                                            break;
-                                    }
-
-                    }else{
-
-                        getSubResourceList(showList.get(position).getSubResourceNodeBean().getNodeType(), showList.get(position).getSubResourceNodeBean().getId()
-                                , position, showList.get(position));
-                    }
-
-                }
-
-
-            }
-        });
-    }
 
     /**
      * 回放监控点
+     *
      * @param
      */
     private void gotoPlayBack(Camera camera) {
@@ -803,6 +767,7 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Rad
 
     /**
      * 初始化回放数据
+     *
      * @author lvlingdi 2016-4-19 下午5:20:50
      */
     private void initData(Camera camera) {
@@ -832,7 +797,8 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Rad
         mEndTime.set(year, month, day, 23, 59, 59);
         getCameraInfo();
     }
-   //进入预览
+
+    //进入预览
     private void gotoLive(Camera camera) {
         if (camera == null) {
             Log.e(Constants.LOG_TAG, "gotoLive():: fail");
@@ -845,6 +811,7 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Rad
         mLiveControl.setLiveCallBack(this);
         getCameraInfo();
     }
+
     /**
      * 获取监控点详细信息
      */
@@ -853,9 +820,9 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Rad
             Log.e("ivms8700", "getCameraInfo==>>camera is null");
             return;
         }
-        if(palyType==1){
+        if (palyType == 1) {
             liveHandler.sendEmptyMessage(Constants.Live.getCameraInfo);
-        }else{
+        } else {
             mMessageHandler.sendEmptyMessage(Constants.PlayBack.getCameraInfo);
         }
 
@@ -863,39 +830,35 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Rad
 
             @Override
             public void onFailure() {
-               if(palyType==1){
-                   liveHandler.sendEmptyMessage(Constants.Live.getCameraInfo_failure);
-               }else{
-                   mMessageHandler.sendEmptyMessage(Constants.PlayBack.getCameraInfo_failure);
-               }
-
-
+                if (palyType == 1) {
+                    liveHandler.sendEmptyMessage(Constants.Live.getCameraInfo_failure);
+                } else {
+                    mMessageHandler.sendEmptyMessage(Constants.PlayBack.getCameraInfo_failure);
+                }
             }
 
             @Override
             public void loading() {
-                if(palyType==1){
+                if (palyType == 1) {
                     liveHandler.sendEmptyMessage(Constants.Live.getCameraInfo);
-                }else{
+                } else {
                     mMessageHandler.sendEmptyMessage(Constants.Login.SHOW_LOGIN_PROGRESS);
                 }
-
             }
+
             @Override
             public void onSuccess(Object data) {
                 if (data instanceof CameraInfo) {
                     cameraInfo = (CameraInfo) data;
-                    if(palyType==1){
+                    if (palyType == 1) {
                         liveHandler.sendEmptyMessage(Constants.Live.getCameraInfo_Success);
-                    }else{
+                    } else {
                         mMessageHandler.sendEmptyMessage(Constants.PlayBack.getCameraInfo_Success);
                     }
-
                 }
             }
         });
         boolean flag = mVMSNetSDK.getCameraInfo(mCamera);
-
     }
 
     /**
@@ -915,50 +878,6 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Rad
         }
     }
 
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.rl_select_btn:
-                if (ll_jiankong.getVisibility() == View.GONE) {
-                    ll_jiankong.startAnimation(mShowAction);
-                    ll_jiankong.setVisibility(View.VISIBLE);
-                } else {
-                    ll_jiankong.startAnimation(mHiddenAction);
-                    ll_jiankong.setVisibility(View.GONE);
-                }
-                break;
-            case R.id.live_lay:
-                palyType=1;
-                live_view.setVisibility(View.VISIBLE);
-                huifang_view.setVisibility(View.INVISIBLE);
-                break;
-            case R.id.huifang_lay:
-                palyType=2;
-                live_view.setVisibility(View.INVISIBLE);
-                huifang_view.setVisibility(View.VISIBLE);
-                break;
-            case R.id.playBackRecord://本地录像
-                if(palyType==1){
-                    recordBtnOnClick_live();
-                }else{
-                    recordBtnOnClick();
-                }
-
-
-                break;
-            case R.id.playBackCapture://本地截图
-                if(palyType==1){
-                    clickCaptureBtn_live();
-                }else{
-                    captureBtnOnClick();
-                }
-
-                break;
-            case R.id.contrl_lay://云台控制
-                ptzBtnOnClick();
-                break;
-        }
-    }
 
     //云台控制方法
     private void ptzBtnOnClick() {
@@ -972,139 +891,35 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Rad
             }
         }
     }
-    /**
-     * 获取根控制中心
-     */
-    public void getRootControlCenter() {
-        mHandler = new ViewHandler();
-        boolean flag = false;
-//        showLoadingProgress();
-        VMSNetSDK.getInstance().setOnVMSNetSDKBusiness(new OnVMSNetSDKBusiness() {
-            /* (non-Javadoc)
-             * @see com.hikvision.sdk.net.business.OnVMSNetSDKBusiness#onSuccess(java.lang.Object)
-             */
-            @Override
-            public void onSuccess(Object obj) {
-                super.onSuccess(obj);
 
-                if (obj instanceof RootCtrlCenter) {
-                    video_listView.setVisibility(View.VISIBLE);
-                    genList.clear();
-                    showList.clear();
-//                    TreePoint t = new TreePoint(((RootCtrlCenter) obj).getId(), ((RootCtrlCenter) obj).getName(), 0, 0, false, 0, true, null, (RootCtrlCenter) obj);
-                    TreePoint t = new TreePoint(ID, ((RootCtrlCenter) obj).getName(), 0, 0, false, 0, true, null, (RootCtrlCenter) obj);
-                    pointMap.put(t.getID() + "", t);
-                    genList.add(t);
-                    showList.add(t);
-                    adapter.setPointList(showList);
-                    adapter.setPointMap(pointMap);
+    //显示控制方向弹窗
+    public void showList() {
+        final String[] items = {"上", "下", "左", "右"};
+        AlertDialog.Builder alertBuilder = new AlertDialog.Builder(getActivity(), AlertDialog.THEME_HOLO_LIGHT);
+        alertBuilder.setTitle("请选择控制方向");
+        alertBuilder.setItems(items, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                switch (i) {
+                    case 0:
+                        mPtzcommand = PTZCmd.CUSTOM_CMD_UP;
+                        break;
+                    case 1:
+                        mPtzcommand = PTZCmd.CUSTOM_CMD_DOWN;
+                        break;
+                    case 2:
+                        mPtzcommand = PTZCmd.CUSTOM_CMD_LEFT;
+                        break;
+                    case 3:
+                        mPtzcommand = PTZCmd.CUSTOM_CMD_RIGHT;
+                        break;
                 }
-                mHandler.sendEmptyMessage(Constants.Resource.LOADING_SUCCESS);
-            }
-
-            /* (non-Javadoc)
-             * @see com.hikvision.sdk.net.business.OnVMSNetSDKBusiness#onFailure()
-             */
-            @Override
-            public void onFailure() {
-                super.onFailure();
-                mHandler.sendEmptyMessage(Constants.Resource.LOADING_FAILED);
+                ptzBtnOnClick();
+                alertDialog.dismiss();
             }
         });
-        flag = VMSNetSDK.getInstance().getRootCtrlCenterInfo(1, HttpConstants.SysType.TYPE_VIDEO, 15);
-    }
-
-    /**
-     * 获取下级资源列表
-     *
-     * @param parentNodeType 父节点类型
-     * @param pId            父节点ID
-     *                       level   当前层级
-     */
-    private void getSubResourceList(int parentNodeType, int pId, final int position, final TreePoint treePoint) {
-        boolean flag = false;
-        showLoadingProgress();
-
-        VMSNetSDK.getInstance().setOnVMSNetSDKBusiness(new OnVMSNetSDKBusiness() {
-            /* (non-Javadoc)
-             * @see com.hikvision.sdk.net.business.OnVMSNetSDKBusiness#onSuccess(java.lang.Object)
-             */
-            @Override
-            public void onSuccess(Object obj) {
-                super.onSuccess(obj);
-                if (obj instanceof List<?>) {
-                    List<SubResourceNodeBean> list = new ArrayList<SubResourceNodeBean>();
-                    list.addAll((Collection<? extends SubResourceNodeBean>) obj);
-                    List<TreePoint> subList = new ArrayList<>();
-                    Log.i("ivm-8700", new Gson().toJson(list).toString());
-
-
-                    if (null != list && list.size() > 0) {
-                        for (int i = 0; i < list.size(); i++) {
-                            ID++;
-                            subList.add(new TreePoint(ID, list.get(i).getName(),
-                                    treePoint.getID(), i, false, 0, true, list.get(i), null));
-                        }
-                        if (!treePoint.isExpand()) {//点击项有子数据但未展开，展开操作。
-                            for (int i = 0; i < subList.size(); i++) {
-                                pointMap.put(subList.get(i).getID() + "", subList.get(i));
-                                Log.i("ivm-8700", "" + new Gson().toJson(genList).toString());
-                                genList.add(new TreePoint(subList.get(i).getID(), subList.get(i).getNNAME(), treePoint.getID(), i, false, getLayer(subList.get(i), pointMap), true, subList.get(i).getSubResourceNodeBean(), null));
-                            }
-
-
-                            int g = position;
-                            for (int j = 1; j < genList.size(); j++) {
-                                if (genList.get(j).getPARENTID() == treePoint.getID()) {
-                                    g = g + 1;
-                                    showList.add(g, genList.get(j));
-                                }
-                            }
-                            showList.get(position).setExpand(true);
-                            adapter.setPointMap(pointMap);
-                            adapter.setPointList(showList);
-                            adapter.notifyDataSetChanged();
-                        } else if (treePoint.isExpand()) {
-                            List<TreePoint> delList = new ArrayList<>();
-                            for (int k = position + 1; k < showList.size(); k++) {
-                                if (showList.get(k).getLayer() > treePoint.getLayer()) {
-                                    delList.add(showList.get(k));
-                                } else {
-                                    break;
-                                }
-                            }
-                            genList.removeAll(delList);
-                            showList.removeAll(delList);
-                            for (TreePoint rr : delList) {
-                                pointMap.remove(rr.getID());
-                            }
-                            showList.get(position).setExpand(false);
-                            adapter.setPointMap(pointMap);
-                            adapter.setPointList(showList);
-                            adapter.notifyDataSetChanged();
-                        }
-
-                    } else {
-
-                        showList.get(position).setHasSubDatas(false);
-                        return;
-                    }
-                    mHandler.sendEmptyMessage(Constants.Resource.LOADING_SUCCESS_TIER);
-                }
-            }
-
-            /* (non-Javadoc)
-             * @see com.hikvision.sdk.net.business.OnVMSNetSDKBusiness#onFailure()
-             */
-            @Override
-            public void onFailure() {
-                super.onFailure();
-                mHandler.sendEmptyMessage(Constants.Resource.LOADING_FAILED);
-            }
-        });
-
-        flag = VMSNetSDK.getInstance().getSubResourceList(1,
-                15, HttpConstants.SysType.TYPE_VIDEO, parentNodeType, pId + "");
+        alertDialog = alertBuilder.create();
+        alertDialog.show();
     }
 
     /**
@@ -1121,13 +936,14 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Rad
                 UtilAudioPlay.playAudioFile(getActivity(), R.raw.paizhao);
             } else {
                 UIUtil.showToast(getActivity(), "抓拍失败");
-                Log.e("ivms8700" ,"clickCaptureBtn():: 抓拍失败");
+                Log.e("ivms8700", "clickCaptureBtn():: 抓拍失败");
             }
         }
     }
 
     /**
      * 录像 void
+     *
      * @author lvlingdi 2016-4-26 下午3:35:57
      */
     private void recordBtnOnClick_live() {
@@ -1151,6 +967,7 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Rad
 
     /**
      * 抓拍
+     *
      * @author lvlingdi 2016-4-26 下午3:13:33
      */
     private void captureBtnOnClick() {
@@ -1171,6 +988,7 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Rad
 
     /**
      * 录像 void
+     *
      * @author lvlingdi 2016-4-26 下午3:15:38
      */
     private void recordBtnOnClick() {
@@ -1195,77 +1013,31 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Rad
         }
     }
 
+    @Override
+    public void surfaceCreated(SurfaceHolder holder) {
 
-
-    /**
-     * 加载进度条
-     */
-    private void showLoadingProgress() {
-        UIUtil.showProgressDialog(getActivity(), R.string.loading_process_tip);
     }
 
-    /**
-     * 取消进度条
-     */
-    private void cancelLoadingProgress() {
-        UIUtil.cancelProgressDialog();
+    @Override
+    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+
     }
 
-    /**
-     * 加载失败
-     *
-     * @author hanshuangwu 2016年1月21日 下午3:25:52
-     */
-    private void onloadingFailed() {
-        UIUtil.showToast(getActivity(), R.string.loading_failed);
-    }
-
-    /**
-     * 加载成功
-     *
-     * @author hanshuangwu 2016年1月21日 下午3:25:59
-     */
-    private void onloadingSuccess() {
-//        updateData();
-        UIUtil.showToast(getActivity(), R.string.loading_success);
-        adapter.notifyDataSetChanged();
-    }
-
-    private void setAnimation() {
-        //显示动画
-        mShowAction = new TranslateAnimation(Animation.RELATIVE_TO_SELF, 0.0f,
-                Animation.RELATIVE_TO_SELF, 0.0f, Animation.RELATIVE_TO_SELF,
-                -1.0f, Animation.RELATIVE_TO_SELF, 0.0f);
-        mShowAction.setDuration(500);
-        //关闭动画
-        mHiddenAction = new TranslateAnimation(Animation.RELATIVE_TO_SELF,
-                0.0f, Animation.RELATIVE_TO_SELF, 0.0f,
-                Animation.RELATIVE_TO_SELF, 0.0f, Animation.RELATIVE_TO_SELF,
-                -1.0f);
-        mHiddenAction.setDuration(500);
-    }
-
-
-    private int getLayer(TreePoint treePoint, HashMap<String, TreePoint> pointMap) {
-        return TreeUtils.getLevel(treePoint, pointMap);
-    }
-
-    private String getSubmitResult(TreePoint treePoint) {
-        StringBuilder sb = new StringBuilder();
-        addResult(treePoint, sb);
-        String result = sb.toString();
-        if (result.endsWith("-")) {
-            result = result.substring(0, result.length() - 1);
-        }
-        return result;
-    }
-
-    private void addResult(TreePoint treePoint, StringBuilder sb) {
-        if (treePoint != null && sb != null) {
-            sb.insert(0, treePoint.getNNAME() + "-");
-            if (!"0".equals(treePoint.getPARENTID())) {
-                addResult(pointMap.get(treePoint.getPARENTID()), sb);
-            }
+    @Override
+    public void surfaceDestroyed(SurfaceHolder holder) {
+        if (null != mLiveControl) {
+            mLiveControl.stop();
         }
     }
+
+    @Override
+    public void onCheckedChanged(RadioGroup group, int checkedId) {
+
+    }
+
+    @Override
+    public void onMessageCallback(int message) {
+        sendMessageCase(message);
+    }
+
 }
