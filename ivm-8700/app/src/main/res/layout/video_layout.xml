@@ -74,30 +74,21 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:gravity="center_horizontal"
             android:orientation="vertical">
-
-            <FrameLayout
+            <GridLayout
+                android:id="@+id/mParentlayout"
                 android:layout_width="match_parent"
+                android:background="#ffffff"
+                android:layout_marginTop="@dimen/dp4"
                 android:layout_height="0dp"
-                android:layout_weight="1">
+                android:layout_weight="1"
+                android:columnCount="3"
+                android:rowCount="3">
 
-                <com.ivms.ivms8700.view.customui.CustomSurfaceView
-                    android:id="@+id/surfaceView"
-                    android:layout_width="fill_parent"
-                    android:layout_height="match_parent" />
+                <!-- 动态添加布局 -->
 
-                <ProgressBar
-                    android:id="@+id/live_progress_bar"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:visibility="invisible" />
-                <ImageView
-                    android:id="@+id/add_monitory"
-                    android:layout_width="@dimen/dp40"
-                    android:layout_height="@dimen/dp40"
-                    android:layout_gravity="center"
-                    android:background="@drawable/shi"/>
-            </FrameLayout>
+            </GridLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"

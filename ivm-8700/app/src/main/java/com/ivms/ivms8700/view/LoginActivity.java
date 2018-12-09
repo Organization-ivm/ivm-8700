@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -17,17 +18,22 @@ import com.ivms.ivms8700.R;
 import com.ivms.ivms8700.presenter.LoginPresenter;
 import com.ivms.ivms8700.utils.LocalDbUtil;
 import com.ivms.ivms8700.utils.UIUtil;
+import com.ivms.ivms8700.utils.okmanager.OkHttpClientManager;
 import com.ivms.ivms8700.view.iview.ILoginView;
 
+import org.json.JSONObject;
 
-public class LoginActivity extends Activity implements ILoginView, View.OnClickListener {
 
+public class LoginActivity extends Activity implements ILoginView, View.OnClickListener ,OkHttpClientManager.JsonStringCallback{
+    private final String TAG ="Alan";
     private Button login_btn;
     private LoginPresenter presenter;
     private TextView set_btn;
     private EditText username;
     private EditText pwd;
     private LocalDbUtil localDbUtil=null;
+    private OkHttpClientManager okHttpClientManager=null;
+
     private static final int MY_PERMISSION_REQUEST_CODE = 10000;
 
     @Override
@@ -39,7 +45,7 @@ public class LoginActivity extends Activity implements ILoginView, View.OnClickL
         ActivityCompat.requestPermissions( this, new String[] {
                 Manifest.permission.WRITE_EXTERNAL_STORAGE}
                 , MY_PERMISSION_REQUEST_CODE );
-
+        okHttpClientManager=OkHttpClientManager.getInstance();
     }
     //初始化控件
     private void initView() {
@@ -57,6 +63,8 @@ public class LoginActivity extends Activity implements ILoginView, View.OnClickL
     public void onClick(View v) {
        switch (v.getId()){
            case R.id.login_btn:
+//               okHttpClientManager.asyncJsonStringByURL("http://222.66.82.4:80/shm/login?userName=xxx&passWord=xxx&videoIP=222\n" +
+//                       ".66.82.2&token=4CE19CA8FCD150A4 ",this);
 //               String url =localDbUtil.getString("local_url");
 //               String userName=username.getText().toString().trim();
 //               String password=pwd.getText().toString().trim();
@@ -73,8 +81,6 @@ public class LoginActivity extends Activity implements ILoginView, View.OnClickL
                Intent intent = new Intent(this, SetingActivity.class);
                startActivity(intent);
                break;
-
-
        }
     }
     //判断参数是否合法
@@ -133,5 +139,9 @@ public class LoginActivity extends Activity implements ILoginView, View.OnClickL
         return mac == null ? "" : mac;
     }
 
-
+    //网络请求返回
+    @Override
+    public void onResponse(String result) {
+        Log.i(TAG,"网络请求成功了！"+result);
+    }
 }

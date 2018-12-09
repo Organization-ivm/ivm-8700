@@ -9,6 +9,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.SurfaceHolder;
@@ -19,6 +20,7 @@ import android.view.animation.TranslateAnimation;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
@@ -102,9 +104,29 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Rad
     private DeviceInfo deviceInfo = null;
 
     /**
-     * 预览控件
+     * 预览控件 --当前点击的 CustomSurfaceView
      */
-    private CustomSurfaceView mSurfaceView = null;
+    private CustomSurfaceView curSurfaceView =null;
+
+    private CustomSurfaceView oneSurfaceView = null;
+    private CustomSurfaceView twoSurfaceView = null;
+    private CustomSurfaceView threeSurfaceView = null;
+    private CustomSurfaceView fourSurfaceView = null;
+    private CustomSurfaceView fiveSurfaceView = null;
+    private CustomSurfaceView sixSurfaceView = null;
+    private CustomSurfaceView sevenSurfaceView = null;
+    private CustomSurfaceView eightSurfaceView = null;
+    private CustomSurfaceView nineSurfaceView = null;
+    private ImageView  add_monitory1=null;
+    private ImageView  add_monitory2=null;
+    private ImageView  add_monitory3=null;
+    private ImageView  add_monitory4=null;
+    private ImageView  add_monitory5=null;
+    private ImageView  add_monitory6=null;
+    private ImageView  add_monitory7=null;
+    private ImageView  add_monitory8=null;
+    private ImageView  add_monitory9=null;
+
     /**
      * 进度条
      */
@@ -222,7 +244,12 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Rad
     private LinearLayout playBackCapture;
     private LinearLayout contrl_lay;
     private AlertDialog alertDialog; //信息框
-    private ImageView add_monitory;
+    private  CustomSurfaceView mVideoView[];    //视频画面，最多9画面
+    private static final int VIDEO_VIEW_COUNT = 9;
+    private GridLayout mParentlayout;
+    private LinearLayout linearlayout;
+    private int window_heigth;
+    private int window_width;
 
 
     @Nullable
@@ -230,24 +257,26 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Rad
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         if (view == null) {
             view = inflater.inflate(R.layout.video_layout, container, false);
-            mSurfaceView = (CustomSurfaceView) view.findViewById(R.id.surfaceView);
-            progressBar = (ProgressBar) view.findViewById(R.id.live_progress_bar);
+            //通过Resources获取屏幕高度
+            DisplayMetrics dm = getResources().getDisplayMetrics();
+            window_heigth = dm.heightPixels;
+            window_width = dm.widthPixels;
+            mParentlayout=(GridLayout)view.findViewById(R.id.mParentlayout);//SurfaceView容器
+
             live_lay = (LinearLayout) view.findViewById(R.id.live_lay);
             huifang_lay = (LinearLayout) view.findViewById(R.id.huifang_lay);
             live_view = (View) view.findViewById(R.id.live_view);
             huifang_view = (View) view.findViewById(R.id.huifang_view);
-            add_monitory = (ImageView) view.findViewById(R.id.add_monitory);
             contrl_lay = (LinearLayout) view.findViewById(R.id.contrl_lay); //云台控制
             playBackRecord = (LinearLayout) view.findViewById(R.id.playBackRecord); //本地录像
             playBackCapture = (LinearLayout) view.findViewById(R.id.playBackCapture); //本地截图
 
-            mSurfaceView.getHolder().addCallback(this);
             live_lay.setOnClickListener(this);
             huifang_lay.setOnClickListener(this);
-            add_monitory.setOnClickListener(this);
             playBackRecord.setOnClickListener(this);
             playBackCapture.setOnClickListener(this);
             contrl_lay.setOnClickListener(this);
+            createVideoView() ;
 
         }
         return view;
@@ -283,12 +312,24 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Rad
             case R.id.contrl_lay://云台控制
                 showList();
                 break;
-            case R.id.add_monitory://添加监控点
-                Intent intent = new Intent(getActivity(), AddMonitoryActivity.class);
-                startActivityForResult(intent,RECULET_CODE);
-                break;
         }
     }
+    public void createVideoView() {
+        this.mVideoView = new CustomSurfaceView[VIDEO_VIEW_COUNT];
+        for (int i = 0; i < VIDEO_VIEW_COUNT; i++) {
+            linearlayout= (LinearLayout) LayoutInflater.from(getActivity()).inflate(R.layout.video_item_layout,null);
+            progressBar = (ProgressBar) view.findViewById(R.id.live_progress_bar);
+            addClick(linearlayout,i);
+            LinearLayout.LayoutParams linearParams = new LinearLayout.LayoutParams(
+                    window_width/3,
+                    window_width/3
+            );
+            linearlayout.setLayoutParams(linearParams);
+            mParentlayout.addView(linearlayout,i);
+
+        }
+    }
+
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -780,7 +821,8 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Rad
         // 创建远程回放需要的参数
         mParamsObj = new PlayBackParams();
         // 播放控件
-        mParamsObj.surfaceView = mSurfaceView;
+        curSurfaceView=oneSurfaceView;
+        mParamsObj.surfaceView = curSurfaceView;
         //监控点
         mCamera = camera;
 
@@ -874,7 +916,7 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Rad
 
         if (LiveControl.LIVE_INIT == mLiveControl.getLiveState()) {
             progressBar.setVisibility(View.GONE);
-            mLiveControl.startLive(mSurfaceView);
+            mLiveControl.startLive(curSurfaceView);
         }
     }
 
@@ -1011,6 +1053,39 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Rad
 //                mRecordButton.setText("开始录像");
             }
         }
+    }
+    //添加点击事件
+    private void addClick(LinearLayout linearlayout,int i) {
+        if(i==0){
+            oneSurfaceView=linearlayout.findViewById(R.id.surfaceView);
+            oneSurfaceView.getHolder().addCallback(this);
+            add_monitory1 =linearlayout.findViewById(R.id.add_monitory);
+            add_monitory1.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                   curSurfaceView=oneSurfaceView;
+                   intentAddM();
+
+                }
+            });
+        }
+        if(i==1){
+            twoSurfaceView=linearlayout.findViewById(R.id.surfaceView);
+            twoSurfaceView.getHolder().addCallback(this);
+            add_monitory2 =linearlayout.findViewById(R.id.add_monitory);
+            add_monitory2.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    curSurfaceView=twoSurfaceView;
+                    intentAddM();
+                }
+            });
+        }
+    }
+    //跳转到选择监控点界面
+    private void intentAddM() {
+        Intent intent = new Intent(getActivity(), AddMonitoryActivity.class);
+        startActivityForResult(intent,RECULET_CODE);
     }
 
     @Override
