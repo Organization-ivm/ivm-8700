@@ -11,10 +11,13 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.SurfaceHolder;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.widget.AdapterView;
@@ -77,7 +80,7 @@ import java.util.TimerTask;
 
 import static android.app.Activity.RESULT_OK;
 
-public class VideoFragment extends Fragment implements View.OnClickListener, RadioGroup.OnCheckedChangeListener, SurfaceHolder.Callback, LiveControl.LiveCallBack, PlayBackCallBack {
+public class VideoFragment extends Fragment implements View.OnClickListener,SurfaceHolder.Callback, LiveControl.LiveCallBack, PlayBackCallBack {
 
     private final String TAG="Alan";
     private final int RECULET_CODE=1;//选择完监控点回调
@@ -89,6 +92,14 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Rad
      * 监控点
      */
     private Camera mCamera = null;
+    private Camera mCamera1 = null;
+    private Camera mCamera2 = null;
+    private Camera mCamera3 = null;
+    private Camera mCamera4 = null;
+    private Camera mCamera5 = null;
+    private Camera mCamera6 = null;
+    private Camera mCamera7 = null;
+
     /**
      * sdk实例
      */
@@ -97,11 +108,16 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Rad
      * 监控点详细信息
      */
     private CameraInfo cameraInfo = new CameraInfo();
-
+    private CameraInfo cameraInfo1 = new CameraInfo();
+    private CameraInfo cameraInfo2 = new CameraInfo();
+    private CameraInfo cameraInfo3 = new CameraInfo();
+    private CameraInfo cameraInfo4= new CameraInfo();
     /**
      * 监控点关联的监控设备信息
      */
     private DeviceInfo deviceInfo = null;
+    private DeviceInfo deviceInfo1 = null;
+    private DeviceInfo deviceInfo2 = null;
 
     /**
      * 预览控件 --当前点击的 CustomSurfaceView
@@ -233,6 +249,8 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Rad
      * 控制层对象
      */
     private LiveControl mLiveControl = null;
+    private LiveControl mLiveControl1 = null;
+    private LiveControl mLiveControl2 = null;
 
     private Handler liveHandler = null;
     private LinearLayout live_lay;
@@ -250,6 +268,7 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Rad
     private LinearLayout linearlayout;
     private int window_heigth;
     private int window_width;
+    private int mCurIndex=0;//当前显示的下标
 
 
     @Nullable
@@ -779,6 +798,12 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Rad
             public void onSuccess(Object data) {
                 if (data instanceof DeviceInfo) {
                     deviceInfo = (DeviceInfo) data;
+                    if(mCurIndex==0){
+                        deviceInfo1=deviceInfo;
+                    }else if(mCurIndex==1){
+                        deviceInfo2=deviceInfo;
+                    }
+
                     if (palyType == 1) {
                         liveHandler.sendEmptyMessage(Constants.Live.getDeviceInfo_Success);
                     } else {
@@ -849,8 +874,14 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Rad
         mCamera = camera;
         mVMSNetSDK = VMSNetSDK.getInstance();
         liveHandler = new LiveViewHandler();
-        mLiveControl = new LiveControl();
-        mLiveControl.setLiveCallBack(this);
+
+        if(mCurIndex==0){
+            mLiveControl1 = new LiveControl();
+            mLiveControl1.setLiveCallBack(this);
+        }else if(mCurIndex==1){
+            mLiveControl2 = new LiveControl();
+            mLiveControl2.setLiveCallBack(this);
+        }
         getCameraInfo();
     }
 
@@ -892,6 +923,11 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Rad
             public void onSuccess(Object data) {
                 if (data instanceof CameraInfo) {
                     cameraInfo = (CameraInfo) data;
+                    if(mCurIndex==0){
+                        cameraInfo1=cameraInfo;
+                    }else if(mCurIndex==1){
+                        cameraInfo2=cameraInfo;
+                    }
                     if (palyType == 1) {
                         liveHandler.sendEmptyMessage(Constants.Live.getCameraInfo_Success);
                     } else {
@@ -907,6 +943,11 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Rad
      * start play video
      */
     private void clickStartBtn() {
+        if(mCurIndex==0){
+            mLiveControl=mLiveControl1;
+        }else if(mCurIndex==1){
+            mLiveControl=mLiveControl2;
+        }
         progressBar.setVisibility(View.VISIBLE);
         String liveUrl = VMSNetSDK.getInstance().getPlayUrl(cameraInfo, mStreamType);
         mLiveControl.setLiveParams(liveUrl, null == username ? "" : username, null == password ? "" : password);
@@ -1055,7 +1096,7 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Rad
         }
     }
     //添加点击事件
-    private void addClick(LinearLayout linearlayout,int i) {
+    private void addClick(LinearLayout linearlayout, final int i) {
         if(i==0){
             oneSurfaceView=linearlayout.findViewById(R.id.surfaceView);
             oneSurfaceView.getHolder().addCallback(this);
@@ -1063,13 +1104,13 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Rad
             add_monitory1.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                   curSurfaceView=oneSurfaceView;
+                    curSurfaceView=oneSurfaceView;
+                    mCurIndex=i;
                    intentAddM();
 
                 }
             });
-        }
-        if(i==1){
+        }else if(i==1){
             twoSurfaceView=linearlayout.findViewById(R.id.surfaceView);
             twoSurfaceView.getHolder().addCallback(this);
             add_monitory2 =linearlayout.findViewById(R.id.add_monitory);
@@ -1084,6 +1125,7 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Rad
     }
     //跳转到选择监控点界面
     private void intentAddM() {
+
         Intent intent = new Intent(getActivity(), AddMonitoryActivity.class);
         startActivityForResult(intent,RECULET_CODE);
     }
@@ -1100,14 +1142,10 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Rad
 
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
+        Log.i(TAG,"surfaceDestroyed");
         if (null != mLiveControl) {
             mLiveControl.stop();
         }
-    }
-
-    @Override
-    public void onCheckedChanged(RadioGroup group, int checkedId) {
-
     }
 
     @Override
