@@ -99,7 +99,8 @@
                 android:orientation="horizontal">
 
                 <ImageView
-                    android:layout_width="@dimen/dp19"
+                    android:id="@+id/one_view_img"
+                    android:layout_width="wrap_content"
                     android:layout_height="@dimen/dp16"
                     android:background="@drawable/one_2" />
 
@@ -111,6 +112,7 @@
                     android:background="@drawable/yuandian" />
 
                 <ImageView
+                    android:id="@+id/four_view_img"
                     android:layout_width="@dimen/dp19"
                     android:layout_height="@dimen/dp16"
                     android:background="@drawable/four_2" />
@@ -123,6 +125,7 @@
                     android:background="@drawable/yuandian" />
 
                 <ImageView
+                    android:id="@+id/nine_view_img"
                     android:layout_width="@dimen/dp19"
                     android:layout_height="@dimen/dp16"
                     android:background="@drawable/nine_1" />

@@ -11,31 +11,20 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.SurfaceHolder;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
-import android.view.animation.Animation;
-import android.view.animation.TranslateAnimation;
-import android.widget.AdapterView;
-import android.widget.Button;
+
 import android.widget.CheckBox;
 import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
-import android.widget.ListView;
 import android.widget.ProgressBar;
-import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.RelativeLayout;
 import android.widget.SeekBar;
-import android.widget.Toast;
 
-import com.google.gson.Gson;
 import com.hik.mcrsdk.rtsp.RtspClient;
 import com.hikvision.sdk.VMSNetSDK;
 import com.hikvision.sdk.consts.ConstantLiveSDK;
@@ -45,19 +34,13 @@ import com.hikvision.sdk.net.bean.CameraInfo;
 import com.hikvision.sdk.net.bean.DeviceInfo;
 import com.hikvision.sdk.net.bean.RecordInfo;
 import com.hikvision.sdk.net.bean.RecordSegment;
-import com.hikvision.sdk.net.bean.RootCtrlCenter;
-import com.hikvision.sdk.net.bean.SubResourceNodeBean;
 import com.hikvision.sdk.net.business.OnVMSNetSDKBusiness;
-import com.hikvision.sdk.utils.HttpConstants;
 import com.hikvision.sdk.utils.SDKUtil;
 import com.hikvision.sdk.utils.UtilAudioPlay;
 import com.hikvision.sdk.utils.Utils;
 import com.ivms.ivms8700.R;
 import com.ivms.ivms8700.control.Constants;
 import com.ivms.ivms8700.live.LiveControl;
-import com.ivms.ivms8700.multilevellist.TreeAdapter;
-import com.ivms.ivms8700.multilevellist.TreePoint;
-import com.ivms.ivms8700.multilevellist.TreeUtils;
 import com.ivms.ivms8700.mysdk.MyVMSNetSDK;
 import com.ivms.ivms8700.playback.ConstantPlayBack;
 import com.ivms.ivms8700.playback.PlayBackCallBack;
@@ -66,14 +49,8 @@ import com.ivms.ivms8700.playback.PlayBackParams;
 import com.ivms.ivms8700.utils.UIUtil;
 import com.ivms.ivms8700.view.AddMonitoryActivity;
 import com.ivms.ivms8700.view.customui.CustomSurfaceView;
-
 import org.MediaPlayer.PlayM4.Player;
-
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -85,8 +62,6 @@ public class VideoFragment extends Fragment implements View.OnClickListener,Surf
     private final String TAG="Alan";
     private final int RECULET_CODE=1;//选择完监控点回调
     private View view;
-    private TranslateAnimation mShowAction;
-    private TranslateAnimation mHiddenAction;
 
     /**
      * 监控点
@@ -263,12 +238,15 @@ public class VideoFragment extends Fragment implements View.OnClickListener,Surf
     private LinearLayout contrl_lay;
     private AlertDialog alertDialog; //信息框
     private  CustomSurfaceView mVideoView[];    //视频画面，最多9画面
-    private static final int VIDEO_VIEW_COUNT = 9;
+    private int VIDEO_VIEW_COUNT = 9;
     private GridLayout mParentlayout;
     private LinearLayout linearlayout;
     private int window_heigth;
     private int window_width;
     private int mCurIndex=0;//当前显示的下标
+    private ImageView one_view_img;
+    private ImageView four_view_img;
+    private ImageView nine_view_img;
 
 
     @Nullable
@@ -289,13 +267,19 @@ public class VideoFragment extends Fragment implements View.OnClickListener,Surf
             contrl_lay = (LinearLayout) view.findViewById(R.id.contrl_lay); //云台控制
             playBackRecord = (LinearLayout) view.findViewById(R.id.playBackRecord); //本地录像
             playBackCapture = (LinearLayout) view.findViewById(R.id.playBackCapture); //本地截图
+            one_view_img=(ImageView)view.findViewById(R.id.one_view_img);
+            four_view_img=(ImageView)view.findViewById(R.id.four_view_img);
+            nine_view_img=(ImageView)view.findViewById(R.id.nine_view_img);
 
+            one_view_img.setOnClickListener(this);
+            four_view_img.setOnClickListener(this);
+            nine_view_img.setOnClickListener(this);
             live_lay.setOnClickListener(this);
             huifang_lay.setOnClickListener(this);
             playBackRecord.setOnClickListener(this);
             playBackCapture.setOnClickListener(this);
             contrl_lay.setOnClickListener(this);
-            createVideoView() ;
+            createVideoView(1,1) ;
 
         }
         return view;
@@ -331,17 +315,30 @@ public class VideoFragment extends Fragment implements View.OnClickListener,Surf
             case R.id.contrl_lay://云台控制
                 showList();
                 break;
+            case R.id.one_view_img://一屏
+                createVideoView(1,1);
+                break;
+            case R.id.four_view_img://四屏
+                createVideoView(4,2);
+                break;
+            case R.id.nine_view_img://九屏
+                createVideoView(9,3);
+                break;
+
         }
     }
-    public void createVideoView() {
-        this.mVideoView = new CustomSurfaceView[VIDEO_VIEW_COUNT];
-        for (int i = 0; i < VIDEO_VIEW_COUNT; i++) {
+    //动态生成view
+    public void createVideoView(int viewCount,int rowCount) {
+        mParentlayout.removeAllViews();
+        mParentlayout.setColumnCount(rowCount);
+        this.mVideoView = new CustomSurfaceView[viewCount];
+        for (int i = 0; i < viewCount; i++) {
             linearlayout= (LinearLayout) LayoutInflater.from(getActivity()).inflate(R.layout.video_item_layout,null);
             progressBar = (ProgressBar) view.findViewById(R.id.live_progress_bar);
             addClick(linearlayout,i);
             LinearLayout.LayoutParams linearParams = new LinearLayout.LayoutParams(
-                    window_width/3,
-                    window_width/3
+                    window_width/rowCount,
+                    window_width/rowCount
             );
             linearlayout.setLayoutParams(linearParams);
             mParentlayout.addView(linearlayout,i);
@@ -371,7 +368,7 @@ public class VideoFragment extends Fragment implements View.OnClickListener,Surf
                         case 2:
                             // 回放
                             if (VMSNetSDK.getInstance().isHasPlayBackPermission(camera)) {
-//                                    gotoPlayBack(camera);
+                                    gotoPlayBack(camera);
                             } else {
                                 UIUtil.showToast(getActivity(), R.string.no_permission);
                             }
@@ -597,7 +594,9 @@ public class VideoFragment extends Fragment implements View.OnClickListener,Surf
      * @author lvlingdi 2016-4-19 下午5:01:22
      */
     private void startBtnOnClick() {
-        progressBar.setVisibility(View.VISIBLE);
+        if (null != progressBar) {
+            progressBar.setVisibility(View.VISIBLE);
+        }
         if (null != mPlayBackControl) {
             mPlayBackControl.startPlayBack(mParamsObj);
         }
@@ -699,7 +698,9 @@ public class VideoFragment extends Fragment implements View.OnClickListener,Surf
             Log.e("ivms8700", "queryRecordSegment==>>cameraInfo is null");
             return;
         }
-        progressBar.setVisibility(View.VISIBLE);
+        if (null != progressBar) {
+            progressBar.setVisibility(View.VISIBLE);
+        }
         mVMSNetSDK.setOnVMSNetSDKBusiness(new OnVMSNetSDKBusiness() {
 
             @Override
@@ -948,7 +949,9 @@ public class VideoFragment extends Fragment implements View.OnClickListener,Surf
         }else if(mCurIndex==1){
             mLiveControl=mLiveControl2;
         }
-        progressBar.setVisibility(View.VISIBLE);
+        if (null != progressBar) {
+            progressBar.setVisibility(View.VISIBLE);
+        }
         String liveUrl = VMSNetSDK.getInstance().getPlayUrl(cameraInfo, mStreamType);
         mLiveControl.setLiveParams(liveUrl, null == username ? "" : username, null == password ? "" : password);
         if (LiveControl.LIVE_PLAY == mLiveControl.getLiveState()) {
@@ -956,7 +959,9 @@ public class VideoFragment extends Fragment implements View.OnClickListener,Surf
         }
 
         if (LiveControl.LIVE_INIT == mLiveControl.getLiveState()) {
-            progressBar.setVisibility(View.GONE);
+            if (null != progressBar) {
+                progressBar.setVisibility(View.GONE);
+            }
             mLiveControl.startLive(curSurfaceView);
         }
     }
