@@ -78,7 +78,7 @@ public class VideoFragment extends Fragment implements View.OnClickListener,Surf
     /**
      * sdk实例
      */
-    private VMSNetSDK mVMSNetSDK = null;
+    private MyVMSNetSDK mVMSNetSDK = null;
     /**
      * 监控点详细信息
      */
@@ -359,7 +359,7 @@ public class VideoFragment extends Fragment implements View.OnClickListener,Surf
                     switch (palyType) {
                         case 1:
                             //  预览
-                            if (VMSNetSDK.getInstance().isHasLivePermission(camera)) {
+                            if (MyVMSNetSDK.getInstance().isHasLivePermission(camera)) {
                                 gotoLive(camera);
                             } else {
                                 UIUtil.showToast(getActivity(), R.string.no_permission);
@@ -367,7 +367,7 @@ public class VideoFragment extends Fragment implements View.OnClickListener,Surf
                             break;
                         case 2:
                             // 回放
-                            if (VMSNetSDK.getInstance().isHasPlayBackPermission(camera)) {
+                            if (MyVMSNetSDK.getInstance().isHasPlayBackPermission(camera)) {
                                     gotoPlayBack(camera);
                             } else {
                                 UIUtil.showToast(getActivity(), R.string.no_permission);
@@ -839,7 +839,7 @@ public class VideoFragment extends Fragment implements View.OnClickListener,Surf
      */
     private void initData(Camera camera) {
         mMessageHandler = new HuifangHandler();
-        mVMSNetSDK = VMSNetSDK.getInstance();
+        mVMSNetSDK = MyVMSNetSDK.getInstance();
         // 初始化远程回放控制层对象
         mPlayBackControl = new PlayBackControl();
         // 设置远程回放控制层回调
@@ -873,7 +873,7 @@ public class VideoFragment extends Fragment implements View.OnClickListener,Surf
             return;
         }
         mCamera = camera;
-        mVMSNetSDK = VMSNetSDK.getInstance();
+        mVMSNetSDK = MyVMSNetSDK.getInstance();
         liveHandler = new LiveViewHandler();
 
         if(mCurIndex==0){

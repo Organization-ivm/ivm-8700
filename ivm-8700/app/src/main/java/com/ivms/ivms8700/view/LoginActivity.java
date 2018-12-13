@@ -63,18 +63,18 @@ public class LoginActivity extends Activity implements ILoginView, View.OnClickL
     public void onClick(View v) {
        switch (v.getId()){
            case R.id.login_btn:
-//               okHttpClientManager.asyncJsonStringByURL("http://222.66.82.4:80/shm/login?userName=xxx&passWord=xxx&videoIP=222\n" +
+//               okHttpClientManager.asyncJsonStringByURL("http://222.66.82.4:80/shm/login?userName=mobile&passWord=123456&videoIP=222\n" +
 //                       ".66.82.2&token=4CE19CA8FCD150A4 ",this);
 //               String url =localDbUtil.getString("local_url");
 //               String userName=username.getText().toString().trim();
 //               String password=pwd.getText().toString().trim();
 //               if(checkLoginData(url,userName,password)){
-               String url = "https://222.66.82.2:443";
-               String userName="admin";
-               String password = "Admin13761101256";
-               String macAddress = getMacAddress();
-               String passwordLevel="2";
-                 presenter.login(url, userName, password, macAddress, passwordLevel);
+                   String url = "https://222.66.82.2:443";
+                   String userName="admin";
+                   String password = "Admin13761101256";
+                   String macAddress = getMacAddress();
+                   String passwordLevel="2";
+                   presenter.login(url, userName, password, macAddress, passwordLevel);
 //               }
                break;
            case R.id.set_btn:

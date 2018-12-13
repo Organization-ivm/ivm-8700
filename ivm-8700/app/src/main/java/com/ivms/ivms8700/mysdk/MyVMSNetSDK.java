@@ -89,7 +89,7 @@ public class MyVMSNetSDK implements ILoginNetSDK, IResourceNetSDK {
     }
 
     public boolean queryRecordSegment(CameraInfo cameraInfo, Calendar startTime, Calendar endTime, int storageType, String guid) {
-        boolean result = LiveOrPalyBackBusiness.getInstance().queryRecoredInfo(cameraInfo, startTime, endTime, storageType, guid, this.mOnVMSNetSDKBusiness);
+        boolean result = MyLiveOrPalyBackBusiness.getInstance().queryRecoredInfo(cameraInfo, startTime, endTime, storageType, guid, this.mOnVMSNetSDKBusiness);
         return result;
     }
 
