@@ -14,17 +14,21 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.google.gson.JsonObject;
 import com.ivms.ivms8700.R;
+import com.ivms.ivms8700.control.AppForegroundStateManager;
 import com.ivms.ivms8700.presenter.LoginPresenter;
+import com.ivms.ivms8700.service.CheckService;
 import com.ivms.ivms8700.utils.LocalDbUtil;
 import com.ivms.ivms8700.utils.UIUtil;
 import com.ivms.ivms8700.utils.okmanager.OkHttpClientManager;
 import com.ivms.ivms8700.view.iview.ILoginView;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 
-public class LoginActivity extends Activity implements ILoginView, View.OnClickListener ,OkHttpClientManager.JsonStringCallback{
+public class LoginActivity extends Activity implements ILoginView, View.OnClickListener ,OkHttpClientManager.JsonObjectCallback{
     private final String TAG ="Alan";
     private Button login_btn;
     private LoginPresenter presenter;
@@ -35,7 +39,8 @@ public class LoginActivity extends Activity implements ILoginView, View.OnClickL
     private OkHttpClientManager okHttpClientManager=null;
 
     private static final int MY_PERMISSION_REQUEST_CODE = 10000;
-
+    private String videoUser="";//video二次登录后台返回用户名
+    private String videoPassword="";//video二次登录后台返回密码
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,18 +68,11 @@ public class LoginActivity extends Activity implements ILoginView, View.OnClickL
     public void onClick(View v) {
        switch (v.getId()){
            case R.id.login_btn:
-//               okHttpClientManager.asyncJsonStringByURL("http://222.66.82.4:80/shm/login?userName=mobile&passWord=123456&videoIP=222\n" +
-//                       ".66.82.2&token=4CE19CA8FCD150A4 ",this);
 //               String url =localDbUtil.getString("local_url");
 //               String userName=username.getText().toString().trim();
 //               String password=pwd.getText().toString().trim();
 //               if(checkLoginData(url,userName,password)){
-                   String url = "https://222.66.82.2:443";
-                   String userName="admin";
-                   String password = "Admin13761101256";
-                   String macAddress = getMacAddress();
-                   String passwordLevel="2";
-                   presenter.login(url, userName, password, macAddress, passwordLevel);
+                   okHttpClientManager.asyncJsonObjectByUrl("http://222.66.82.4:80/shm/login?userName=mobile&passWord=123456&videoIP=222.66.82.2&token=4CE19CA8FCD150A4 ",this);
 //               }
                break;
            case R.id.set_btn:
@@ -139,9 +137,45 @@ public class LoginActivity extends Activity implements ILoginView, View.OnClickL
         return mac == null ? "" : mac;
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        AppForegroundStateManager.getInstance().onActivityVisible(this);
+    }
+
+    @Override
+    protected void onStop() {
+        AppForegroundStateManager.getInstance().onActivityNotVisible(this);
+        super.onStop();
+    }
     //网络请求返回
     @Override
-    public void onResponse(String result) {
-        Log.i(TAG,"网络请求成功了！"+result);
+    public void onResponse(JSONObject jsonObject) {
+
+        try {
+            if(jsonObject.getString("data")!=null){
+                String data=jsonObject.getString("data");
+                String msg=jsonObject.getString("msg");
+                String result=jsonObject.getString("result");
+                if(result.equals("success")){//解析登录返回数据
+                    JSONObject obj = new JSONObject(data);
+                    videoUser=obj.getString("videoUser");
+                    videoPassword=obj.getString("videoPassword");
+                    Log.i("Alan","后台登录成功，开始登录ivms后台..");
+                    String url = "https://222.66.82.2:443";
+                    String macAddress = getMacAddress();
+                    String passwordLevel="2";
+                    presenter.login(url, videoUser, videoPassword, macAddress, passwordLevel);
+                }else{
+                    UIUtil.showToast(this,msg );
+                }
+
+            }else{
+                UIUtil.showToast(this, R.string.login_failed);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
     }
 }

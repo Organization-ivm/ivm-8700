@@ -187,7 +187,7 @@ public class OkHttpClientManager {
 
     public void asyncJsonObjectByUrl(String url, final JsonObjectCallback callback) {
         final Request request = new Request.Builder().url(url).build();
-        client.newCall(request).enqueue(new Callback() {
+         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
                 e.printStackTrace();
