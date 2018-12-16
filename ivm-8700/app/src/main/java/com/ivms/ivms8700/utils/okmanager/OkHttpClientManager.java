@@ -20,7 +20,10 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
-
+/***
+ * okhttp 封装类  by Alan
+ *
+ * **/
 public class OkHttpClientManager {
     private OkHttpClient client;
     private volatile static OkHttpClientManager manager;   //防止多个线程访问时
