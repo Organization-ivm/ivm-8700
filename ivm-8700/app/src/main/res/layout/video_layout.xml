@@ -76,19 +76,14 @@
             android:layout_height="match_parent"
             android:gravity="center_horizontal"
             android:orientation="vertical">
-            <GridLayout
-                android:id="@+id/mParentlayout"
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/video_recyclerview"
                 android:layout_width="match_parent"
                 android:background="#ffffff"
                 android:layout_marginTop="@dimen/dp4"
                 android:layout_height="0dp"
                 android:layout_weight="1"
-                android:columnCount="3"
-                android:rowCount="3">
-
-                <!-- 动态添加布局 -->
-
-            </GridLayout>
+                />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -100,8 +95,8 @@
 
                 <ImageView
                     android:id="@+id/one_view_img"
-                    android:layout_width="wrap_content"
-                    android:layout_height="@dimen/dp16"
+                    android:layout_width="@dimen/dp24"
+                    android:layout_height="@dimen/dp24"
                     android:background="@drawable/one_2" />
 
                 <ImageView
@@ -113,8 +108,8 @@
 
                 <ImageView
                     android:id="@+id/four_view_img"
-                    android:layout_width="@dimen/dp19"
-                    android:layout_height="@dimen/dp16"
+                    android:layout_width="@dimen/dp24"
+                    android:layout_height="@dimen/dp24"
                     android:background="@drawable/four_2" />
 
                 <ImageView
@@ -126,8 +121,8 @@
 
                 <ImageView
                     android:id="@+id/nine_view_img"
-                    android:layout_width="@dimen/dp19"
-                    android:layout_height="@dimen/dp16"
+                    android:layout_width="@dimen/dp24"
+                    android:layout_height="@dimen/dp24"
                     android:background="@drawable/nine_1" />
 
             </LinearLayout>

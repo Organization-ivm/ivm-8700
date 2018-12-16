@@ -9,6 +9,8 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -48,9 +50,13 @@ import com.ivms.ivms8700.playback.PlayBackControl;
 import com.ivms.ivms8700.playback.PlayBackParams;
 import com.ivms.ivms8700.utils.UIUtil;
 import com.ivms.ivms8700.view.AddMonitoryActivity;
+import com.ivms.ivms8700.view.adapter.AdapterVideoRecyView;
 import com.ivms.ivms8700.view.customui.CustomSurfaceView;
 import org.MediaPlayer.PlayM4.Player;
+
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -67,13 +73,6 @@ public class VideoFragment extends Fragment implements View.OnClickListener,Surf
      * 监控点
      */
     private Camera mCamera = null;
-    private Camera mCamera1 = null;
-    private Camera mCamera2 = null;
-    private Camera mCamera3 = null;
-    private Camera mCamera4 = null;
-    private Camera mCamera5 = null;
-    private Camera mCamera6 = null;
-    private Camera mCamera7 = null;
 
     /**
      * sdk实例
@@ -83,40 +82,18 @@ public class VideoFragment extends Fragment implements View.OnClickListener,Surf
      * 监控点详细信息
      */
     private CameraInfo cameraInfo = new CameraInfo();
-    private CameraInfo cameraInfo1 = new CameraInfo();
-    private CameraInfo cameraInfo2 = new CameraInfo();
-    private CameraInfo cameraInfo3 = new CameraInfo();
-    private CameraInfo cameraInfo4= new CameraInfo();
+
     /**
      * 监控点关联的监控设备信息
      */
     private DeviceInfo deviceInfo = null;
-    private DeviceInfo deviceInfo1 = null;
-    private DeviceInfo deviceInfo2 = null;
+
 
     /**
      * 预览控件 --当前点击的 CustomSurfaceView
      */
     private CustomSurfaceView curSurfaceView =null;
 
-    private CustomSurfaceView oneSurfaceView = null;
-    private CustomSurfaceView twoSurfaceView = null;
-    private CustomSurfaceView threeSurfaceView = null;
-    private CustomSurfaceView fourSurfaceView = null;
-    private CustomSurfaceView fiveSurfaceView = null;
-    private CustomSurfaceView sixSurfaceView = null;
-    private CustomSurfaceView sevenSurfaceView = null;
-    private CustomSurfaceView eightSurfaceView = null;
-    private CustomSurfaceView nineSurfaceView = null;
-    private ImageView  add_monitory1=null;
-    private ImageView  add_monitory2=null;
-    private ImageView  add_monitory3=null;
-    private ImageView  add_monitory4=null;
-    private ImageView  add_monitory5=null;
-    private ImageView  add_monitory6=null;
-    private ImageView  add_monitory7=null;
-    private ImageView  add_monitory8=null;
-    private ImageView  add_monitory9=null;
 
     /**
      * 进度条
@@ -206,7 +183,7 @@ public class VideoFragment extends Fragment implements View.OnClickListener,Surf
     /**
      * 播放进度条
      */
-    private SeekBar mProgressSeekbar = null;
+//    private SeekBar mProgressSeekbar = null;
     /**
      * 定时器
      */
@@ -237,13 +214,10 @@ public class VideoFragment extends Fragment implements View.OnClickListener,Surf
     private LinearLayout playBackCapture;
     private LinearLayout contrl_lay;
     private AlertDialog alertDialog; //信息框
-    private  CustomSurfaceView mVideoView[];    //视频画面，最多9画面
-    private int VIDEO_VIEW_COUNT = 9;
-    private GridLayout mParentlayout;
-    private LinearLayout linearlayout;
-    private int window_heigth;
-    private int window_width;
+    private int VIDEO_VIEW_COUNT = 1;
     private int mCurIndex=0;//当前显示的下标
+    private RecyclerView video_recyclerview;
+    private AdapterVideoRecyView video_adapter;
     private ImageView one_view_img;
     private ImageView four_view_img;
     private ImageView nine_view_img;
@@ -254,12 +228,6 @@ public class VideoFragment extends Fragment implements View.OnClickListener,Surf
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         if (view == null) {
             view = inflater.inflate(R.layout.video_layout, container, false);
-            //通过Resources获取屏幕高度
-            DisplayMetrics dm = getResources().getDisplayMetrics();
-            window_heigth = dm.heightPixels;
-            window_width = dm.widthPixels;
-            mParentlayout=(GridLayout)view.findViewById(R.id.mParentlayout);//SurfaceView容器
-
             live_lay = (LinearLayout) view.findViewById(R.id.live_lay);
             huifang_lay = (LinearLayout) view.findViewById(R.id.huifang_lay);
             live_view = (View) view.findViewById(R.id.live_view);
@@ -279,21 +247,63 @@ public class VideoFragment extends Fragment implements View.OnClickListener,Surf
             playBackRecord.setOnClickListener(this);
             playBackCapture.setOnClickListener(this);
             contrl_lay.setOnClickListener(this);
-            createVideoView(1,1) ;
+
+            video_recyclerview = (RecyclerView) view.findViewById(R.id.video_recyclerview);
+            setGrilView(VIDEO_VIEW_COUNT,1);
 
         }
         return view;
+    }
+    //生成对应video_view
+    private void setGrilView(int viewCount, int rowCount) {
+        List<Integer> list=new ArrayList<>();
+        for (int i=0;i<viewCount;i++){
+            list.add(rowCount);
+        }
+        //适配器
+        video_adapter = new AdapterVideoRecyView(getActivity(), list);
+        video_recyclerview.setAdapter(video_adapter);
+        GridLayoutManager manager=new GridLayoutManager(getActivity(),rowCount);
+        //布局管理器
+        video_recyclerview.setLayoutManager(manager);
+        //条目点击监听
+        video_adapter.setOnItemClickListener(new AdapterVideoRecyView.OnItemClickListener() {
+        @Override
+        public void onItemClick(View view, int position) {
+
+        } });
+        //添加监控点
+        video_adapter.setOnItemImgClickListener(new AdapterVideoRecyView.OnItemImgClickListener() {
+            @Override
+            public void onItemImgClick(View view, int position) {
+                LinearLayout itemView=(LinearLayout)view;
+                curSurfaceView=itemView.findViewById(R.id.surfaceView);
+                progressBar=(ProgressBar)itemView.findViewById(R.id.live_progress_bar);
+                mCurIndex=position;
+                intentAddM();
+            }
+        });
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.live_lay:
+                if(null != mPlayBackControl){
+                    mPlayBackControl.stopPlayBack();
+                }
+                VIDEO_VIEW_COUNT=1;
+                setGrilView(VIDEO_VIEW_COUNT,1);
                 palyType = 1;
                 live_view.setVisibility(View.VISIBLE);
                 huifang_view.setVisibility(View.INVISIBLE);
                 break;
             case R.id.huifang_lay:
+                if (null != mLiveControl) {
+                    mLiveControl.stop();
+                }
+                VIDEO_VIEW_COUNT=1;
+                setGrilView(VIDEO_VIEW_COUNT,1);
                 palyType = 2;
                 live_view.setVisibility(View.INVISIBLE);
                 huifang_view.setVisibility(View.VISIBLE);
@@ -313,44 +323,52 @@ public class VideoFragment extends Fragment implements View.OnClickListener,Surf
                 }
                 break;
             case R.id.contrl_lay://云台控制
-                showList();
+                if(palyType==1) {
+                    showList();
+                }else{
+                    UIUtil.showToast(getActivity(), "远程回放不支持云台控制");
+                }
                 break;
             case R.id.one_view_img://一屏
-                createVideoView(1,1);
+                if(VIDEO_VIEW_COUNT!=1){
+                    VIDEO_VIEW_COUNT=1;
+                    setGrilView(VIDEO_VIEW_COUNT,1);
+                    one_view_img.setBackgroundResource(R.drawable.one_2);
+                    four_view_img.setBackgroundResource(R.drawable.four_2);
+                    nine_view_img.setBackgroundResource(R.drawable.nine_1);
+                }
+
                 break;
             case R.id.four_view_img://四屏
-                createVideoView(4,2);
+                if(VIDEO_VIEW_COUNT!=4){
+                    VIDEO_VIEW_COUNT=4;
+                    setGrilView(  VIDEO_VIEW_COUNT,2);
+                    one_view_img.setBackgroundResource(R.drawable.one_1);
+                    four_view_img.setBackgroundResource(R.drawable.four_1);
+                    nine_view_img.setBackgroundResource(R.drawable.nine_1);
+                }
+
                 break;
             case R.id.nine_view_img://九屏
-                createVideoView(9,3);
+                if(VIDEO_VIEW_COUNT!=9){
+                    VIDEO_VIEW_COUNT=9;
+                    setGrilView(VIDEO_VIEW_COUNT,3);
+                    one_view_img.setBackgroundResource(R.drawable.one_1);
+                    four_view_img.setBackgroundResource(R.drawable.four_2);
+                    nine_view_img.setBackgroundResource(R.drawable.nine_2);
+                }
                 break;
 
         }
     }
-    //动态生成view
-    public void createVideoView(int viewCount,int rowCount) {
-        mParentlayout.removeAllViews();
-        mParentlayout.setColumnCount(rowCount);
-        this.mVideoView = new CustomSurfaceView[viewCount];
-        for (int i = 0; i < viewCount; i++) {
-            linearlayout= (LinearLayout) LayoutInflater.from(getActivity()).inflate(R.layout.video_item_layout,null);
-            progressBar = (ProgressBar) view.findViewById(R.id.live_progress_bar);
-            addClick(linearlayout,i);
-            LinearLayout.LayoutParams linearParams = new LinearLayout.LayoutParams(
-                    window_width/rowCount,
-                    window_width/rowCount
-            );
-            linearlayout.setLayoutParams(linearParams);
-            mParentlayout.addView(linearlayout,i);
-
-        }
-    }
-
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
+        if(null!=progressBar){
+            progressBar.setVisibility(View.VISIBLE);
+        }
         switch (requestCode){
             case RECULET_CODE ://监控列表回调
                 if (resultCode == RESULT_OK) {
@@ -634,8 +652,11 @@ public class VideoFragment extends Fragment implements View.OnClickListener,Surf
 
         double x = ((osd - begin) * PROGRESS_MAX_VALUE) / (double) (end - begin);
         int progress = (int) x;
-        mProgressSeekbar.setProgress(progress);
-        int beginTimeClock = (int) ((osd - begin) / 1000);
+//        if(null!=mProgressSeekbar){
+//            mProgressSeekbar.setProgress(progress);
+//        }
+
+//        int beginTimeClock = (int) ((osd - begin) / 1000);
 //        updateTimeBucketBeginTime(beginTimeClock);
 //        nextPlayPrompt(osd, end);
     }
@@ -799,12 +820,6 @@ public class VideoFragment extends Fragment implements View.OnClickListener,Surf
             public void onSuccess(Object data) {
                 if (data instanceof DeviceInfo) {
                     deviceInfo = (DeviceInfo) data;
-                    if(mCurIndex==0){
-                        deviceInfo1=deviceInfo;
-                    }else if(mCurIndex==1){
-                        deviceInfo2=deviceInfo;
-                    }
-
                     if (palyType == 1) {
                         liveHandler.sendEmptyMessage(Constants.Live.getDeviceInfo_Success);
                     } else {
@@ -847,14 +862,10 @@ public class VideoFragment extends Fragment implements View.OnClickListener,Surf
         // 创建远程回放需要的参数
         mParamsObj = new PlayBackParams();
         // 播放控件
-        curSurfaceView=oneSurfaceView;
         mParamsObj.surfaceView = curSurfaceView;
         //监控点
         mCamera = camera;
-
-
         Calendar calendar = Calendar.getInstance();
-
         int year = calendar.get(Calendar.YEAR);
         int month = calendar.get(Calendar.MONTH);
         int day = calendar.get(Calendar.DAY_OF_MONTH);
@@ -924,11 +935,6 @@ public class VideoFragment extends Fragment implements View.OnClickListener,Surf
             public void onSuccess(Object data) {
                 if (data instanceof CameraInfo) {
                     cameraInfo = (CameraInfo) data;
-                    if(mCurIndex==0){
-                        cameraInfo1=cameraInfo;
-                    }else if(mCurIndex==1){
-                        cameraInfo2=cameraInfo;
-                    }
                     if (palyType == 1) {
                         liveHandler.sendEmptyMessage(Constants.Live.getCameraInfo_Success);
                     } else {
@@ -1100,34 +1106,7 @@ public class VideoFragment extends Fragment implements View.OnClickListener,Surf
             }
         }
     }
-    //添加点击事件
-    private void addClick(LinearLayout linearlayout, final int i) {
-        if(i==0){
-            oneSurfaceView=linearlayout.findViewById(R.id.surfaceView);
-            oneSurfaceView.getHolder().addCallback(this);
-            add_monitory1 =linearlayout.findViewById(R.id.add_monitory);
-            add_monitory1.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    curSurfaceView=oneSurfaceView;
-                    mCurIndex=i;
-                   intentAddM();
 
-                }
-            });
-        }else if(i==1){
-            twoSurfaceView=linearlayout.findViewById(R.id.surfaceView);
-            twoSurfaceView.getHolder().addCallback(this);
-            add_monitory2 =linearlayout.findViewById(R.id.add_monitory);
-            add_monitory2.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    curSurfaceView=twoSurfaceView;
-                    intentAddM();
-                }
-            });
-        }
-    }
     //跳转到选择监控点界面
     private void intentAddM() {
 
@@ -1150,6 +1129,9 @@ public class VideoFragment extends Fragment implements View.OnClickListener,Surf
         Log.i(TAG,"surfaceDestroyed");
         if (null != mLiveControl) {
             mLiveControl.stop();
+        }
+        if(null != mPlayBackControl){
+            mPlayBackControl.stopPlayBack();
         }
     }
 
