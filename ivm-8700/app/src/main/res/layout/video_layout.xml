@@ -136,12 +136,14 @@
                 android:orientation="horizontal">
 
                 <LinearLayout
+                    android:id="@+id/fangda_lay"
                     android:layout_width="@dimen/dp0"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:gravity="center">
 
                     <ImageView
+                        android:id="@+id/fangda_img"
                         android:layout_width="@dimen/dp22"
                         android:layout_height="@dimen/dp20"
                         android:background="@drawable/fangda" />
@@ -180,6 +182,7 @@
                     android:gravity="center">
 
                     <ImageView
+                        android:id="@+id/playBackRecord_img"
                         android:layout_width="@dimen/dp20"
                         android:layout_height="@dimen/dp18"
                         android:background="@drawable/luxiang" />

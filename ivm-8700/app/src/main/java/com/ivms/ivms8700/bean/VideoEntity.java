@@ -8,6 +8,7 @@ public class VideoEntity {
     int rowCout=1;
     private LiveControl mLiveControl = null;
     private PlayBackControl mPlayBackControl= null;
+    private boolean isSelect= false;
 
     public int getRowCout() {
         return rowCout;
@@ -31,5 +32,13 @@ public class VideoEntity {
 
     public void setmPlayBackControl(PlayBackControl mPlayBackControl) {
         this.mPlayBackControl = mPlayBackControl;
+    }
+
+    public boolean isSelect() {
+        return isSelect;
+    }
+
+    public void setSelect(boolean select) {
+        isSelect = select;
     }
 }

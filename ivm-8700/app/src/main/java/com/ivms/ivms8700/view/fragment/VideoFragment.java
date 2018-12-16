@@ -44,6 +44,7 @@ import com.ivms.ivms8700.R;
 import com.ivms.ivms8700.bean.VideoEntity;
 import com.ivms.ivms8700.control.Constants;
 import com.ivms.ivms8700.live.LiveControl;
+import com.ivms.ivms8700.live.PCRect;
 import com.ivms.ivms8700.mysdk.MyVMSNetSDK;
 import com.ivms.ivms8700.playback.ConstantPlayBack;
 import com.ivms.ivms8700.playback.PlayBackCallBack;
@@ -52,7 +53,10 @@ import com.ivms.ivms8700.playback.PlayBackParams;
 import com.ivms.ivms8700.utils.UIUtil;
 import com.ivms.ivms8700.view.AddMonitoryActivity;
 import com.ivms.ivms8700.view.adapter.AdapterVideoRecyView;
+import com.ivms.ivms8700.view.customui.CustomRect;
 import com.ivms.ivms8700.view.customui.CustomSurfaceView;
+import com.ivms.ivms8700.view.customui.CustomSurfaceView.OnZoomListener;
+
 import org.MediaPlayer.PlayM4.Player;
 
 import java.util.ArrayList;
@@ -200,7 +204,7 @@ public class VideoFragment extends Fragment implements View.OnClickListener,Surf
     /**
      * 电子放大
      */
-    private CheckBox mZoom;
+    boolean isZoom =false;
 
     /**
      * 控制层对象
@@ -226,6 +230,10 @@ public class VideoFragment extends Fragment implements View.OnClickListener,Surf
     private ImageView nine_view_img;
     private ImageView add_video;
     List<VideoEntity> videList =null;
+    private Camera curCamer; //当前camer
+    private ImageView playBackRecord_img;
+    private LinearLayout fangda_lay;
+    private ImageView fangda_img;
 
     @Nullable
     @Override
@@ -238,7 +246,11 @@ public class VideoFragment extends Fragment implements View.OnClickListener,Surf
             huifang_view = (View) view.findViewById(R.id.huifang_view);
             contrl_lay = (LinearLayout) view.findViewById(R.id.contrl_lay); //云台控制
             playBackRecord = (LinearLayout) view.findViewById(R.id.playBackRecord); //本地录像
+            playBackRecord_img=(ImageView) view.findViewById(R.id.playBackRecord_img);
             playBackCapture = (LinearLayout) view.findViewById(R.id.playBackCapture); //本地截图
+            fangda_lay=(LinearLayout)view.findViewById(R.id.fangda_lay);
+            fangda_img=(ImageView)view.findViewById(R.id.fangda_img);
+
             one_view_img=(ImageView)view.findViewById(R.id.one_view_img);
             four_view_img=(ImageView)view.findViewById(R.id.four_view_img);
             nine_view_img=(ImageView)view.findViewById(R.id.nine_view_img);
@@ -251,6 +263,7 @@ public class VideoFragment extends Fragment implements View.OnClickListener,Surf
             playBackRecord.setOnClickListener(this);
             playBackCapture.setOnClickListener(this);
             contrl_lay.setOnClickListener(this);
+            fangda_lay.setOnClickListener(this);
 
             video_recyclerview = (RecyclerView) view.findViewById(R.id.video_recyclerview);
             setGrilView(VIDEO_VIEW_COUNT,1);
@@ -270,6 +283,7 @@ public class VideoFragment extends Fragment implements View.OnClickListener,Surf
             PlayBackControl playBackControl=new PlayBackControl();
             playBackControl.setPlayBackCallBack(this);
             videoEntity.setmPlayBackControl(playBackControl);
+            videoEntity.setSelect(false);
             videList.add(videoEntity);
         }
         //适配器
@@ -282,6 +296,28 @@ public class VideoFragment extends Fragment implements View.OnClickListener,Surf
         video_adapter.setOnItemClickListener(new AdapterVideoRecyView.OnItemClickListener() {
         @Override
         public void onItemClick(View view, int position) {
+             mCurIndex=position;
+            //设置SurfaceView为选中状态
+            if(videList.get(position).isSelect()){//之前已被选中
+                LinearLayout itemView=(LinearLayout)view;
+                curSurfaceView=itemView.findViewById(R.id.surfaceView);
+                progressBar=(ProgressBar)itemView.findViewById(R.id.live_progress_bar);
+                add_video=(ImageView)itemView.findViewById(R.id.add_monitory);
+                mCurIndex=position;
+                tmPlayBackControl=videList.get(position).getmPlayBackControl();
+                tmLiveControl=videList.get(position).getmLiveControl();
+                intentAddM();
+            }else{
+                for (int i=0;i<videList.size();i++){
+                    if(i==position){
+                        videList.get(i).setSelect(true);
+                    }else{
+                        videList.get(i).setSelect(false);
+                    }
+                }
+                video_adapter.notifyDataSetChanged();
+                gotoLive(curCamer);
+            }
 
         } });
         //添加监控点
@@ -325,6 +361,16 @@ public class VideoFragment extends Fragment implements View.OnClickListener,Surf
                 } else {
                     recordBtnOnClick();
                 }
+                break;
+            case R.id.fangda_lay://电子放大
+                if(isZoom){
+                    isZoom=false;
+                    fangda_img.setBackgroundResource(R.drawable.fangda);
+                }else{
+                    isZoom=true;
+                    fangda_img.setBackgroundResource(R.drawable.fangda_select);
+                }
+                zoomBtnOnClick();
                 break;
             case R.id.playBackCapture://本地截图
                 if (palyType == 1) {
@@ -378,6 +424,35 @@ public class VideoFragment extends Fragment implements View.OnClickListener,Surf
                 break;
         }
     }
+    /**
+     * @author lvlingdi 2016-5-6 上午10:31:05
+     */
+    private void zoomBtnOnClick() {
+
+        if (isZoom&&null!=curSurfaceView) {
+            curSurfaceView.setOnZoomListener(new OnZoomListener() {
+
+                @Override
+                public void onZoomChange(CustomRect original, CustomRect current) {
+                    PCRect o = new PCRect(original.getLeft(), original.getTop(), original.getRight(), original.getBottom());
+                    PCRect c = new PCRect(current.getLeft(), current.getTop(), current.getRight(), current.getBottom());
+                    if (null != mLiveControl) {
+                        mLiveControl.setDisplayRegion(true, o, c);
+                    }
+                }
+            });
+        } else {
+            if(null!=curSurfaceView) {
+                curSurfaceView.setOnZoomListener(null);
+                if (null != mLiveControl) {
+                    mLiveControl.setDisplayRegion(false, null, null);
+                }
+            }else{
+                UIUtil.showToast(getActivity(),"未开始播放");
+            }
+        }
+
+    }
     //初始化控制层
     private void initControl() {
         for (int i=0;i<videList.size();i++){
@@ -416,6 +491,7 @@ public class VideoFragment extends Fragment implements View.OnClickListener,Surf
                     mLiveControl=tmLiveControl;
                     Bundle extras = data.getExtras();
                     Camera camera= (Camera)extras.get("camera");
+                    curCamer=camera;
                     switch (palyType) {
                         case 1:
                             //  预览
@@ -1078,11 +1154,13 @@ public class VideoFragment extends Fragment implements View.OnClickListener,Surf
                 mLiveControl.startRecord(Utils.getVideoDirPath().getAbsolutePath(), "Video" + recordIndex
                         + ".mp4");
                 mIsRecord = true;
+                playBackRecord_img.setBackgroundResource(R.drawable.lupin);
                 UIUtil.showToast(getActivity(), "启动录像成功");
 //                mRecordBtn.setText("停止录像");
             } else {
                 mLiveControl.stopRecord();
                 mIsRecord = false;
+                playBackRecord_img.setBackgroundResource(R.drawable.luxiang);
                 UIUtil.showToast(getActivity(), "停止录像成功");
 //                mRecordBtn.setText("开始录像");
             }

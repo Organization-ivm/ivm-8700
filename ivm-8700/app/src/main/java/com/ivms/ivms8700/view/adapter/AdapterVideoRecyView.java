@@ -53,7 +53,6 @@ public class AdapterVideoRecyView extends RecyclerView.Adapter<AdapterVideoRecyV
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         //返回ViewHolder对象，通过构造方法传入加载布局文件得到的view对象
         View view = View.inflate(context, R.layout.video_item_layout, null);
-
         ViewHolder holder = new ViewHolder(view);
 
         return holder;
@@ -65,7 +64,7 @@ public class AdapterVideoRecyView extends RecyclerView.Adapter<AdapterVideoRecyV
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, int position) {
+    public void onBindViewHolder(final ViewHolder holder, final int position) {
         //通过Resources获取屏幕高度
         DisplayMetrics dm = context.getResources().getDisplayMetrics();
         window_heigth = dm.heightPixels;
@@ -76,12 +75,19 @@ public class AdapterVideoRecyView extends RecyclerView.Adapter<AdapterVideoRecyV
                 window_width/rowCount
         );
         holder.itemView.setLayoutParams(linearParams);
+            //更换背景
+            if(list.get(position).isSelect()){
+                holder.itemView.setBackgroundResource(R.drawable.item_select_style);
+            }else{
+                holder.itemView.setBackground(null);
+            }
         //判断是否设置了监听器
         if (mOnItemClickListener != null) { //为ItemView设置监听器
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     int position = holder.getLayoutPosition();
+
                     mOnItemClickListener.onItemClick(holder.itemView, position);
                 }
             });
