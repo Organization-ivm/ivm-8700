@@ -41,6 +41,7 @@ import com.hikvision.sdk.utils.SDKUtil;
 import com.hikvision.sdk.utils.UtilAudioPlay;
 import com.hikvision.sdk.utils.Utils;
 import com.ivms.ivms8700.R;
+import com.ivms.ivms8700.bean.VideoEntity;
 import com.ivms.ivms8700.control.Constants;
 import com.ivms.ivms8700.live.LiveControl;
 import com.ivms.ivms8700.mysdk.MyVMSNetSDK;
@@ -135,6 +136,10 @@ public class VideoFragment extends Fragment implements View.OnClickListener,Surf
      */
     private PlayBackControl mPlayBackControl;
     /**
+     * 控制层对象
+     */
+    private PlayBackControl tmPlayBackControl;
+    /**
      * 创建消息对象
      */
     private Handler mMessageHandler;
@@ -201,9 +206,7 @@ public class VideoFragment extends Fragment implements View.OnClickListener,Surf
      * 控制层对象
      */
     private LiveControl mLiveControl = null;
-    private LiveControl mLiveControl1 = null;
-    private LiveControl mLiveControl2 = null;
-
+    private LiveControl tmLiveControl = null;
     private Handler liveHandler = null;
     private LinearLayout live_lay;
     private LinearLayout huifang_lay;
@@ -221,7 +224,8 @@ public class VideoFragment extends Fragment implements View.OnClickListener,Surf
     private ImageView one_view_img;
     private ImageView four_view_img;
     private ImageView nine_view_img;
-
+    private ImageView add_video;
+    List<VideoEntity> videList =null;
 
     @Nullable
     @Override
@@ -256,12 +260,20 @@ public class VideoFragment extends Fragment implements View.OnClickListener,Surf
     }
     //生成对应video_view
     private void setGrilView(int viewCount, int rowCount) {
-        List<Integer> list=new ArrayList<>();
+        videList =new ArrayList<>();
         for (int i=0;i<viewCount;i++){
-            list.add(rowCount);
+            VideoEntity videoEntity =new VideoEntity();
+            videoEntity.setRowCout(rowCount);
+            LiveControl liveControl=new LiveControl();
+            liveControl.setLiveCallBack(this);
+            videoEntity.setmLiveControl(liveControl);
+            PlayBackControl playBackControl=new PlayBackControl();
+            playBackControl.setPlayBackCallBack(this);
+            videoEntity.setmPlayBackControl(playBackControl);
+            videList.add(videoEntity);
         }
         //适配器
-        video_adapter = new AdapterVideoRecyView(getActivity(), list);
+        video_adapter = new AdapterVideoRecyView(getActivity(), videList);
         video_recyclerview.setAdapter(video_adapter);
         GridLayoutManager manager=new GridLayoutManager(getActivity(),rowCount);
         //布局管理器
@@ -279,7 +291,10 @@ public class VideoFragment extends Fragment implements View.OnClickListener,Surf
                 LinearLayout itemView=(LinearLayout)view;
                 curSurfaceView=itemView.findViewById(R.id.surfaceView);
                 progressBar=(ProgressBar)itemView.findViewById(R.id.live_progress_bar);
+                add_video=(ImageView)itemView.findViewById(R.id.add_monitory);
                 mCurIndex=position;
+                tmPlayBackControl=videList.get(position).getmPlayBackControl();
+                tmLiveControl=videList.get(position).getmLiveControl();
                 intentAddM();
             }
         });
@@ -289,9 +304,7 @@ public class VideoFragment extends Fragment implements View.OnClickListener,Surf
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.live_lay:
-                if(null != mPlayBackControl){
-                    mPlayBackControl.stopPlayBack();
-                }
+                initControl();
                 VIDEO_VIEW_COUNT=1;
                 setGrilView(VIDEO_VIEW_COUNT,1);
                 palyType = 1;
@@ -299,9 +312,7 @@ public class VideoFragment extends Fragment implements View.OnClickListener,Surf
                 huifang_view.setVisibility(View.INVISIBLE);
                 break;
             case R.id.huifang_lay:
-                if (null != mLiveControl) {
-                    mLiveControl.stop();
-                }
+                initControl();
                 VIDEO_VIEW_COUNT=1;
                 setGrilView(VIDEO_VIEW_COUNT,1);
                 palyType = 2;
@@ -324,13 +335,18 @@ public class VideoFragment extends Fragment implements View.OnClickListener,Surf
                 break;
             case R.id.contrl_lay://云台控制
                 if(palyType==1) {
-                    showList();
+                    if(null!=mLiveControl&&mLiveControl.getLiveState()==LiveControl.LIVE_PLAY) {//处于播放状态
+                        showList();
+                    }else{
+                        UIUtil.showToast(getActivity(),"未处于预览状态");
+                    }
                 }else{
                     UIUtil.showToast(getActivity(), "远程回放不支持云台控制");
                 }
                 break;
             case R.id.one_view_img://一屏
                 if(VIDEO_VIEW_COUNT!=1){
+                    initControl();
                     VIDEO_VIEW_COUNT=1;
                     setGrilView(VIDEO_VIEW_COUNT,1);
                     one_view_img.setBackgroundResource(R.drawable.one_2);
@@ -341,24 +357,44 @@ public class VideoFragment extends Fragment implements View.OnClickListener,Surf
                 break;
             case R.id.four_view_img://四屏
                 if(VIDEO_VIEW_COUNT!=4){
+                    initControl();
                     VIDEO_VIEW_COUNT=4;
                     setGrilView(  VIDEO_VIEW_COUNT,2);
                     one_view_img.setBackgroundResource(R.drawable.one_1);
                     four_view_img.setBackgroundResource(R.drawable.four_1);
                     nine_view_img.setBackgroundResource(R.drawable.nine_1);
                 }
-
                 break;
             case R.id.nine_view_img://九屏
                 if(VIDEO_VIEW_COUNT!=9){
+                    initControl();
                     VIDEO_VIEW_COUNT=9;
                     setGrilView(VIDEO_VIEW_COUNT,3);
                     one_view_img.setBackgroundResource(R.drawable.one_1);
                     four_view_img.setBackgroundResource(R.drawable.four_2);
                     nine_view_img.setBackgroundResource(R.drawable.nine_2);
+
                 }
                 break;
-
+        }
+    }
+    //初始化控制层
+    private void initControl() {
+        for (int i=0;i<videList.size();i++){
+            if(null!=videList.get(i).getmLiveControl()){
+                LiveControl liveControl=videList.get(i).getmLiveControl();
+                liveControl.stop();
+            }
+            if(null!=videList.get(i).getmPlayBackControl()){
+                PlayBackControl playBackControl=videList.get(i).getmPlayBackControl();
+                playBackControl.stopPlayBack();
+            }
+        }
+        if(null!=mLiveControl){
+            mLiveControl.stop();
+        }
+        if(null!=tmPlayBackControl){
+            tmPlayBackControl.stopPlayBack();
         }
     }
 
@@ -366,12 +402,18 @@ public class VideoFragment extends Fragment implements View.OnClickListener,Surf
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if(null!=progressBar){
-            progressBar.setVisibility(View.VISIBLE);
-        }
+
         switch (requestCode){
             case RECULET_CODE ://监控列表回调
                 if (resultCode == RESULT_OK) {
+                    if(null!=progressBar){
+                        progressBar.setVisibility(View.VISIBLE);
+                    }
+                    if(null!=add_video){
+                        add_video.setVisibility(View.GONE);
+                    }
+                    mPlayBackControl=tmPlayBackControl;
+                    mLiveControl=tmLiveControl;
                     Bundle extras = data.getExtras();
                     Camera camera= (Camera)extras.get("camera");
                     switch (palyType) {
@@ -856,9 +898,8 @@ public class VideoFragment extends Fragment implements View.OnClickListener,Surf
         mMessageHandler = new HuifangHandler();
         mVMSNetSDK = MyVMSNetSDK.getInstance();
         // 初始化远程回放控制层对象
-        mPlayBackControl = new PlayBackControl();
-        // 设置远程回放控制层回调
-        mPlayBackControl.setPlayBackCallBack(this);
+//        mPlayBackControl = new PlayBackControl();
+
         // 创建远程回放需要的参数
         mParamsObj = new PlayBackParams();
         // 播放控件
@@ -887,13 +928,6 @@ public class VideoFragment extends Fragment implements View.OnClickListener,Surf
         mVMSNetSDK = MyVMSNetSDK.getInstance();
         liveHandler = new LiveViewHandler();
 
-        if(mCurIndex==0){
-            mLiveControl1 = new LiveControl();
-            mLiveControl1.setLiveCallBack(this);
-        }else if(mCurIndex==1){
-            mLiveControl2 = new LiveControl();
-            mLiveControl2.setLiveCallBack(this);
-        }
         getCameraInfo();
     }
 
@@ -950,11 +984,7 @@ public class VideoFragment extends Fragment implements View.OnClickListener,Surf
      * start play video
      */
     private void clickStartBtn() {
-        if(mCurIndex==0){
-            mLiveControl=mLiveControl1;
-        }else if(mCurIndex==1){
-            mLiveControl=mLiveControl2;
-        }
+
         if (null != progressBar) {
             progressBar.setVisibility(View.VISIBLE);
         }
@@ -1127,12 +1157,7 @@ public class VideoFragment extends Fragment implements View.OnClickListener,Surf
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
         Log.i(TAG,"surfaceDestroyed");
-        if (null != mLiveControl) {
-            mLiveControl.stop();
-        }
-        if(null != mPlayBackControl){
-            mPlayBackControl.stopPlayBack();
-        }
+        initControl();
     }
 
     @Override

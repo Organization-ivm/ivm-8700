@@ -9,13 +9,14 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.ivms.ivms8700.R;
+import com.ivms.ivms8700.bean.VideoEntity;
 import com.ivms.ivms8700.view.customui.CustomSurfaceView;
 
 import java.util.List;
 
 public class AdapterVideoRecyView extends RecyclerView.Adapter<AdapterVideoRecyView.ViewHolder> {
     Context context;
-    List<Integer> list;
+    List<VideoEntity> list;
     private int window_heigth;
     private int window_width;
     public interface OnItemClickListener {
@@ -42,7 +43,7 @@ public class AdapterVideoRecyView extends RecyclerView.Adapter<AdapterVideoRecyV
         this.mOnImgClickListener = mOnImgClickListener;
     }
 
-    public AdapterVideoRecyView(Context context, List<Integer> list) {
+    public AdapterVideoRecyView(Context context, List<VideoEntity> list) {
         this.context = context;
         this.list = list;
 
@@ -69,7 +70,7 @@ public class AdapterVideoRecyView extends RecyclerView.Adapter<AdapterVideoRecyV
         DisplayMetrics dm = context.getResources().getDisplayMetrics();
         window_heigth = dm.heightPixels;
         window_width = dm.widthPixels;
-        int rowCount =list.get(0);
+        int rowCount =list.get(position).getRowCout();
         LinearLayout.LayoutParams linearParams = new LinearLayout.LayoutParams(
                 window_width/rowCount,
                 window_width/rowCount
