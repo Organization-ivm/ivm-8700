@@ -25,6 +25,7 @@
 
    </LinearLayout>
     <RelativeLayout
+        android:id="@+id/face_clock_btn"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp60"
         android:gravity="center_vertical"
@@ -124,6 +125,7 @@
     </RelativeLayout>
 
     <RelativeLayout
+        android:id="@+id/out_app_btn"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp60"
         android:gravity="center"

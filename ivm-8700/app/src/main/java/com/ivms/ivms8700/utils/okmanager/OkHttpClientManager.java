@@ -51,7 +51,7 @@ public class OkHttpClientManager {
                 }
             }
         }
-        return instance;
+        return manager;
     }
 
     /**
