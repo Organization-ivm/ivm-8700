@@ -61,6 +61,7 @@
     <string name="title_activity_seting">SetingActivity</string>
 
     <string name="renlianshibie_kaoqin">人脸识别考勤</string>
+    <string name="renlianshibie_kaoqin_detail">考勤详细</string>
     <string name="shexiangji_tongji">摄像机在线率统计</string>
     <string name="shexiangji_huizong">摄像机实时在线汇总</string>
     <string name="isjieshouxiaoxi">是否接收消息</string>
@@ -91,4 +92,13 @@
     <string name="keyword_select">关键字：</string>
     <string name="keyword_ex">如：姓名</string>
     <string name="notarize_search">确认查询</string>
+    <string name="gonghao_txt">工号：</string>
+    <string name="name_txt">姓名：</string>
+    <string name="sex_txt">性别：</string>
+    <string name="dw_txt">单位：</string>
+    <string name="bm_txt">部门：</string>
+    <string name="phone_txt">电话：</string>
+    <string name="rq_txt">拍摄日期：</string>
+
+
 </resources>

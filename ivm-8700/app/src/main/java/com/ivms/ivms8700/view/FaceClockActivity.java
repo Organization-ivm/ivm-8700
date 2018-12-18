@@ -103,10 +103,27 @@ public class FaceClockActivity extends Activity implements View.OnClickListener,
                      String name=obj2.getString("name");
                      String employeeNumber=obj2.getString("employeeNumber");
                      String captureTime=obj2.getString("captureTime");
+                     String faceCapture=obj2.getString("faceCapture");
+                     String sex=obj2.getString("sex");
+                     String officeName=obj2.getString("officeName");
+                     String department=obj2.getString("department");
+                     String position=obj2.getString("position");
+                     String phone=obj2.getString("phone");
+
                      FaceEntity faceEntity = new FaceEntity();
-                     faceEntity.setName(name);
-                     faceEntity.setEmployeeNumber(employeeNumber);
-                     faceEntity.setDate(captureTime);
+                         faceEntity.setName(name);
+                         faceEntity.setEmployeeNumber(employeeNumber);
+                         faceEntity.setDate(captureTime);
+                         faceEntity.setLineCode(lineCode);
+                         faceEntity.setLineName(lineName);
+                         faceEntity.setStationCode(stationCode);
+                         faceEntity.setStationName(stationName);
+                         faceEntity.setFaceCapture(faceCapture);
+                         faceEntity.setSex(sex);
+                         faceEntity.setOfficeName(officeName);
+                         faceEntity.setDepartment(department);
+                         faceEntity.setPosition(position);
+                         faceEntity.setPhone(phone);
                      mFaceList.add(faceEntity);
                    }
                 }

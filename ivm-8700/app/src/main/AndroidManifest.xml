@@ -48,7 +48,7 @@
 
         <activity
             android:name=".view.AddMonitoryActivity"
-            android:theme="@style/dialogstyle"></activity>
+            android:theme="@style/dialogstyle" />
 
         <service
             android:name=".service.CheckService"
@@ -61,6 +61,13 @@
         <!-- </receiver> -->
 
         <activity android:name=".view.FaceClockActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".view.iview.FaceDetailActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
