@@ -85,6 +85,7 @@
     <string name="toast_choose_one">只能选择一个文件哦！</string>
     <string name="tj_select">筛选条件</string>
     <string name="kq_list">考勤列表</string>
+    <string name="sb_list">识别列表</string>
 
     <string name="palase_select">请选择..</string>
     <string name="xl_select">线路：</string>
