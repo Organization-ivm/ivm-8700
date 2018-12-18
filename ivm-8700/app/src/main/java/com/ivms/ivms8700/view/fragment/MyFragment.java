@@ -22,6 +22,7 @@ import android.widget.RelativeLayout;
 import com.ivms.ivms8700.R;
 import com.ivms.ivms8700.utils.okmanager.OkHttpClientManager;
 import com.ivms.ivms8700.view.FaceClockActivity;
+import com.ivms.ivms8700.view.HelmetIdentActivity;
 
 import org.json.JSONObject;
 
@@ -35,6 +36,7 @@ public class MyFragment extends Fragment implements View.OnClickListener{
     private RelativeLayout out_app_btn;
     private OkHttpClientManager okHttpClientManager=null;
     private RelativeLayout face_clock_btn;
+    private RelativeLayout helmet_identification_btn;
 
     @Nullable
     @Override
@@ -47,6 +49,8 @@ public class MyFragment extends Fragment implements View.OnClickListener{
             out_app_btn.setOnClickListener(this);
             face_clock_btn=(RelativeLayout)view.findViewById(R.id.face_clock_btn);
             face_clock_btn.setOnClickListener(this);
+            helmet_identification_btn=(RelativeLayout)view.findViewById(R.id.helmet_identification_btn);
+            helmet_identification_btn.setOnClickListener(this);
         }
         okHttpClientManager=OkHttpClientManager.getInstance();
         return view;
@@ -68,10 +72,15 @@ public class MyFragment extends Fragment implements View.OnClickListener{
             case R.id.out_app_btn:
                 Exit(getActivity());
                 break;
-            case R.id.face_clock_btn:
-                Intent intent =new Intent(getActivity(), FaceClockActivity.class);
-                getActivity().startActivity(intent);
+            case R.id.face_clock_btn://人脸识别
+                Intent face_intent =new Intent(getActivity(), FaceClockActivity.class);
+                getActivity().startActivity(face_intent);
                 break;
+            case R.id.helmet_identification_btn://安全帽识别
+                Intent hi_intent =new Intent(getActivity(), HelmetIdentActivity.class);
+                getActivity().startActivity(hi_intent);
+                break;
+
 
         }
     }

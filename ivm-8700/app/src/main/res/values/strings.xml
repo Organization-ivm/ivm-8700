@@ -61,6 +61,7 @@
     <string name="title_activity_seting">SetingActivity</string>
 
     <string name="renlianshibie_kaoqin">人脸识别考勤</string>
+    <string name="helmet_identification">安全帽识别</string>
     <string name="renlianshibie_kaoqin_detail">考勤详细</string>
     <string name="shexiangji_tongji">摄像机在线率统计</string>
     <string name="shexiangji_huizong">摄像机实时在线汇总</string>
