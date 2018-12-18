@@ -6,12 +6,14 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.ivms.ivms8700.R;
 import com.ivms.ivms8700.bean.FaceEntity;
-import com.ivms.ivms8700.view.iview.FaceDetailActivity;
+import com.ivms.ivms8700.view.FaceDetailActivity;
 
 import java.util.List;
 
@@ -52,6 +54,8 @@ public class FaceAdapter  extends RecyclerView.Adapter<FaceAdapter.ViewHolder> {
                 mContext.startActivity(detailIntent);
             }
         });
+        Glide.with(mContext).load("http://222.66.82.4:80/shm/"+faceEntity.getModelPhoto()).into(holder.user_img);
+
     }
 
     @Override
@@ -65,6 +69,7 @@ public class FaceAdapter  extends RecyclerView.Adapter<FaceAdapter.ViewHolder> {
         TextView name;
         TextView num;
         TextView date_txt;
+        ImageView user_img;
 
         public ViewHolder(View view) {
             super(view);
@@ -73,7 +78,7 @@ public class FaceAdapter  extends RecyclerView.Adapter<FaceAdapter.ViewHolder> {
             name = (TextView) view.findViewById(R.id.name);
             num=(TextView)view.findViewById(R.id.num);
             date_txt=(TextView)view.findViewById(R.id.date_txt);
-
+            user_img=(ImageView)view.findViewById(R.id.user_img);
         }
     }
 

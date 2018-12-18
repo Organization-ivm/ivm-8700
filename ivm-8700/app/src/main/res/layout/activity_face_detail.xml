@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:gravity="center_horizontal"
-    tools:context=".view.iview.FaceDetailActivity">
+    tools:context=".view.FaceDetailActivity">
     <include
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp50"

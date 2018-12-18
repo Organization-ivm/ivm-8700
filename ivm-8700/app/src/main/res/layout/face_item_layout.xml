@@ -17,7 +17,8 @@
             android:textStyle="bold" />
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
+            android:layout_weight="1"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp6"
             android:layout_marginBottom="@dimen/dp6"
@@ -50,5 +51,9 @@
                 android:layout_marginLeft="@dimen/dp4"
                 android:textSize="16sp" />
         </LinearLayout>
-
+        <ImageView
+            android:id="@+id/user_img"
+            android:layout_width="@dimen/dp40"
+            android:layout_height="@dimen/dp40"
+            android:layout_marginRight="@dimen/dp14"/>
 </LinearLayout>

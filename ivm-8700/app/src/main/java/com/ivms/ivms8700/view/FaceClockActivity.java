@@ -109,6 +109,7 @@ public class FaceClockActivity extends Activity implements View.OnClickListener,
                      String department=obj2.getString("department");
                      String position=obj2.getString("position");
                      String phone=obj2.getString("phone");
+                     String modelPhoto=obj2.getString("modelPhoto");
 
                      FaceEntity faceEntity = new FaceEntity();
                          faceEntity.setName(name);
@@ -124,6 +125,7 @@ public class FaceClockActivity extends Activity implements View.OnClickListener,
                          faceEntity.setDepartment(department);
                          faceEntity.setPosition(position);
                          faceEntity.setPhone(phone);
+                         faceEntity.setModelPhoto(modelPhoto);
                      mFaceList.add(faceEntity);
                    }
                 }

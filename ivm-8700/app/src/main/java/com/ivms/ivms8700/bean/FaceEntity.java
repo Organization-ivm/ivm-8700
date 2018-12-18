@@ -19,7 +19,7 @@ public class FaceEntity  implements Serializable {
     private String lineName;
     private String stationCode;
     private String stationName;
-
+    private String  modelPhoto;
 
     public String getCount() {
         return count;
@@ -131,5 +131,13 @@ public class FaceEntity  implements Serializable {
 
     public void setStationName(String stationName) {
         this.stationName = stationName;
+    }
+
+    public String getModelPhoto() {
+        return modelPhoto;
+    }
+
+    public void setModelPhoto(String modelPhoto) {
+        this.modelPhoto = modelPhoto;
     }
 }

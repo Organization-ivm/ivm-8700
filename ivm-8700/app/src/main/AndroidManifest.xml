@@ -67,7 +67,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".view.iview.FaceDetailActivity">
+        <activity android:name=".view.FaceDetailActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

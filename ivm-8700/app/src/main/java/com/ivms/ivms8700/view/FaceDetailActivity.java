@@ -1,4 +1,4 @@
-package com.ivms.ivms8700.view.iview;
+package com.ivms.ivms8700.view;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.ivms.ivms8700.R;
 import com.ivms.ivms8700.bean.FaceEntity;
 import com.ivms.ivms8700.utils.UIUtil;
@@ -78,8 +79,8 @@ public class FaceDetailActivity extends Activity implements View.OnClickListener
             rq_txt.setText(faceEntity.getDate());
             imageUrl ="http://222.66.82.4:80/shm/"+faceEntity.getFaceCapture();
             Log.i("Alan","url="+imageUrl);
-            Thread imageViewHander = new Thread(new NetImageHandler());
-            imageViewHander.start();
+
+            Glide.with(this).load(imageUrl).into(user_img);
     }
 
     //控件监听
@@ -94,32 +95,4 @@ public class FaceDetailActivity extends Activity implements View.OnClickListener
         }
     }
 
-    class NetImageHandler implements Runnable {
-        @Override
-        public void run() {
-            try {
-                URL url = new URL(imageUrl);
-                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                conn.setDoInput(true);
-                conn.connect();
-                InputStream is = conn.getInputStream();
-                bitmap = BitmapFactory.decodeStream(is);
-                //发送消息，通知UI组件显示图片
-                handler.sendEmptyMessage(0);
-                is.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    @SuppressLint("HandlerLeak")
-    Handler handler = new Handler(){
-        @Override
-        public void handleMessage(Message msg) {
-            if(msg.what == 0){
-                user_img.setImageBitmap(bitmap);
-            }
-        }
-    };
 }
