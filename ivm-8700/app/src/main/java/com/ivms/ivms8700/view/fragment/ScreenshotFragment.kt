@@ -20,6 +20,7 @@ import com.ivms.ivms8700.utils.PhotoVideoManager.bean.Bean
 import com.ivms.ivms8700.utils.ShareUtils
 import com.ivms.ivms8700.utils.UIUtil
 import com.ivms.ivms8700.view.MainActivity
+import kotlinx.android.synthetic.main.fragment_screenshot.*
 import java.io.File
 import java.util.ArrayList
 import java.util.function.UnaryOperator
@@ -313,11 +314,13 @@ class ScreenshotFragment : Fragment(), ImageAdapter.OnShowItemClickListener {
     fun choose() {
         isSel = isShow
         if (isSel) {
+            rlbottom.visibility = View.VISIBLE
 
 
 //            tv_sel.setText("取消")
         } else {
 //            tv_sel.setText("选择")
+            rlbottom.visibility = View.GONE
 
             for (item in dataList!!) {
                 isShow = false
@@ -325,6 +328,8 @@ class ScreenshotFragment : Fragment(), ImageAdapter.OnShowItemClickListener {
             }
             selectedList!!.clear()
             myAdapter!!.notifyDataSetChanged()
+
+
         }
         for (item in dataList!!) {
             item.setShow(isShow)
@@ -347,6 +352,7 @@ class ScreenshotFragment : Fragment(), ImageAdapter.OnShowItemClickListener {
                     item.setChecked(false)
                 }
                 myAdapter!!.notifyDataSetChanged()
+
             } else {
                 parentFragment!!.activity!!.finish()
             }

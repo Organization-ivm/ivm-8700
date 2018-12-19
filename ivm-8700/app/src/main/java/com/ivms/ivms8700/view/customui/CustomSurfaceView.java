@@ -16,7 +16,7 @@ import android.view.SurfaceView;
  * @modify by user: {修改人} 2016年4月5日
  * @modify by reason:{方法名}:{原因}
  */
-public class    CustomSurfaceView extends SurfaceView {
+public class CustomSurfaceView extends SurfaceView {
 
     private static final int INVALID_POINTER = -1;
     private static final float UNIT_SCALE_RATIO = 0.003f;

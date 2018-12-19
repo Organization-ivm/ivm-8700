@@ -100,15 +100,20 @@ public class ImageAdapter extends BaseAdapter implements OnScrollListener {
         } else {
             holder.cb.setVisibility(View.GONE);
         }
-        String imageUrl = "" + imageThumUrls.get(position);
-        //只显示缓存图片，如果缓存中没有则设置一张默认的图片
-        Bitmap bitmap = mImageDownloader.showCacheBitmap(imageUrl.replaceAll("[^\\w]", ""));
-        if (bitmap != null) {
+        try {
+            String imageUrl = "" + imageThumUrls.get(position);
+            //只显示缓存图片，如果缓存中没有则设置一张默认的图片
+            Bitmap bitmap = mImageDownloader.showCacheBitmap(imageUrl.replaceAll("[^\\w]", ""));
+            if (bitmap != null) {
 //        Glide.with(context).load(imageUrl).into(holder.img);
-            holder.img.setImageBitmap(bitmap);
-        } else {
-            holder.img.setImageBitmap(bitmap);
+                holder.img.setImageBitmap(bitmap);
+            } else {
+                holder.img.setImageBitmap(bitmap);
 //            holder.img.setImageResource(R.mipmap.ic_launcher);
+            }
+        }catch (Exception e){
+
+            Log.i("ImageAdapter","crach------");
         }
 //        holder.cb.setOnClickListener(new View.OnClickListener() {
 //            @Override
