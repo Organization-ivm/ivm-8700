@@ -1,10 +1,12 @@
 package com.ivms.ivms8700.view.fragment
 
+import android.content.ContentResolver
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.os.Build
 import android.os.Environment
+import android.provider.MediaStore
 import android.support.annotation.RequiresApi
 import android.support.v4.app.Fragment
 import android.support.v4.content.FileProvider
@@ -15,11 +17,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import com.ivms.ivms8700.R
+import com.ivms.ivms8700.utils.MediaFile
 import com.ivms.ivms8700.utils.PhotoVideoManager.VideoInfo
 import com.ivms.ivms8700.utils.PhotoVideoManager.adapter.VideoAdapter
 import com.ivms.ivms8700.utils.PhotoVideoManager.utils.VideoUtils
 import com.ivms.ivms8700.utils.ShareUtils
 import com.ivms.ivms8700.utils.UIUtil
+import kotlinx.android.synthetic.main.fragment_video.*
 import java.io.File
 import java.util.ArrayList
 
@@ -101,9 +105,14 @@ class LocalVideoFragment : Fragment(), VideoAdapter.OnShowItemClickListener {
                 val intent = Intent(Intent.ACTION_VIEW)
                 intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                 intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-                var uri = FileProvider.getUriForFile(context!!,"com.ivms.ivms8700.fileprovider",file!!)
-                intent.setDataAndType(uri, "video/*")
-                startActivity(intent)
+                var uri = FileProvider.getUriForFile(context!!, "com.ivms.ivms8700.fileprovider", file!!)
+                intent.setDataAndType(uri, "video/mp4")
+                try {
+                    startActivity(intent)
+                } catch (e: Exception) {
+
+                }
+
             }
 
         }
@@ -112,28 +121,15 @@ class LocalVideoFragment : Fragment(), VideoAdapter.OnShowItemClickListener {
                 for (i in selectedList!!.indices) {
                     file = File(selectedList!![i].path)
                     if (file!!.exists()) {
-                        file!!.delete()
+                        if (file!!.delete()) {
+                            delete(selectedList!![i].path)
+                        }
                     } else {
                         Toast.makeText(context, "文件已删除", Toast.LENGTH_SHORT).show()
                     }
                 }
-//                for (i in selectedList!!.indices) {
-//                    Log.i("tag", "==selectedList===" + selectedList!![i].path)
-//                }
                 dataList!!.removeAll(selectedList!!)
                 selectedList!!.clear()
-//                dataList!!.clear()
-//                myAdapter!!.clearData()
-//                videoList!!.clear()
-//                getAllFiles(path)
-//                Log.i("tag", "==video.size===" + videoList.size)
-//                for (i in videoList.indices) {
-//                    val bean = VideoInfo()
-//                    bean.path = videoList[i].path
-//                    bean.isChecked = false
-//                    bean.isShow = isShow
-//                    dataList!!.add(bean)
-//                }
                 changeShow()
                 choose()
                 myAdapter!!.setItems(dataList!!)
@@ -149,7 +145,7 @@ class LocalVideoFragment : Fragment(), VideoAdapter.OnShowItemClickListener {
             if (selectedList != null && selectedList!!.size > 0) {
                 file = File(selectedList!![0].path)
                 if (file!!.exists()) {
-                    var uri = FileProvider.getUriForFile(context!!,"com.ivms.ivms8700.fileprovider",file!!)
+                    var uri = FileProvider.getUriForFile(context!!, "com.ivms.ivms8700.fileprovider", file!!)
                     ShareUtils.shareVideo(context, "分享", "qwe", "视频", uri)
                 } else {
 
@@ -166,6 +162,23 @@ class LocalVideoFragment : Fragment(), VideoAdapter.OnShowItemClickListener {
         isShow = !isShow
 
     }
+
+
+    fun delete(filePath: String) {
+        var where = ""
+        var uri: Uri
+        if (MediaFile.isVideoFileType(filePath)) {
+            uri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
+            where = MediaStore.Video.Media.DATA;
+        } else {
+            uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+            where = MediaStore.Images.Media.DATA;
+        }
+        where += "='" + filePath + "'";
+        var mContentResolver = activity!!.contentResolver;
+        mContentResolver.delete(uri, where, null);
+    }
+
 
     //是否显示背景
     private fun isshowImage() {
@@ -229,12 +242,12 @@ class LocalVideoFragment : Fragment(), VideoAdapter.OnShowItemClickListener {
     fun choose() {
         isSel = isShow
         if (isSel) {
-
+            rlbottom.visibility = View.VISIBLE
 
 //            tv_sel.setText("取消")
         } else {
 //            tv_sel.setText("选择")
-
+            rlbottom.visibility = View.GONE
             for (item in dataList!!) {
                 isShow = false
                 item.setChecked(false)
@@ -255,7 +268,9 @@ class LocalVideoFragment : Fragment(), VideoAdapter.OnShowItemClickListener {
      * 加载进度条
      */
     private fun showLoadingProgress() {
-        UIUtil.showProgressDialog(activity, R.string.loading_process_tip)
+
+            UIUtil.showProgressDialog(activity, R.string.loading_process_tip)
+
     }
 
     /**
@@ -328,5 +343,6 @@ class LocalVideoFragment : Fragment(), VideoAdapter.OnShowItemClickListener {
         }
         return true
     }
+
 
 }
