@@ -66,170 +66,142 @@
                 android:background="#FFFFFF"/>
         </LinearLayout>
     </LinearLayout>
-    <RelativeLayout
-        android:id="@+id/rl_select_btn"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dp40"
-        android:background="#F6F6F6"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp16"
-            android:textSize="@dimen/dp16"
-            android:text="@string/select_monitoringpoint"/>
-        <ImageView
-            android:layout_width="@dimen/dp22"
-            android:layout_height="@dimen/dp12"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="@dimen/dp16"
-            android:background="@drawable/down"/>
-
-        
-    </RelativeLayout>
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         >
-       <LinearLayout
-           android:layout_width="match_parent"
-           android:layout_height="match_parent"
-           android:orientation="vertical">
-            <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/dp260"
-                 >
-                <com.ivms.ivms8700.view.customui.CustomSurfaceView
-                    android:id="@+id/surfaceView"
-                    android:layout_width="fill_parent"
-                    android:layout_height="match_parent" />
 
-                <ProgressBar
-                    android:id="@+id/live_progress_bar"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:visibility="invisible" />
-            </FrameLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/video_recyclerview"
+                android:layout_width="match_parent"
+                android:background="#ffffff"
+                android:layout_marginTop="@dimen/dp4"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp48"
-                android:gravity="center"
+                android:layout_marginTop="@dimen/dp10"
                 android:background="#ffffff"
-                android:layout_marginTop="@dimen/dp20"
+                android:gravity="center"
                 android:orientation="horizontal">
+
                 <ImageView
-                    android:layout_width="@dimen/dp19"
-                    android:layout_height="@dimen/dp16"
-                    android:background="@drawable/one_2"/>
-                <ImageView
-                    android:layout_width="@dimen/dp4"
-                    android:layout_height="@dimen/dp4"
-                    android:layout_marginLeft="@dimen/dp40"
-                    android:layout_marginRight="@dimen/dp40"
-                    android:background="@drawable/yuandian"/>
-                <ImageView
-                    android:layout_width="@dimen/dp19"
-                    android:layout_height="@dimen/dp16"
-                    android:background="@drawable/four_2"
-                    />
+                    android:id="@+id/one_view_img"
+                    android:layout_width="@dimen/dp24"
+                    android:layout_height="@dimen/dp24"
+                    android:background="@drawable/one_2" />
+
                 <ImageView
                     android:layout_width="@dimen/dp4"
                     android:layout_height="@dimen/dp4"
                     android:layout_marginLeft="@dimen/dp40"
                     android:layout_marginRight="@dimen/dp40"
-                    android:background="@drawable/yuandian"/>
+                    android:background="@drawable/yuandian" />
+
                 <ImageView
-                    android:layout_width="@dimen/dp19"
-                    android:layout_height="@dimen/dp16"
-                    android:background="@drawable/nine_1"/>
+                    android:id="@+id/four_view_img"
+                    android:layout_width="@dimen/dp24"
+                    android:layout_height="@dimen/dp24"
+                    android:background="@drawable/four_2" />
+
+                <ImageView
+                    android:layout_width="@dimen/dp4"
+                    android:layout_height="@dimen/dp4"
+                    android:layout_marginLeft="@dimen/dp40"
+                    android:layout_marginRight="@dimen/dp40"
+                    android:background="@drawable/yuandian" />
+
+                <ImageView
+                    android:id="@+id/nine_view_img"
+                    android:layout_width="@dimen/dp24"
+                    android:layout_height="@dimen/dp24"
+                    android:background="@drawable/nine_1" />
 
             </LinearLayout>
-           <LinearLayout
-               android:layout_width="match_parent"
-               android:layout_height="@dimen/dp60"
 
-               android:background="#ffffff"
-               android:layout_marginTop="@dimen/dp2"
-               android:orientation="horizontal">
-              <LinearLayout
-                  android:layout_width="@dimen/dp0"
-                  android:layout_height="match_parent"
-                  android:gravity="center"
-                  android:layout_marginLeft="@dimen/dp10"
-
-                  android:layout_weight="1">
-                  <ImageView
-                      android:layout_width="@dimen/dp22"
-                      android:layout_height="@dimen/dp20"
-                      android:background="@drawable/fanzhuan"/>
-              </LinearLayout>
-               <LinearLayout
-                   android:layout_width="@dimen/dp0"
-                   android:layout_height="match_parent"
-                   android:gravity="center"
-                   android:layout_weight="1">
-                   <ImageView
-                       android:layout_width="@dimen/dp22"
-                       android:layout_height="@dimen/dp20"
-                       android:background="@drawable/fangda"/>
-               </LinearLayout>
-               <LinearLayout
-                   android:layout_width="@dimen/dp0"
-                   android:layout_height="match_parent"
-                   android:gravity="center"
-                   android:layout_weight="1">
-                   <ImageView
-                       android:layout_width="@dimen/dp22"
-                       android:layout_height="@dimen/dp20"
-                       android:background="@drawable/fanzhuan"/>
-               </LinearLayout>
-               <LinearLayout
-                   android:layout_width="@dimen/dp0"
-                   android:layout_height="match_parent"
-                   android:gravity="center"
-                   android:layout_weight="1">
-                   <ImageView
-                       android:layout_width="@dimen/dp22"
-                       android:layout_height="@dimen/dp20"
-                       android:background="@drawable/luyin"/>
-               </LinearLayout>
-               <LinearLayout
-                   android:id="@+id/playBackRecord"
-                   android:layout_width="@dimen/dp0"
-                   android:layout_height="match_parent"
-                   android:gravity="center"
-                   android:layout_weight="1">
-                   <ImageView
-                       android:layout_width="@dimen/dp20"
-                       android:layout_height="@dimen/dp18"
-                       android:background="@drawable/luxiang"/>
-               </LinearLayout>
-               <LinearLayout
-                   android:id="@+id/playBackCapture"
-                   android:layout_width="@dimen/dp0"
-                   android:layout_height="match_parent"
-                   android:gravity="center"
-                   android:layout_weight="1">
-                   <ImageView
-                       android:layout_width="@dimen/dp20"
-                       android:layout_height="@dimen/dp18"
-                       android:background="@drawable/paizhao"/>
-               </LinearLayout>
-           </LinearLayout>
-           
-       </LinearLayout>
-        <LinearLayout
-            android:id="@+id/ll_jiankong"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="gone"
-            android:layout_marginRight="@dimen/dp10"
-            android:background="#ffffff">
-            <ListView
-                android:id="@+id/video_listView"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
+                android:layout_height="@dimen/dp60"
+                android:layout_marginTop="@dimen/dp10"
+                android:layout_marginBottom="@dimen/dp10"
+                android:background="#ffffff"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:id="@+id/fangda_lay"
+                    android:layout_width="@dimen/dp0"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center">
+
+                    <ImageView
+                        android:id="@+id/fangda_img"
+                        android:layout_width="@dimen/dp22"
+                        android:layout_height="@dimen/dp20"
+                        android:background="@drawable/fangda" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/contrl_lay"
+                    android:layout_width="@dimen/dp0"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/fanzhuan" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="@dimen/dp0"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center">
+
+                    <ImageView
+                        android:layout_width="@dimen/dp22"
+                        android:layout_height="@dimen/dp20"
+                        android:background="@drawable/luyin" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/playBackRecord"
+                    android:layout_width="@dimen/dp0"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center">
+
+                    <ImageView
+                        android:id="@+id/playBackRecord_img"
+                        android:layout_width="@dimen/dp20"
+                        android:layout_height="@dimen/dp18"
+                        android:background="@drawable/luxiang" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/playBackCapture"
+                    android:layout_width="@dimen/dp0"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center">
+
+                    <ImageView
+                        android:layout_width="@dimen/dp20"
+                        android:layout_height="@dimen/dp18"
+                        android:background="@drawable/paizhao" />
+                </LinearLayout>
+            </LinearLayout>
+
         </LinearLayout>
     </FrameLayout>
 </LinearLayout>

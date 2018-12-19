@@ -25,6 +25,7 @@
 
    </LinearLayout>
     <RelativeLayout
+        android:id="@+id/face_clock_btn"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp60"
         android:gravity="center_vertical"
@@ -49,10 +50,35 @@
             android:background="@drawable/arrow1"/>
     </RelativeLayout>
     <RelativeLayout
+        android:id="@+id/helmet_identification_btn"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp60"
         android:gravity="center_vertical"
         android:layout_marginTop="0.4dp"
+        android:background="#ffffff">
+        <ImageView
+            android:layout_width="@dimen/dp24"
+            android:layout_height="@dimen/dp24"
+            android:layout_marginLeft="@dimen/dp16"
+            android:background="@drawable/safe"/>
+        <TextView
+            android:layout_marginLeft="@dimen/dp60"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/dp18"
+            android:text="@string/helmet_identification"/>
+        <ImageView
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="@dimen/dp18"
+            android:layout_width="@dimen/dp8"
+            android:layout_height="@dimen/dp15"
+            android:background="@drawable/arrow1"/>
+    </RelativeLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp60"
+        android:gravity="center_vertical"
+        android:layout_marginTop="@dimen/dp10"
         android:background="#ffffff">
         <ImageView
             android:layout_width="@dimen/dp24"
@@ -124,6 +150,7 @@
     </RelativeLayout>
 
     <RelativeLayout
+        android:id="@+id/out_app_btn"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp60"
         android:gravity="center"

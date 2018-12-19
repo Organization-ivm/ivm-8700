@@ -12,7 +12,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.ivms.ivms8700.R;
-import com.ivms.ivms8700.utils.UIUtil;
 import com.ivms.ivms8700.view.fragment.ImageManagementFragment;
 import com.ivms.ivms8700.view.fragment.MessageFragment;
 import com.ivms.ivms8700.view.fragment.MyFragment;
@@ -70,12 +69,6 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         my_txt=(TextView)findViewById(R.id.my_txt);
 
 
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        UIUtil.cancelProgressDialog();
     }
 
     @Override
