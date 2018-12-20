@@ -54,5 +54,8 @@
         <item name="android:background">@android:color/transparent</item>
         <item name="android:backgroundDimEnabled">true</item> <!-- 是否使用背景半透明 -->
     </style>
-
+    <style name="dialog" parent="@android:style/Theme.Dialog">
+        <item name="android:windowBackground">@color/android:transparent</item>
+        <item name="android:windowNoTitle">true</item>
+    </style>
 </resources>

@@ -24,6 +24,12 @@
     <string name="username">admin</string>
 
     <string name="main_url_hint">服务器地址(https://10.33.31.200:443)</string>
+    <string name="url_et">222.66.82.4</string>
+    <string name="port_et">80</string>
+    <string name="video_url_et">222.66.82.2</string>
+    <string name="video_port_et">443</string>
+
+
     <string name="main_user_name_hint">用户名</string>
     <string name="main_psd_hint">密码</string>
     <string name="main_login">登陆</string>

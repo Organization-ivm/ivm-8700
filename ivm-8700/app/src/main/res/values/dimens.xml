@@ -111,7 +111,8 @@
     <dimen name="dp152">152dp</dimen>
     <dimen name="dp160">160dp</dimen>
     <dimen name="dp170">170dp</dimen>
-
+    <dimen name="dp200">200dp</dimen>
+    <dimen name="dp230">230dp</dimen>
     <dimen name="dp260">260dp</dimen>
     <dimen name="dp280">280dp</dimen>
     <dimen name="dp290">290dp</dimen>

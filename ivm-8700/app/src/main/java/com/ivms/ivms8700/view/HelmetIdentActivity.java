@@ -1,31 +1,29 @@
 package com.ivms.ivms8700.view;
 
 import android.app.Activity;
-import android.app.Dialog;
+import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.ivms.ivms8700.R;
 import com.ivms.ivms8700.bean.DiscernEntity;
-import com.ivms.ivms8700.bean.FaceEntity;
 import com.ivms.ivms8700.utils.okmanager.OkHttpClientManager;
 import com.ivms.ivms8700.view.adapter.DiscernAdapter;
-import com.ivms.ivms8700.view.adapter.FaceAdapter;
-import com.polites.android.GestureImageView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+
 
 /****
  * 安全帽识别
@@ -40,7 +38,10 @@ public class HelmetIdentActivity extends Activity implements View.OnClickListene
     private RecyclerView sb_list_view;
     private List<DiscernEntity> mDiscernList = new ArrayList<DiscernEntity>();
     private DiscernAdapter adapter;
+    private TextView time_btn;
 
+    private Calendar calendar;// 用来装日期的
+    private DatePickerDialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +60,9 @@ public class HelmetIdentActivity extends Activity implements View.OnClickListene
         title_txt.setText(getString(R.string.helmet_identification));
         sure_btn = (Button) findViewById(R.id.sure_btn);
         sure_btn.setOnClickListener(this);
+        time_btn = (TextView) findViewById(R.id.time_btn);
+        time_btn.setOnClickListener(this);
+
         //初始化RecyclerView
         sb_list_view = (RecyclerView) findViewById(R.id.sb_list_view);
         //创建LinearLayoutManager 对象 这里使用 LinearLayoutManager 是线性布局的意思
@@ -85,6 +89,24 @@ public class HelmetIdentActivity extends Activity implements View.OnClickListene
             case R.id.sure_btn:
                 refreshData();
                 break;
+            case R.id.time_btn:
+                calendar = Calendar.getInstance();
+                dialog = new DatePickerDialog(HelmetIdentActivity.this,
+                    new DatePickerDialog.OnDateSetListener() {
+                        @Override
+                        public void onDateSet(DatePicker view, int year,
+                                              int monthOfYear, int dayOfMonth) {
+                            System.out.println("年-->" + year + "月-->"
+                                    + monthOfYear + "日-->" + dayOfMonth);
+                            time_btn.setText(year + "-" + monthOfYear + "-"
+                                    + dayOfMonth);
+                        }
+                    }, calendar.get(Calendar.YEAR), calendar
+                    .get(Calendar.MONTH), calendar
+                    .get(Calendar.DAY_OF_MONTH));
+                dialog.show();
+                break;
+
         }
     }
 
@@ -126,7 +148,6 @@ public class HelmetIdentActivity extends Activity implements View.OnClickListene
             e.printStackTrace();
         }
     }
-
 
 
 }

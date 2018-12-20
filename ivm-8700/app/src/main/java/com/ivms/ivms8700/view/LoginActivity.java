@@ -38,6 +38,8 @@ public class LoginActivity extends Activity implements ILoginView, View.OnClickL
     private LocalDbUtil localDbUtil=null;
     private OkHttpClientManager okHttpClientManager=null;
 
+    private  String token="4CE19CA8FCD150A4";
+
     private static final int MY_PERMISSION_REQUEST_CODE = 10000;
     private String videoUser="";//video二次登录后台返回用户名
     private String videoPassword="";//video二次登录后台返回密码
@@ -68,12 +70,18 @@ public class LoginActivity extends Activity implements ILoginView, View.OnClickL
     public void onClick(View v) {
        switch (v.getId()){
            case R.id.login_btn:
-//               String url =localDbUtil.getString("local_url");
-//               String userName=username.getText().toString().trim();
-//               String password=pwd.getText().toString().trim();
-//               if(checkLoginData(url,userName,password)){
-                   okHttpClientManager.asyncJsonObjectByUrl("http://222.66.82.4:80/shm/login?userName=mobile&passWord=123456&videoIP=222.66.82.2&token=4CE19CA8FCD150A4 ",this);
-//               }
+               String  local_url=localDbUtil.getString("local_url");
+               String  local_port=localDbUtil.getString("local_port");
+               String  local_video_url=localDbUtil.getString("local_video_url");
+               String  local_video_port=localDbUtil.getString("local_video_port");
+               String userName=username.getText().toString().trim();
+               String password=pwd.getText().toString().trim();
+               if(checkLoginData(local_url,local_port,local_video_url,local_video_port,userName,password)){
+                   String getUrl="http://"+local_url+"/shm/login?userName="+userName+"&passWord="+password+"&videoIP="+local_video_url+"&token="+token;
+                   Log.i("Alan","getUrl=-="+getUrl);
+                   okHttpClientManager.asyncJsonObjectByUrl(getUrl,this);
+//                   okHttpClientManager.asyncJsonObjectByUrl("http://222.66.82.4:80/shm/login?userName=mobile&passWord=123456&videoIP=222.66.82.2&token=4CE19CA8FCD150A4 ",this);
+               }
                break;
            case R.id.set_btn:
                Intent intent = new Intent(this, SetingActivity.class);
@@ -81,11 +89,7 @@ public class LoginActivity extends Activity implements ILoginView, View.OnClickL
                break;
        }
     }
-    //判断参数是否合法
-//    private boolean checkLoginData(String url, String userName, String password) {
-//
-//
-//    }
+
 
     @Override
     public void showLoginProgress() {
@@ -176,6 +180,33 @@ public class LoginActivity extends Activity implements ILoginView, View.OnClickL
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
+    }
+    //判断参数是否合法
+    private boolean checkLoginData(String url,String port,String video_url,String video_port, String userName, String password) {
+        if(url.isEmpty()){
+            UIUtil.showToast(this,"业务地址不能为空");
+            return false;
+        }
+        if(port.isEmpty()){
+            UIUtil.showToast(this,"业务端口不能为空");
+            return false;
+        }
+        if(video_url.isEmpty()){
+            UIUtil.showToast(this,"视频地址不能为空");
+            return false;
+        }
+        if(video_port.isEmpty()){
+            UIUtil.showToast(this,"视频端口不能为空");
+            return false;
+        }
+        if(userName.isEmpty()){
+            UIUtil.showToast(this,"请输入用户名");
+            return false;
+        }
+        if(password.isEmpty()){
+            UIUtil.showToast(this,"请输入密码");
+            return false;
+        }
+        return true;
     }
 }
