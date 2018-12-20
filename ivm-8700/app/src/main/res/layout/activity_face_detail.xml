@@ -167,9 +167,9 @@
             android:layout_alignParentRight="true"
             android:layout_marginRight="@dimen/dp30"/>
     </RelativeLayout>
-    <ImageView
+    <com.polites.android.GestureImageView
         android:id="@+id/user_img"
         android:layout_marginTop="@dimen/dp10"
-        android:layout_width="@dimen/dp170"
-        android:layout_height="@dimen/dp170" />
+        android:layout_width="230dp"
+        android:layout_height="230dp" />
 </LinearLayout>

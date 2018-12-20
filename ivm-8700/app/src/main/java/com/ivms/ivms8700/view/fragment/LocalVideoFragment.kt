@@ -23,6 +23,7 @@ import com.ivms.ivms8700.utils.PhotoVideoManager.adapter.VideoAdapter
 import com.ivms.ivms8700.utils.PhotoVideoManager.utils.VideoUtils
 import com.ivms.ivms8700.utils.ShareUtils
 import com.ivms.ivms8700.utils.UIUtil
+import com.ivms.ivms8700.view.MainActivity
 import kotlinx.android.synthetic.main.fragment_video.*
 import java.io.File
 import java.util.ArrayList
@@ -220,11 +221,13 @@ class LocalVideoFragment : Fragment(), VideoAdapter.OnShowItemClickListener {
                 bean.isShow = isShow
                 dataList!!.add(bean)
             }
-            parentFragment!!.activity!!.runOnUiThread {
-                cancelLoadingProgress()
-                myAdapter!!.setItems(dataList)
-                myAdapter!!.notifyDataSetChanged()
+            if(null!=activity) {
+                parentFragment!!.activity!!.runOnUiThread {
+                    cancelLoadingProgress()
+                    myAdapter!!.setItems(dataList)
+                    myAdapter!!.notifyDataSetChanged()
 
+                }
             }
         }).start()
 
@@ -234,7 +237,6 @@ class LocalVideoFragment : Fragment(), VideoAdapter.OnShowItemClickListener {
         super.onHiddenChanged(hidden)
         if (!hidden) {
             initDataList()
-
         }
     }
 

@@ -54,10 +54,12 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
     implementation files('libs/httpclient-4.5.6.jar')
     implementation files('libs/httpcore-4.4.10.jar')
-    implementation "com.squareup.okhttp3:okhttp:3.6.0"
+    implementation 'com.squareup.okhttp3:okhttp:3.6.0'
     implementation 'com.squareup.okio:okio:1.5.0'
     implementation 'com.android.support:recyclerview-v7:23.4.0'
     implementation 'com.github.bumptech.glide:glide:3.8.0'
+    implementation files('libs/universal-image-loader-1.9.2-SNAPSHOT-with-sources.jar')
+    implementation files('libs/gestureimageview.jar')
 }
 
 apply plugin: 'kotlin-android'
