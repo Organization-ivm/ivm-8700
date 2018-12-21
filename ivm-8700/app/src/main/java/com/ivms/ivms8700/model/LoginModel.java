@@ -32,7 +32,6 @@ public class LoginModel {
             @Override
             public void onSuccess(Object data) {
                 if (data instanceof LoginData) {
-                    TempDatas.getIns().setLoginData((LoginData) data);
                     TempDatas.getIns().setLoginAddr(loginAddress);
                     mHandler.sendEmptyMessage(Constants.Login.LOGIN_SUCCESS);
                     // you can do something by data

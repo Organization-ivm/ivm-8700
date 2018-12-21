@@ -17,6 +17,7 @@ import android.widget.TextView;
 import com.google.gson.JsonObject;
 import com.ivms.ivms8700.R;
 import com.ivms.ivms8700.control.AppForegroundStateManager;
+import com.ivms.ivms8700.control.MyApplication;
 import com.ivms.ivms8700.presenter.LoginPresenter;
 import com.ivms.ivms8700.service.CheckService;
 import com.ivms.ivms8700.utils.LocalDbUtil;
@@ -24,6 +25,7 @@ import com.ivms.ivms8700.utils.UIUtil;
 import com.ivms.ivms8700.utils.okmanager.OkHttpClientManager;
 import com.ivms.ivms8700.view.iview.ILoginView;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -79,7 +81,6 @@ public class LoginActivity extends Activity implements ILoginView, View.OnClickL
         login_btn.setOnClickListener(this);
         set_btn=(TextView)findViewById(R.id.set_btn);
         set_btn.setOnClickListener(this);
-
         username=(EditText)findViewById(R.id.username);
         pwd=(EditText)findViewById(R.id.pwd);
     }
@@ -87,19 +88,19 @@ public class LoginActivity extends Activity implements ILoginView, View.OnClickL
     public void onClick(View v) {
        switch (v.getId()){
            case R.id.login_btn:
-               local_url=localDbUtil.getString("local_url");
-               local_port=localDbUtil.getString("local_port");
+//               local_url=localDbUtil.getString("local_url");
+//               local_port=localDbUtil.getString("local_port");
                local_video_url=localDbUtil.getString("local_video_url");
-               local_video_ip=localDbUtil.getString("local_video_ip");
-               local_video_port=localDbUtil.getString("local_video_port");
-               userName=username.getText().toString().trim();
-               password=pwd.getText().toString().trim();
-               if(checkLoginData(local_url,local_port,local_video_ip,local_video_port,userName,password)){
-                   String getUrl=local_url+"/shm/login?userName="+userName+"&passWord="+password+"&videoIP="+local_video_ip+"&token="+token;
-                   Log.i("Alan","getUrl=-="+getUrl);
-                   okHttpClientManager.asyncJsonObjectByUrl(getUrl,this);
-//                   okHttpClientManager.asyncJsonObjectByUrl("http://222.66.82.4:80/shm/login?userName=mobile&passWord=123456&videoIP=222.66.82.2&token=4CE19CA8FCD150A4 ",this);
-               }
+//               local_video_ip=localDbUtil.getString("local_video_ip");
+//               local_video_port=localDbUtil.getString("local_video_port");
+//               userName=username.getText().toString().trim();
+//               password=pwd.getText().toString().trim();
+//               if(checkLoginData(local_url,local_port,local_video_ip,local_video_port,userName,password)){
+//                   String getUrl=local_url+"/shm/login?userName="+userName+"&passWord="+password+"&videoIP="+local_video_ip+"&token="+token;
+//                   Log.i("Alan","getUrl=-="+getUrl);
+//                   okHttpClientManager.asyncJsonObjectByUrl(getUrl,this);
+                   okHttpClientManager.asyncJsonObjectByUrl("http://222.66.82.4:80/shm/login?userName=mobile&passWord=123456&videoIP=222.66.82.2&token=4CE19CA8FCD150A4 ",this);
+//               }
                break;
            case R.id.set_btn:
                Intent intent = new Intent(this, SetingActivity.class);
@@ -183,6 +184,9 @@ public class LoginActivity extends Activity implements ILoginView, View.OnClickL
                     JSONObject obj = new JSONObject(data);
                     videoUser=obj.getString("videoUser");
                     videoPassword=obj.getString("videoPassword");
+                    JSONArray videoList=obj.getJSONArray("list");//当前用户能查看的监控点列表
+                    Log.i(TAG,"videoList=-="+videoList);
+                    MyApplication.getIns().setVideoList(videoList);
                     Log.i("Alan","后台登录成功，开始登录ivms后台..");
                     String macAddress = getMacAddress();
                     String passwordLevel="2";

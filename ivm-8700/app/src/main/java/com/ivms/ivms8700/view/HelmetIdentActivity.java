@@ -1,7 +1,9 @@
 package com.ivms.ivms8700.view;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -10,9 +12,11 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ivms.ivms8700.R;
 import com.ivms.ivms8700.bean.DiscernEntity;
+import com.ivms.ivms8700.control.MyApplication;
 import com.ivms.ivms8700.utils.okmanager.OkHttpClientManager;
 import com.ivms.ivms8700.view.adapter.DiscernAdapter;
 
@@ -42,7 +46,13 @@ public class HelmetIdentActivity extends Activity implements View.OnClickListene
 
     private Calendar calendar;// 用来装日期的
     private DatePickerDialog dialog;
+    private TextView xl_btn;
+    private String[] lineNameList = null;
+    private String[] lineCodeList = null;
+    private String[] stationCodeList = null;
+    private String[] stationNameList = null;
 
+    private JSONArray loginJsonArray;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,6 +68,8 @@ public class HelmetIdentActivity extends Activity implements View.OnClickListene
         save_btn.setOnClickListener(this);
         title_txt = (TextView) findViewById(R.id.title_txt);
         title_txt.setText(getString(R.string.helmet_identification));
+        xl_btn=(TextView)findViewById(R.id.xl_btn);
+        xl_btn.setOnClickListener(this);
         sure_btn = (Button) findViewById(R.id.sure_btn);
         sure_btn.setOnClickListener(this);
         time_btn = (TextView) findViewById(R.id.time_btn);
@@ -73,8 +85,24 @@ public class HelmetIdentActivity extends Activity implements View.OnClickListene
         //设置Adapter
         adapter = new DiscernAdapter(mDiscernList, this);
         sb_list_view.setAdapter(adapter);
+        initLineData();
     }
-
+    private void initLineData() {
+        if(null!= MyApplication.getIns().getVideoList()) {
+            loginJsonArray = MyApplication.getIns().getVideoList();
+            lineNameList=new String[loginJsonArray.length()];
+            lineCodeList=new String[loginJsonArray.length()];
+            for (int i=0;i<loginJsonArray.length();i++){
+                try {
+                    JSONObject lineObj=loginJsonArray.getJSONObject(i);
+                    lineNameList[i]=lineObj.getString("lineName");
+                    lineCodeList[i]=lineObj.getString("lineCode");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
     //刷新数据
     private void refreshData() {
         OkHttpClientManager.getInstance().asyncJsonObjectByUrl("http://222.66.82.4/shm/safeCapRecognize?recognizeTime=2018-11-07&lineCode=310000L14&stationCode=310000L14S01&userName=mobile&token=4CE19CA8FCD150A4", this);
@@ -85,6 +113,9 @@ public class HelmetIdentActivity extends Activity implements View.OnClickListene
         switch (v.getId()) {
             case R.id.back_btn:
                 finish();
+                break;
+            case R.id.xl_btn:
+                selectLine();
                 break;
             case R.id.sure_btn:
                 refreshData();
@@ -109,7 +140,18 @@ public class HelmetIdentActivity extends Activity implements View.OnClickListene
 
         }
     }
+    //选择线路
+    private void selectLine() {
+        new AlertDialog.Builder(HelmetIdentActivity.this,AlertDialog.THEME_HOLO_LIGHT).setTitle("选择区域").setItems(lineNameList,new DialogInterface.OnClickListener(){
+            public void onClick(DialogInterface dialog, int which){
+                Toast.makeText(HelmetIdentActivity.this, getString(R.string.your_select) + lineNameList[which],Toast.LENGTH_LONG).show();
+                xl_btn.setText(lineNameList[which]);
+                xl_btn.setTag(lineCodeList[which]);
+                dialog.dismiss();
+            }
+        }).show();
 
+    }
     @Override
     public void onResponse(JSONObject jsonObject) {
         try {

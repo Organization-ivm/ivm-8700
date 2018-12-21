@@ -1,6 +1,8 @@
 package com.ivms.ivms8700.view;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -8,9 +10,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.gson.JsonObject;
 import com.ivms.ivms8700.R;
 import com.ivms.ivms8700.bean.FaceEntity;
+import com.ivms.ivms8700.control.MyApplication;
 import com.ivms.ivms8700.utils.okmanager.OkHttpClientManager;
 import com.ivms.ivms8700.view.adapter.FaceAdapter;
 
@@ -33,7 +38,13 @@ public class FaceClockActivity extends Activity implements View.OnClickListener,
     private List<FaceEntity> mFaceList = new ArrayList<FaceEntity>();
     private FaceAdapter adapter=null;
     private Button sure_btn;
+    private TextView xl_btn;
+    private String[] lineNameList = null;
+    private String[] lineCodeList = null;
+    private String[] stationCodeList = null;
+    private String[] stationNameList = null;
 
+    private JSONArray loginJsonArray;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +66,9 @@ public class FaceClockActivity extends Activity implements View.OnClickListener,
         save_btn.setOnClickListener(this);
         title_txt=(TextView)findViewById(R.id.title_txt);
         title_txt.setText(getString(R.string.renlianshibie_kaoqin));
+
+        xl_btn=(TextView)findViewById(R.id.xl_btn);
+        xl_btn.setOnClickListener(this);
         sure_btn=(Button)findViewById(R.id.sure_btn);
         sure_btn.setOnClickListener(this);
         //初始化RecyclerView
@@ -67,7 +81,25 @@ public class FaceClockActivity extends Activity implements View.OnClickListener,
         //设置Adapter
         adapter = new FaceAdapter(mFaceList,this);
         face_clock_view.setAdapter(adapter);
+        initLineData();
 
+    }
+
+    private void initLineData() {
+        if(null!=MyApplication.getIns().getVideoList()) {
+            loginJsonArray = MyApplication.getIns().getVideoList();
+            lineNameList=new String[loginJsonArray.length()];
+            lineCodeList=new String[loginJsonArray.length()];
+            for (int i=0;i<loginJsonArray.length();i++){
+                try {
+                    JSONObject lineObj=loginJsonArray.getJSONObject(i);
+                    lineNameList[i]=lineObj.getString("lineName");
+                    lineCodeList[i]=lineObj.getString("lineCode");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
     @Override
@@ -76,11 +108,27 @@ public class FaceClockActivity extends Activity implements View.OnClickListener,
             case R.id.back_btn:
                  finish();
                 break;
+            case R.id.xl_btn:
+                selectLine();
+                break;
             case R.id.sure_btn://确认查询
                 refreshData();
                 break;
         }
     }
+    //选择线路
+    private void selectLine() {
+        new AlertDialog.Builder(FaceClockActivity.this,AlertDialog.THEME_HOLO_LIGHT).setTitle("选择区域").setItems(lineNameList,new DialogInterface.OnClickListener(){
+            public void onClick(DialogInterface dialog, int which){
+                Toast.makeText(FaceClockActivity.this, getString(R.string.your_select) + lineNameList[which],Toast.LENGTH_LONG).show();
+                xl_btn.setText(lineNameList[which]);
+                xl_btn.setTag(lineCodeList[which]);
+                dialog.dismiss();
+            }
+        }).show();
+
+    }
+
     //网络请求回调
     @Override
     public void onResponse(JSONObject jsonObject) {
