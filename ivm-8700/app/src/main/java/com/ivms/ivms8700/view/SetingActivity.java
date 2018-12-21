@@ -43,17 +43,19 @@ public class SetingActivity extends Activity implements View.OnClickListener {
         video_port_et=(EditText)findViewById(R.id.video_port_et);
 
         String  local_url=localDbUtil.getString("local_url");
+        String  local_ip=localDbUtil.getString("local_ip");
         String  local_port=localDbUtil.getString("local_port");
         String  local_video_url=localDbUtil.getString("local_video_url");
+        String  local_video_ip=localDbUtil.getString("local_video_ip");
         String  local_video_port=localDbUtil.getString("local_video_port");
         if(!local_url.isEmpty()){
-            url_et.setText(local_url);
+            url_et.setText(local_ip);
         }
         if(!local_port.isEmpty()){
             port_et.setText(local_port);
         }
         if(!local_video_url.isEmpty()){
-            video_url_et.setText(local_video_url);
+            video_url_et.setText(local_video_ip);
         }
         if(!local_video_port.isEmpty()){
             video_port_et.setText(local_video_port);
@@ -73,9 +75,11 @@ public class SetingActivity extends Activity implements View.OnClickListener {
                 String video_url=video_url_et.getText().toString().trim();
                 String video_port=video_port_et.getText().toString().trim();
                  if(checkData(url,port,video_url,video_port)){
-                     localDbUtil.setString("local_url",url);
+                     localDbUtil.setString("local_ip",url);
+                     localDbUtil.setString("local_url",getString(R.string.http_et)+url);
                      localDbUtil.setString("local_port",port);
-                     localDbUtil.setString("local_video_url",video_url);
+                     localDbUtil.setString("local_video_url",getString(R.string.https_et)+video_url);
+                     localDbUtil.setString("local_video_ip",video_url);
                      localDbUtil.setString("local_video_port",video_port);
                      finish();
                  }

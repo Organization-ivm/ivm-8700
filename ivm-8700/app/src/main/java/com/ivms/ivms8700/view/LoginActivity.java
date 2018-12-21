@@ -43,6 +43,14 @@ public class LoginActivity extends Activity implements ILoginView, View.OnClickL
     private static final int MY_PERMISSION_REQUEST_CODE = 10000;
     private String videoUser="";//video二次登录后台返回用户名
     private String videoPassword="";//video二次登录后台返回密码
+    private String local_url="";
+    private String local_port="";
+    private String local_video_url="";
+    private String local_video_ip="";
+    private String userName="";
+    private String local_video_port="";
+    private String password="";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,6 +61,15 @@ public class LoginActivity extends Activity implements ILoginView, View.OnClickL
                 Manifest.permission.WRITE_EXTERNAL_STORAGE}
                 , MY_PERMISSION_REQUEST_CODE );
         okHttpClientManager=OkHttpClientManager.getInstance();
+        //初始化
+        if(localDbUtil.getString("local_url").isEmpty()){
+            localDbUtil.setString("local_ip",getString(R.string.url_et));
+            localDbUtil.setString("local_url",getString(R.string.http_et)+getString(R.string.url_et));
+            localDbUtil.setString("local_port",getString(R.string.port_et));
+            localDbUtil.setString("local_video_url",getString(R.string.https_et)+getString(R.string.video_url_et));
+            localDbUtil.setString("local_video_ip",getString(R.string.video_url_et));
+            localDbUtil.setString("local_video_port",getString(R.string.video_port_et));
+        }
     }
     //初始化控件
     private void initView() {
@@ -70,14 +87,15 @@ public class LoginActivity extends Activity implements ILoginView, View.OnClickL
     public void onClick(View v) {
        switch (v.getId()){
            case R.id.login_btn:
-               String  local_url=localDbUtil.getString("local_url");
-               String  local_port=localDbUtil.getString("local_port");
-               String  local_video_url=localDbUtil.getString("local_video_url");
-               String  local_video_port=localDbUtil.getString("local_video_port");
-               String userName=username.getText().toString().trim();
-               String password=pwd.getText().toString().trim();
-               if(checkLoginData(local_url,local_port,local_video_url,local_video_port,userName,password)){
-                   String getUrl="http://"+local_url+"/shm/login?userName="+userName+"&passWord="+password+"&videoIP="+local_video_url+"&token="+token;
+               local_url=localDbUtil.getString("local_url");
+               local_port=localDbUtil.getString("local_port");
+               local_video_url=localDbUtil.getString("local_video_url");
+               local_video_ip=localDbUtil.getString("local_video_ip");
+               local_video_port=localDbUtil.getString("local_video_port");
+               userName=username.getText().toString().trim();
+               password=pwd.getText().toString().trim();
+               if(checkLoginData(local_url,local_port,local_video_ip,local_video_port,userName,password)){
+                   String getUrl=local_url+"/shm/login?userName="+userName+"&passWord="+password+"&videoIP="+local_video_ip+"&token="+token;
                    Log.i("Alan","getUrl=-="+getUrl);
                    okHttpClientManager.asyncJsonObjectByUrl(getUrl,this);
 //                   okHttpClientManager.asyncJsonObjectByUrl("http://222.66.82.4:80/shm/login?userName=mobile&passWord=123456&videoIP=222.66.82.2&token=4CE19CA8FCD150A4 ",this);
@@ -166,10 +184,9 @@ public class LoginActivity extends Activity implements ILoginView, View.OnClickL
                     videoUser=obj.getString("videoUser");
                     videoPassword=obj.getString("videoPassword");
                     Log.i("Alan","后台登录成功，开始登录ivms后台..");
-                    String url = "https://222.66.82.2:443";
                     String macAddress = getMacAddress();
                     String passwordLevel="2";
-                    presenter.login(url, videoUser, videoPassword, macAddress, passwordLevel);
+                    presenter.login(local_video_url, videoUser, videoPassword, macAddress, passwordLevel);
                 }else{
                     UIUtil.showToast(this,msg );
                 }
@@ -181,6 +198,8 @@ public class LoginActivity extends Activity implements ILoginView, View.OnClickL
             e.printStackTrace();
         }
     }
+
+
     //判断参数是否合法
     private boolean checkLoginData(String url,String port,String video_url,String video_port, String userName, String password) {
         if(url.isEmpty()){
