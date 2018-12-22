@@ -17,6 +17,7 @@ import android.widget.Toast;
 import com.ivms.ivms8700.R;
 import com.ivms.ivms8700.bean.DiscernEntity;
 import com.ivms.ivms8700.control.MyApplication;
+import com.ivms.ivms8700.utils.UIUtil;
 import com.ivms.ivms8700.utils.okmanager.OkHttpClientManager;
 import com.ivms.ivms8700.view.adapter.DiscernAdapter;
 
@@ -47,6 +48,7 @@ public class HelmetIdentActivity extends Activity implements View.OnClickListene
     private Calendar calendar;// 用来装日期的
     private DatePickerDialog dialog;
     private TextView xl_btn;
+    private TextView zd_btn;//站点
     private String[] lineNameList = null;
     private String[] lineCodeList = null;
     private String[] stationCodeList = null;
@@ -70,6 +72,8 @@ public class HelmetIdentActivity extends Activity implements View.OnClickListene
         title_txt.setText(getString(R.string.helmet_identification));
         xl_btn=(TextView)findViewById(R.id.xl_btn);
         xl_btn.setOnClickListener(this);
+        zd_btn=(TextView)findViewById(R.id.zd_btn);
+        zd_btn.setOnClickListener(this);
         sure_btn = (Button) findViewById(R.id.sure_btn);
         sure_btn.setOnClickListener(this);
         time_btn = (TextView) findViewById(R.id.time_btn);
@@ -107,7 +111,39 @@ public class HelmetIdentActivity extends Activity implements View.OnClickListene
     private void refreshData() {
         OkHttpClientManager.getInstance().asyncJsonObjectByUrl("http://222.66.82.4/shm/safeCapRecognize?recognizeTime=2018-11-07&lineCode=310000L14&stationCode=310000L14S01&userName=mobile&token=4CE19CA8FCD150A4", this);
     }
+    //根据线路获取站点列表
+    private void getStationData(String lineCode) {
+        for (int i=0;i<loginJsonArray.length();i++){
+            try {
+                JSONObject lineObj=loginJsonArray.getJSONObject(i);
+                if(lineCode.equals(lineObj.getString("lineCode"))){
+                    JSONArray stationsArray=lineObj.getJSONArray("stations");
+                    stationNameList=new String[stationsArray.length()];
+                    stationCodeList=new String[stationsArray.length()];
+                    for (int j=0;j<stationsArray.length();j++){
+                        JSONObject stationObj=stationsArray.getJSONObject(j);
+                        stationNameList[j]=stationObj.getString("stationName");
+                        stationCodeList[j]=stationObj.getString("stationCode");
+                    }
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        selectStation();
+    }
+    //选择站点
+    private void selectStation() {
+        new AlertDialog.Builder(HelmetIdentActivity.this,AlertDialog.THEME_HOLO_LIGHT).setTitle("选择站点").setItems(stationNameList,new DialogInterface.OnClickListener(){
+            public void onClick(DialogInterface dialog, int which){
+                Toast.makeText(HelmetIdentActivity.this, getString(R.string.your_select) + lineNameList[which],Toast.LENGTH_LONG).show();
+                zd_btn.setText(stationNameList[which]);
+                zd_btn.setTag(stationCodeList[which]);
+                dialog.dismiss();
+            }
+        }).show();
 
+    }
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -116,6 +152,14 @@ public class HelmetIdentActivity extends Activity implements View.OnClickListene
                 break;
             case R.id.xl_btn:
                 selectLine();
+                break;
+            case R.id.zd_btn:
+                String  lineCode = xl_btn.getTag().toString();
+                if(!lineCode.isEmpty()){
+                    getStationData(lineCode);
+                }else{
+                    UIUtil.showToast(this,getString(R.string.plase_xl));
+                }
                 break;
             case R.id.sure_btn:
                 refreshData();
@@ -147,6 +191,8 @@ public class HelmetIdentActivity extends Activity implements View.OnClickListene
                 Toast.makeText(HelmetIdentActivity.this, getString(R.string.your_select) + lineNameList[which],Toast.LENGTH_LONG).show();
                 xl_btn.setText(lineNameList[which]);
                 xl_btn.setTag(lineCodeList[which]);
+                zd_btn.setTag("");
+                zd_btn.setText("");
                 dialog.dismiss();
             }
         }).show();

@@ -16,6 +16,7 @@ import com.google.gson.JsonObject;
 import com.ivms.ivms8700.R;
 import com.ivms.ivms8700.bean.FaceEntity;
 import com.ivms.ivms8700.control.MyApplication;
+import com.ivms.ivms8700.utils.UIUtil;
 import com.ivms.ivms8700.utils.okmanager.OkHttpClientManager;
 import com.ivms.ivms8700.view.adapter.FaceAdapter;
 
@@ -39,12 +40,14 @@ public class FaceClockActivity extends Activity implements View.OnClickListener,
     private FaceAdapter adapter=null;
     private Button sure_btn;
     private TextView xl_btn;
+    private TextView zd_btn;//站点
     private String[] lineNameList = null;
     private String[] lineCodeList = null;
     private String[] stationCodeList = null;
     private String[] stationNameList = null;
 
     private JSONArray loginJsonArray;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +72,8 @@ public class FaceClockActivity extends Activity implements View.OnClickListener,
 
         xl_btn=(TextView)findViewById(R.id.xl_btn);
         xl_btn.setOnClickListener(this);
+        zd_btn=(TextView)findViewById(R.id.zd_btn);
+        zd_btn.setOnClickListener(this);
         sure_btn=(Button)findViewById(R.id.sure_btn);
         sure_btn.setOnClickListener(this);
         //初始化RecyclerView
@@ -84,7 +89,7 @@ public class FaceClockActivity extends Activity implements View.OnClickListener,
         initLineData();
 
     }
-
+    //获取线路列表
     private void initLineData() {
         if(null!=MyApplication.getIns().getVideoList()) {
             loginJsonArray = MyApplication.getIns().getVideoList();
@@ -101,6 +106,27 @@ public class FaceClockActivity extends Activity implements View.OnClickListener,
             }
         }
     }
+   //根据线路获取站点列表
+   private void getStationData(String lineCode) {
+       for (int i=0;i<loginJsonArray.length();i++){
+           try {
+               JSONObject lineObj=loginJsonArray.getJSONObject(i);
+              if(lineCode.equals(lineObj.getString("lineCode"))){
+                 JSONArray stationsArray=lineObj.getJSONArray("stations");
+                  stationNameList=new String[stationsArray.length()];
+                  stationCodeList=new String[stationsArray.length()];
+                 for (int j=0;j<stationsArray.length();j++){
+                     JSONObject stationObj=stationsArray.getJSONObject(j);
+                     stationNameList[j]=stationObj.getString("stationName");
+                     stationCodeList[j]=stationObj.getString("stationCode");
+                 }
+              }
+           } catch (JSONException e) {
+               e.printStackTrace();
+           }
+       }
+       selectStation();
+   }
 
     @Override
     public void onClick(View v) {
@@ -109,7 +135,16 @@ public class FaceClockActivity extends Activity implements View.OnClickListener,
                  finish();
                 break;
             case R.id.xl_btn:
+
                 selectLine();
+                break;
+            case R.id.zd_btn:
+                String  lineCode = xl_btn.getTag().toString();
+                if(!lineCode.isEmpty()){
+                    getStationData(lineCode);
+                }else{
+                    UIUtil.showToast(this,getString(R.string.plase_xl));
+                }
                 break;
             case R.id.sure_btn://确认查询
                 refreshData();
@@ -118,17 +153,30 @@ public class FaceClockActivity extends Activity implements View.OnClickListener,
     }
     //选择线路
     private void selectLine() {
-        new AlertDialog.Builder(FaceClockActivity.this,AlertDialog.THEME_HOLO_LIGHT).setTitle("选择区域").setItems(lineNameList,new DialogInterface.OnClickListener(){
+        new AlertDialog.Builder(FaceClockActivity.this,AlertDialog.THEME_HOLO_LIGHT).setTitle("选择线路").setItems(lineNameList,new DialogInterface.OnClickListener(){
             public void onClick(DialogInterface dialog, int which){
                 Toast.makeText(FaceClockActivity.this, getString(R.string.your_select) + lineNameList[which],Toast.LENGTH_LONG).show();
                 xl_btn.setText(lineNameList[which]);
                 xl_btn.setTag(lineCodeList[which]);
+                zd_btn.setTag("");
+                zd_btn.setText("");
                 dialog.dismiss();
             }
         }).show();
 
     }
+    //选择站点
+    private void selectStation() {
+        new AlertDialog.Builder(FaceClockActivity.this,AlertDialog.THEME_HOLO_LIGHT).setTitle("选择站点").setItems(stationNameList,new DialogInterface.OnClickListener(){
+            public void onClick(DialogInterface dialog, int which){
+                Toast.makeText(FaceClockActivity.this, getString(R.string.your_select) + lineNameList[which],Toast.LENGTH_LONG).show();
+                zd_btn.setText(stationNameList[which]);
+                zd_btn.setTag(stationCodeList[which]);
+                dialog.dismiss();
+            }
+        }).show();
 
+    }
     //网络请求回调
     @Override
     public void onResponse(JSONObject jsonObject) {
