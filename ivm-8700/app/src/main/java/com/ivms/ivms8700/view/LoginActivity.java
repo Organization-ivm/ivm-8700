@@ -17,6 +17,7 @@ import android.widget.TextView;
 import com.google.gson.JsonObject;
 import com.ivms.ivms8700.R;
 import com.ivms.ivms8700.control.AppForegroundStateManager;
+import com.ivms.ivms8700.control.Constants;
 import com.ivms.ivms8700.control.MyApplication;
 import com.ivms.ivms8700.presenter.LoginPresenter;
 import com.ivms.ivms8700.service.CheckService;
@@ -39,8 +40,6 @@ public class LoginActivity extends Activity implements ILoginView, View.OnClickL
     private EditText pwd;
     private LocalDbUtil localDbUtil=null;
     private OkHttpClientManager okHttpClientManager=null;
-
-    private  String token="4CE19CA8FCD150A4";
 
     private static final int MY_PERMISSION_REQUEST_CODE = 10000;
     private String videoUser="";//video二次登录后台返回用户名
@@ -90,16 +89,17 @@ public class LoginActivity extends Activity implements ILoginView, View.OnClickL
            case R.id.login_btn:
 //               local_url=localDbUtil.getString("local_url");
 //               local_port=localDbUtil.getString("local_port");
-               local_video_url=localDbUtil.getString("local_video_url");
+                 local_video_url=localDbUtil.getString("local_video_url");
+                 userName="mobile";
 //               local_video_ip=localDbUtil.getString("local_video_ip");
 //               local_video_port=localDbUtil.getString("local_video_port");
 //               userName=username.getText().toString().trim();
 //               password=pwd.getText().toString().trim();
 //               if(checkLoginData(local_url,local_port,local_video_ip,local_video_port,userName,password)){
-//                   String getUrl=local_url+"/shm/login?userName="+userName+"&passWord="+password+"&videoIP="+local_video_ip+"&token="+token;
+//                   String getUrl=local_url+"/shm/login?userName="+userName+"&passWord="+password+"&videoIP="+local_video_ip+"&token="+Constants.APP_TOKEN;
 //                   Log.i("Alan","getUrl=-="+getUrl);
 //                   okHttpClientManager.asyncJsonObjectByUrl(getUrl,this);
-                   okHttpClientManager.asyncJsonObjectByUrl("http://222.66.82.4:80/shm/login?userName=mobile&passWord=123456&videoIP=222.66.82.2&token=4CE19CA8FCD150A4 ",this);
+                   okHttpClientManager.asyncJsonObjectByUrl("http://222.66.82.4:80/shm/login?userName=mobile&passWord=123456&videoIP=222.66.82.2&token="+ Constants.APP_TOKEN,this);
 //               }
                break;
            case R.id.set_btn:
@@ -133,6 +133,7 @@ public class LoginActivity extends Activity implements ILoginView, View.OnClickL
     @Override
     public void onLoginSuccess() {
         UIUtil.showToast(this, R.string.login_success);
+        localDbUtil.setString("userName",userName);
         Intent intent = new Intent(this, MainActivity.class);
 //        intent.putExtra(Constants.IntentKey.GET_ROOT_NODE, true);
         startActivity(intent);

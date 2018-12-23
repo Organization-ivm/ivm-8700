@@ -6,10 +6,28 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".view.CameraStatisticsActivity">
-  <com.ivms.ivms8700.view.customui.MyLineChartView
-      android:id="@+id/linechartview"
+  <!--<com.ivms.ivms8700.view.customui.MyLineChartView-->
+      <!--android:id="@+id/linechartview"-->
+      <!--android:layout_width="match_parent"-->
+      <!--android:layout_marginLeft="@dimen/dp4"-->
+      <!--android:layout_marginRight="@dimen/dp4"-->
+      <!--android:layout_height="match_parent" />-->
+
+  <TextView
+      android:id="@+id/select_tj_btn"
       android:layout_width="match_parent"
-      android:layout_marginLeft="@dimen/dp4"
-      android:layout_marginRight="@dimen/dp4"
-      android:layout_height="match_parent" />
+      android:layout_height="wrap_content"
+      android:padding="4dp"
+      android:gravity="right"
+      android:layout_marginTop="16dp"
+      android:layout_gravity="right"
+      android:text="按月份▼"
+      android:layout_marginRight="20dp"
+      android:textSize="14dp" />
+  <ListView
+      android:id="@+id/listView"
+      android:layout_marginTop="10dp"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent" >
+  </ListView>
 </LinearLayout>

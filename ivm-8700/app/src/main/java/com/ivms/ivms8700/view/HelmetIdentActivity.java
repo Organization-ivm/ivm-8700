@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import com.ivms.ivms8700.R;
 import com.ivms.ivms8700.bean.DiscernEntity;
+import com.ivms.ivms8700.control.Constants;
 import com.ivms.ivms8700.control.MyApplication;
 import com.ivms.ivms8700.utils.UIUtil;
 import com.ivms.ivms8700.utils.okmanager.OkHttpClientManager;
@@ -109,7 +110,7 @@ public class HelmetIdentActivity extends Activity implements View.OnClickListene
     }
     //刷新数据
     private void refreshData() {
-        OkHttpClientManager.getInstance().asyncJsonObjectByUrl("http://222.66.82.4/shm/safeCapRecognize?recognizeTime=2018-11-07&lineCode=310000L14&stationCode=310000L14S01&userName=mobile&token=4CE19CA8FCD150A4", this);
+        OkHttpClientManager.getInstance().asyncJsonObjectByUrl("http://222.66.82.4/shm/safeCapRecognize?recognizeTime=2018-11-07&lineCode=310000L14&stationCode=310000L14S01&userName=mobile&token="+ Constants.APP_TOKEN, this);
     }
     //根据线路获取站点列表
     private void getStationData(String lineCode) {

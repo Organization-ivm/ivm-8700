@@ -15,6 +15,7 @@ import android.widget.Toast;
 import com.google.gson.JsonObject;
 import com.ivms.ivms8700.R;
 import com.ivms.ivms8700.bean.FaceEntity;
+import com.ivms.ivms8700.control.Constants;
 import com.ivms.ivms8700.control.MyApplication;
 import com.ivms.ivms8700.utils.UIUtil;
 import com.ivms.ivms8700.utils.okmanager.OkHttpClientManager;
@@ -58,7 +59,7 @@ public class FaceClockActivity extends Activity implements View.OnClickListener,
     }
     //刷新数据
     private void refreshData() {
-        OkHttpClientManager.getInstance().asyncJsonObjectByUrl("http://222.66.82.4/shm/faceRecognize?recognizeTime=2018-12-13&lineCode=310000L14&stationCode=310000L14S13&userName=mobile&token=4CE19CA8FCD150A4",this);
+        OkHttpClientManager.getInstance().asyncJsonObjectByUrl("http://222.66.82.4/shm/faceRecognize?recognizeTime=2018-12-13&lineCode=310000L14&stationCode=310000L14S13&userName=mobile&token="+ Constants.APP_TOKEN,this);
     }
 
     private void initView() {

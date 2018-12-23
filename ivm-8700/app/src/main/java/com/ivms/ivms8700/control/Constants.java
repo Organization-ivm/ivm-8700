@@ -3,7 +3,10 @@ package com.ivms.ivms8700.control;
 public final class Constants {
     private Constants() {
     }
-
+    /**
+     * 业务系统token for android
+     */
+    public static String APP_TOKEN = "4CE19CA8FCD150A4";
     /**
      * 日志tag名
      */

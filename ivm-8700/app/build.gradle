@@ -60,6 +60,7 @@ dependencies {
     implementation 'com.github.bumptech.glide:glide:3.8.0'
     implementation files('libs/universal-image-loader-1.9.2-SNAPSHOT-with-sources.jar')
     implementation files('libs/gestureimageview.jar')
+    implementation files('libs/mpandroidchartlibrary-2-1-6.jar')
 }
 
 apply plugin: 'kotlin-android'
