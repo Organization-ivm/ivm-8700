@@ -123,14 +123,14 @@ public class MyFragment extends Fragment implements View.OnClickListener, OkHttp
 
     public void Exit(final Context cont) {
         AlertDialog.Builder builder = new AlertDialog.Builder(cont, AlertDialog.THEME_HOLO_LIGHT);
-        builder.setTitle("确定退出系统吗？");
-        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+        builder.setTitle(getString(R.string.sure_log_out));
+        builder.setPositiveButton(getString(R.string.sure), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
-                okHttpClientManager.asyncJsonStringByURL(local_url+"/shm/loginout?userName=mobile&token=4CE19CA8FCD150A4", MyFragment.this);
+                okHttpClientManager.asyncJsonStringByURL(local_url+"/shm/loginout?userName="+userName+"&token="+Constants.APP_TOKEN, MyFragment.this);
             }
         });
-        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(getString(R.string.cancle), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
             }
@@ -160,8 +160,8 @@ public class MyFragment extends Fragment implements View.OnClickListener, OkHttp
         String mContent="";
         try {
             JSONObject obj=jsonObject.getJSONObject("data");
-            mContent+="在线数量："+obj.getString("onLineCount");
-            mContent+="\n离线数量："+obj.getString("offLineCount");
+            mContent+=getString(R.string.online_number)+obj.getString("onLineCount");
+            mContent+=getString(R.string.offline_number)+obj.getString("offLineCount");
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -172,9 +172,9 @@ public class MyFragment extends Fragment implements View.OnClickListener, OkHttp
 
     private void showDialog(String mContent) {
         AlertDialog dialog = new AlertDialog.Builder(getActivity(),AlertDialog.THEME_HOLO_LIGHT)
-                .setTitle("摄像机实时在线汇总")//设置对话框的标题
+                .setTitle(getString(R.string.shexiangji_huizong))//设置对话框的标题
                 .setMessage(mContent)//设置对话框的内容 //设置对话框的按钮
-                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                .setPositiveButton(getString(R.string.sure), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();

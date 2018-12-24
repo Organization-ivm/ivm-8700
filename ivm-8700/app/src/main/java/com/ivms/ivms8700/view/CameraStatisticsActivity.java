@@ -7,7 +7,9 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
@@ -30,13 +32,16 @@ import java.util.Map;
  * 摄像机统计
  * by Alan
  * **/
-public class CameraStatisticsActivity extends Activity implements OkHttpClientManager.JsonObjectCallback {
+public class CameraStatisticsActivity extends Activity implements OkHttpClientManager.JsonObjectCallback, View.OnClickListener {
     private MyLineChartView chartView;
     List<String> xValues;   //x轴数据集合
     List<Integer> yValues;  //y轴数据集合
     private ListView lv;
     private LineData cd;
     List<JSONObject> valuesList = new ArrayList<>();  //数据集合
+    private ImageView back_btn;
+    private TextView save_btn;
+    private TextView title_txt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,8 +62,9 @@ public class CameraStatisticsActivity extends Activity implements OkHttpClientMa
             ArrayList<Entry> e = new ArrayList<Entry>();
             for (int i = 0; i < valuesList.size(); i++) {
                 JSONObject obj = valuesList.get(i);
-
-                e.add(new Entry(Float.valueOf((i+"")), i, obj.getString("cameraName")));
+                String num =obj.getString("rate");
+                num=num.split("%")[0];
+                e.add(new Entry(Float.valueOf(num), i, obj.getString("cameraName")));
 
                 damaXList.add(obj.getString("cameraName"));
             }
@@ -71,8 +77,8 @@ public class CameraStatisticsActivity extends Activity implements OkHttpClientMa
 //                    d1.setCircleSize(4.5f);
 //                }
             d1.setHighLightColor(Color.rgb(255, 2, 4));//红色
-            d1.setColor(Color.parseColor("#FF00FF"));
-            d1.setCircleColor(Color.parseColor("#FF00FF"));
+            d1.setColor(Color.parseColor("#0080FF"));
+            d1.setCircleColor(Color.parseColor("#0080FF"));
             d1.setDrawValues(false);
             sets.add(d1);
             cd = new LineData(damaXList, sets);
@@ -86,7 +92,13 @@ public class CameraStatisticsActivity extends Activity implements OkHttpClientMa
     }
 
     private void initView() {
-
+        back_btn = (ImageView) findViewById(R.id.back_btn);
+        back_btn.setOnClickListener(this);
+        save_btn = (TextView) findViewById(R.id.right_btn);
+        save_btn.setVisibility(View.INVISIBLE);
+        save_btn.setOnClickListener(this);
+        title_txt= (TextView) findViewById(R.id.title_txt);
+        title_txt.setText(getString(R.string.shexiangji_tongji));
         lv = (ListView) findViewById(R.id.listView);
     }
 
@@ -118,6 +130,15 @@ public class CameraStatisticsActivity extends Activity implements OkHttpClientMa
             e.printStackTrace();
         }
 
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.back_btn:
+                finish();
+                break;
+        }
     }
 
 

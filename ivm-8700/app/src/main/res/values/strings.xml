@@ -111,4 +111,10 @@
     <string name="rq_txt">拍摄日期：</string>
     <string name="your_select">您已经选择了</string>
     <string name="plase_xl">请先选择线路</string>
+
+    <string name="sure_log_out">确定退出系统吗？</string>
+    <string name="sure">确定</string>
+    <string name="cancle">取消</string>
+    <string name="online_number">在线数量:&#160;&#160;&#160;</string>
+    <string name="offline_number">\n离线数量:&#160;&#160;&#160;</string>
 </resources>
