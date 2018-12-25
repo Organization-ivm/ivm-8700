@@ -149,7 +149,9 @@
       android:id="@+id/listView"
       android:layout_marginTop="@dimen/dp4"
       android:layout_width="match_parent"
-      android:layout_height="match_parent" >
+      android:layout_height="@dimen/dp0"
+      android:layout_marginBottom="@dimen/dp6"
+      android:layout_weight="1">
   </ListView>
   <!--<com.ivms.ivms8700.view.customui.MyLineChartView-->
   <!--android:id="@+id/linechartview"-->

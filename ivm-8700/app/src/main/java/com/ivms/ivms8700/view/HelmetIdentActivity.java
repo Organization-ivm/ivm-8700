@@ -167,13 +167,11 @@ public class HelmetIdentActivity extends Activity implements View.OnClickListene
                 break;
             case R.id.time_btn:
                 calendar = Calendar.getInstance();
-                dialog = new DatePickerDialog(HelmetIdentActivity.this,
+                dialog = new DatePickerDialog(HelmetIdentActivity.this,AlertDialog.THEME_HOLO_LIGHT,
                     new DatePickerDialog.OnDateSetListener() {
                         @Override
                         public void onDateSet(DatePicker view, int year,
                                               int monthOfYear, int dayOfMonth) {
-                            System.out.println("年-->" + year + "月-->"
-                                    + monthOfYear + "日-->" + dayOfMonth);
                             time_btn.setText(year + "-" + monthOfYear + "-"
                                     + dayOfMonth);
                         }

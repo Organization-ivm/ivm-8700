@@ -2,12 +2,14 @@ package com.ivms.ivms8700.view;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,6 +28,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 /***
@@ -42,6 +45,9 @@ public class FaceClockActivity extends Activity implements View.OnClickListener,
     private Button sure_btn;
     private TextView xl_btn;
     private TextView zd_btn;//站点
+    private TextView time_btn;
+    private Calendar calendar;// 用来装日期的
+    private DatePickerDialog dialog;
     private String[] lineNameList = null;
     private String[] lineCodeList = null;
     private String[] stationCodeList = null;
@@ -75,6 +81,8 @@ public class FaceClockActivity extends Activity implements View.OnClickListener,
         xl_btn.setOnClickListener(this);
         zd_btn=(TextView)findViewById(R.id.zd_btn);
         zd_btn.setOnClickListener(this);
+        time_btn = (TextView) findViewById(R.id.time_btn);
+        time_btn.setOnClickListener(this);
         sure_btn=(Button)findViewById(R.id.sure_btn);
         sure_btn.setOnClickListener(this);
         //初始化RecyclerView
@@ -146,6 +154,21 @@ public class FaceClockActivity extends Activity implements View.OnClickListener,
                 }else{
                     UIUtil.showToast(this,getString(R.string.plase_xl));
                 }
+                break;
+            case R.id.time_btn:
+                calendar = Calendar.getInstance();
+                dialog = new DatePickerDialog(FaceClockActivity.this,AlertDialog.THEME_HOLO_LIGHT,
+                        new DatePickerDialog.OnDateSetListener() {
+                            @Override
+                            public void onDateSet(DatePicker view, int year,
+                                                  int monthOfYear, int dayOfMonth) {
+                                time_btn.setText(year + "-" + monthOfYear + "-"
+                                        + dayOfMonth);
+                            }
+                        }, calendar.get(Calendar.YEAR), calendar
+                        .get(Calendar.MONTH), calendar
+                        .get(Calendar.DAY_OF_MONTH));
+                dialog.show();
                 break;
             case R.id.sure_btn://确认查询
                 refreshData();
