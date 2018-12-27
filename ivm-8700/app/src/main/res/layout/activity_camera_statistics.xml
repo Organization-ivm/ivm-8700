@@ -132,6 +132,39 @@
             android:layout_marginRight="10dp"
             android:src="@drawable/arrow" />
       </LinearLayout>
+        <LinearLayout
+            android:layout_width="@dimen/dp0"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_marginLeft="@dimen/dp10"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/type_txt"
+                android:textColor="#292421"
+                android:textSize="14sp" />
+            <TextView
+                android:id="@+id/type_btn"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2.5"
+                android:gravity="center"
+                android:hint="@string/palase_select"
+                android:tag=""
+                android:textColor="#292421"
+                android:textSize="14sp" />
+
+            <ImageView
+                android:layout_width="14dp"
+                android:layout_height="14dp"
+                android:layout_marginLeft="2dp"
+                android:layout_marginRight="5dp"
+                android:src="@drawable/arrow" />
+        </LinearLayout>
     </LinearLayout>
     <Button
         android:id="@+id/sure_btn"

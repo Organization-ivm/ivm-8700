@@ -21,7 +21,9 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.ivms.ivms8700.R;
+import com.ivms.ivms8700.control.Constants;
 import com.ivms.ivms8700.control.MyApplication;
+import com.ivms.ivms8700.utils.LocalDbUtil;
 import com.ivms.ivms8700.utils.UIUtil;
 import com.ivms.ivms8700.utils.okmanager.OkHttpClientManager;
 import com.ivms.ivms8700.view.chart.ChartItem;
@@ -62,8 +64,14 @@ public class CameraStatisticsActivity extends Activity implements OkHttpClientMa
     private String[] lineCodeList = null;
     private String[] stationCodeList = null;
     private String[] stationNameList = null;
+    private String[] typeArray = {"日","月","年"};
+    private String[] type_tagArray = {"day","month","year"};
 
     private JSONArray loginJsonArray;
+    private LocalDbUtil localDbUtil;
+    private String local_url;
+    private String userName;
+    private TextView type_btn;
 
 
     @Override
@@ -76,6 +84,9 @@ public class CameraStatisticsActivity extends Activity implements OkHttpClientMa
 //            refreshData();
          }
     private void initView() {
+        localDbUtil=new LocalDbUtil(this);
+        local_url=localDbUtil.getString("local_url");
+        userName=localDbUtil.getString("userName");
         back_btn = (ImageView) findViewById(R.id.back_btn);
         back_btn.setOnClickListener(this);
         save_btn = (TextView) findViewById(R.id.right_btn);
@@ -92,6 +103,8 @@ public class CameraStatisticsActivity extends Activity implements OkHttpClientMa
         sure_btn.setOnClickListener(this);
         time_btn = (TextView) findViewById(R.id.time_btn);
         time_btn.setOnClickListener(this);
+        type_btn= (TextView) findViewById(R.id.type_btn);
+        type_btn.setOnClickListener(this);
     }
     private void initData() {
         try {
@@ -225,15 +238,26 @@ public class CameraStatisticsActivity extends Activity implements OkHttpClientMa
             case R.id.sure_btn:
                 refreshData();
                 break;
+            case R.id.type_btn:
+                selectType();
+                break;
             case R.id.time_btn:
                 calendar = Calendar.getInstance();
-                dialog = new DatePickerDialog(CameraStatisticsActivity.this,AlertDialog.THEME_HOLO_LIGHT,
+                dialog = new DatePickerDialog(CameraStatisticsActivity.this, AlertDialog.THEME_HOLO_LIGHT,
                         new DatePickerDialog.OnDateSetListener() {
                             @Override
                             public void onDateSet(DatePicker view, int year,
                                                   int monthOfYear, int dayOfMonth) {
-                                time_btn.setText(year + "-" + monthOfYear + "-"
-                                        + dayOfMonth);
+                                String month=(monthOfYear+1)+"";
+                                if(monthOfYear+1<10){
+                                    month="0"+month;
+                                }
+                                String day=dayOfMonth+"";
+                                if(dayOfMonth<10){
+                                    day="0"+day;
+                                }
+                                time_btn.setText(year + "-" + month + "-"
+                                        + day);
                             }
                         }, calendar.get(Calendar.YEAR), calendar
                         .get(Calendar.MONTH), calendar
@@ -244,13 +268,12 @@ public class CameraStatisticsActivity extends Activity implements OkHttpClientMa
     }
 
     private void refreshData() {
-        OkHttpClientManager.getInstance().asyncJsonObjectByUrl("http://222.66.82.4/shm/cameraOnlineRate?type=day&lineCode=310000L14&stationCode=310000L14S01&queryTime=2018-11-08&userName=mobile&token=4CE19CA8FCD150A4", this);
-
+        OkHttpClientManager.getInstance().asyncJsonObjectByUrl(local_url+"/shm/cameraOnlineRate?type=day&lineCode=310000L14&stationCode=310000L14S01&queryTime=2018-11-08&userName=mobile&token="+ Constants.APP_TOKEN, this);
     }
 
     //选择线路
     private void selectLine() {
-        new AlertDialog.Builder(CameraStatisticsActivity.this,AlertDialog.THEME_HOLO_LIGHT).setTitle("选择区域").setItems(lineNameList,new DialogInterface.OnClickListener(){
+        new AlertDialog.Builder(CameraStatisticsActivity.this,AlertDialog.THEME_HOLO_LIGHT).setTitle("选择线路").setItems(lineNameList,new DialogInterface.OnClickListener(){
             public void onClick(DialogInterface dialog, int which){
                 Toast.makeText(CameraStatisticsActivity.this, getString(R.string.your_select) + lineNameList[which],Toast.LENGTH_LONG).show();
                 xl_btn.setText(lineNameList[which]);
@@ -260,9 +283,18 @@ public class CameraStatisticsActivity extends Activity implements OkHttpClientMa
                 dialog.dismiss();
             }
         }).show();
-
     }
-
+    //选择类型
+    private void selectType() {
+        new AlertDialog.Builder(CameraStatisticsActivity.this,AlertDialog.THEME_HOLO_LIGHT).setTitle("选择类型").setItems(typeArray,new DialogInterface.OnClickListener(){
+            public void onClick(DialogInterface dialog, int which){
+                Toast.makeText(CameraStatisticsActivity.this, getString(R.string.your_select) + typeArray[which],Toast.LENGTH_LONG).show();
+                type_btn.setText(typeArray[which]);
+                type_btn.setTag(type_tagArray[which]);
+                dialog.dismiss();
+            }
+        }).show();
+    }
     private class ChartDataAdapter extends ArrayAdapter<ChartItem> {
         private List<ChartItem> objects;
 

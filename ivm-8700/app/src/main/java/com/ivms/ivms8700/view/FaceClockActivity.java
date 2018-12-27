@@ -157,13 +157,21 @@ public class FaceClockActivity extends Activity implements View.OnClickListener,
                 break;
             case R.id.time_btn:
                 calendar = Calendar.getInstance();
-                dialog = new DatePickerDialog(FaceClockActivity.this,AlertDialog.THEME_HOLO_LIGHT,
+                dialog = new DatePickerDialog(FaceClockActivity.this, AlertDialog.THEME_HOLO_LIGHT,
                         new DatePickerDialog.OnDateSetListener() {
                             @Override
                             public void onDateSet(DatePicker view, int year,
                                                   int monthOfYear, int dayOfMonth) {
-                                time_btn.setText(year + "-" + monthOfYear + "-"
-                                        + dayOfMonth);
+                                String month=(monthOfYear+1)+"";
+                                if(monthOfYear+1<10){
+                                    month="0"+month;
+                                }
+                                String day=dayOfMonth+"";
+                                if(dayOfMonth<10){
+                                    day="0"+day;
+                                }
+                                time_btn.setText(year + "-" + month + "-"
+                                        + day);
                             }
                         }, calendar.get(Calendar.YEAR), calendar
                         .get(Calendar.MONTH), calendar

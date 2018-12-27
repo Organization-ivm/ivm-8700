@@ -27,11 +27,21 @@ public final class UIUtil {
 	}
 
 	public static void showProgressDialog(Context c, String msg) {
-		dialog = ProgressDialog.show(c, "", msg);
+		dialog = new ProgressDialog(c, ProgressDialog.THEME_HOLO_LIGHT);
+
+		dialog.setMessage(msg);
+		dialog.setCanceledOnTouchOutside(false);
+		dialog.setCancelable(true);
+		dialog.show();
 	}
 
 	public static void showProgressDialog(Context c, int resId) {
-		dialog = ProgressDialog.show(c, "", c.getString(resId));
+		dialog = new ProgressDialog(c, ProgressDialog.THEME_HOLO_LIGHT);
+
+		dialog.setMessage(c.getString(resId));
+		dialog.setCanceledOnTouchOutside(false);
+		dialog.setCancelable(true);
+		dialog.show();
 	}
 
 	public static void cancelProgressDialog() {
