@@ -8,6 +8,7 @@
     <color name="main_text_57576B">#57576B</color>
     <color name="main_text_454545">#454545</color>
     <color name="main_back_e6e6e6">#E6E6E6</color>
-
-
+    <color name="tabTransparent">#10ffffff</color>
+    <color name="Translucency">#e0000000</color>
+    <color name="transparent">#00000000</color>
 </resources>

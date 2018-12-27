@@ -121,6 +121,7 @@ public class HelmetIdentActivity extends Activity implements View.OnClickListene
 
     //刷新数据
     private void refreshData() {
+        UIUtil.showProgressDialog(this,R.string.loading_process_tip);
         String url = "";
         url += local_url + "/shm/safeCapRecognize?";
         url += "recognizeTime=" + time_btn.getText().toString().trim();
@@ -199,6 +200,7 @@ public class HelmetIdentActivity extends Activity implements View.OnClickListene
                     UIUtil.showToast(this, getString(R.string.time_toast));
                     return;
                 }
+
                 refreshData();
                 break;
             case R.id.time_btn:
@@ -245,10 +247,11 @@ public class HelmetIdentActivity extends Activity implements View.OnClickListene
 
     @Override
     public void onResponse(JSONObject jsonObject) {
+        UIUtil.cancelProgressDialog();
         try {
             String result = jsonObject.getString("result");
+            mDiscernList.clear();
             if (result.equals("success")) {
-                mDiscernList.clear();
                 JSONObject data = jsonObject.getJSONObject("data");
                 JSONArray list = data.getJSONArray("list");
                 for (int i = 0; i < list.length(); i++) {
