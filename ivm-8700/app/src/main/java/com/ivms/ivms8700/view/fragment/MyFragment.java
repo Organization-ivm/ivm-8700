@@ -30,6 +30,7 @@ import com.ivms.ivms8700.view.CameraStatisticsActivity;
 import com.ivms.ivms8700.view.FaceClockActivity;
 import com.ivms.ivms8700.view.HelmetIdentActivity;
 import com.ivms.ivms8700.view.OnlineSummaryActivity;
+import com.ivms.ivms8700.view.WeatherActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -51,6 +52,7 @@ public class MyFragment extends Fragment implements View.OnClickListener, OkHttp
     private String local_url;
     private String userName;
     private TextView username;
+    private RelativeLayout weather_lay;
 
     @Nullable
     @Override
@@ -74,6 +76,8 @@ public class MyFragment extends Fragment implements View.OnClickListener, OkHttp
             camera_statisic_lay.setOnClickListener(this);
             online_summary_lay = (RelativeLayout) view.findViewById(R.id.online_summary_lay);
             online_summary_lay.setOnClickListener(this);
+            weather_lay= (RelativeLayout) view.findViewById(R.id.weather_lay);
+            weather_lay.setOnClickListener(this);
         }
         okHttpClientManager = OkHttpClientManager.getInstance();
         return view;
@@ -107,11 +111,16 @@ public class MyFragment extends Fragment implements View.OnClickListener, OkHttp
                 Intent camera_intent = new Intent(getActivity(), CameraStatisticsActivity.class);
                 getActivity().startActivity(camera_intent);
                 break;
+
+
             case R.id.online_summary_lay://摄像机在线汇总
                 String url=local_url+"/shm/cameraSummary?userName="+userName+"&token="+ Constants.APP_TOKEN;
                 OkHttpClientManager.getInstance().asyncJsonObjectByUrl(url,this);
                 break;
-
+            case R.id.weather_lay://气象
+                Intent weather_intent = new Intent(getActivity(), WeatherActivity.class);
+                getActivity().startActivity(weather_intent);
+                break;
         }
     }
 

@@ -31,8 +31,7 @@
         </activity>
         <activity
             android:name=".view.MainActivity"
-            android:label="@string/title_activity_main"
-            />
+            android:label="@string/title_activity_main" />
         <activity
             android:name=".view.SetingActivity"
             android:label="@string/title_activity_seting" />
@@ -96,6 +95,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".view.WeatherActivity"></activity>
     </application>
 
 </manifest>

@@ -79,7 +79,7 @@ public class FaceDetailActivity extends Activity implements View.OnClickListener
             phone_txt.setText(faceEntity.getPhone());
             rq_txt.setText(faceEntity.getDate());
             imageUrl ="http://222.66.82.4:80/shm/"+faceEntity.getFaceCapture();
-            Log.i("Alan","url="+imageUrl);
+            Log.i("Alan","imageUrl="+imageUrl);
 
             Glide.with(this).load(imageUrl).into(user_img);
     }

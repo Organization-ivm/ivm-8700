@@ -125,7 +125,7 @@
             android:background="@drawable/arrow1"/>
     </RelativeLayout>
     <RelativeLayout
-        android:id="@+id/online_weather_lay"
+        android:id="@+id/weather_lay"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp50"
         android:gravity="center_vertical"

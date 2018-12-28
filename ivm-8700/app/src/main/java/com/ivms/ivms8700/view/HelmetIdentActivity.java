@@ -280,10 +280,10 @@ public class HelmetIdentActivity extends Activity implements View.OnClickListene
                         }
                     }
                 }
-                adapter.notifyDataSetChanged();
             } else {
                 UIUtil.showToast(this, jsonObject.getString("msg"));
             }
+            adapter.notifyDataSetChanged();
         } catch (JSONException e) {
             e.printStackTrace();
         }
