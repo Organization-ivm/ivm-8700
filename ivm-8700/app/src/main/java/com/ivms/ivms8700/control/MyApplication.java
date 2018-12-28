@@ -9,9 +9,12 @@ import com.hikvision.sdk.VMSNetSDK;
 import com.hikvision.sdk.net.bean.LoginData;
 import com.ivms.ivms8700.mysdk.MyVMSNetSDK;
 
+import org.json.JSONArray;
+
 public class MyApplication extends Application implements AppForegroundStateManager.OnAppForegroundStateChangeListener {
     private static MyApplication ins;
     private LoginData loginData;
+    private JSONArray videoList=null;
     @Override
     public void onCreate() {
         super.onCreate();
@@ -43,5 +46,13 @@ public class MyApplication extends Application implements AppForegroundStateMana
         } else {
             Log.i("Alan","App just entered the background. Do something here!");
         }
+    }
+
+    public JSONArray getVideoList() {
+        return videoList;
+    }
+
+    public void setVideoList(JSONArray videoList) {
+        this.videoList = videoList;
     }
 }

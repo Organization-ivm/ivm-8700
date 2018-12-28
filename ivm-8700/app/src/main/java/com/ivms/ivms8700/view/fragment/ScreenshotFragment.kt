@@ -203,8 +203,11 @@ class ScreenshotFragment : Fragment(), ImageAdapter.OnShowItemClickListener {
         iv_background = v.findViewById(R.id.background2) as ImageView
         dataList = ArrayList<Bean>()
         initDataList()
-        myAdapter = ImageAdapter(context, paths, gridView, dataList)
+//        myAdapter = ImageAdapter(context, paths, gridView, dataList)
+        myAdapter = ImageAdapter(context, gridView)
         myAdapter!!.setOnShowItemClickListener(this)
+        myAdapter!!.imageThumUrls = paths
+        myAdapter!!.setItems(dataList)
         gridView.setAdapter(myAdapter)
     }
 
@@ -277,8 +280,8 @@ class ScreenshotFragment : Fragment(), ImageAdapter.OnShowItemClickListener {
             }
             parentFragment!!.activity!!.runOnUiThread {
                 cancelLoadingProgress()
+                myAdapter!!.imageThumUrls = paths
                 myAdapter!!.setItems(dataList)
-                myAdapter!!.setImageThumUrls(paths)
 
                 myAdapter!!.notifyDataSetChanged()
             }
@@ -327,6 +330,9 @@ class ScreenshotFragment : Fragment(), ImageAdapter.OnShowItemClickListener {
                 item.setChecked(false)
             }
             selectedList!!.clear()
+            myAdapter!!.imageThumUrls = paths
+            myAdapter!!.setItems(dataList)
+
             myAdapter!!.notifyDataSetChanged()
 
 
@@ -334,6 +340,8 @@ class ScreenshotFragment : Fragment(), ImageAdapter.OnShowItemClickListener {
         for (item in dataList!!) {
             item.setShow(isShow)
         }
+        myAdapter!!.imageThumUrls = paths
+        myAdapter!!.setItems(dataList)
         myAdapter!!.notifyDataSetChanged()
         isSel = !isSel
 
@@ -351,6 +359,8 @@ class ScreenshotFragment : Fragment(), ImageAdapter.OnShowItemClickListener {
                     isShow = false
                     item.setChecked(false)
                 }
+                myAdapter!!.imageThumUrls = paths
+                myAdapter!!.setItems(dataList)
                 myAdapter!!.notifyDataSetChanged()
 
             } else {
@@ -359,6 +369,8 @@ class ScreenshotFragment : Fragment(), ImageAdapter.OnShowItemClickListener {
             for (item in dataList!!) {
                 item.setShow(isShow)
             }
+            myAdapter!!.imageThumUrls = paths
+            myAdapter!!.setItems(dataList)
             myAdapter!!.notifyDataSetChanged()
             isSel = !isSel
         }

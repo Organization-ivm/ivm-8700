@@ -31,12 +31,19 @@
             android:textSize="@dimen/dp20"
             android:layout_marginLeft="@dimen/dp14"
             android:text="@string/adress"/>
-
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:textSize="@dimen/dp20"
+            android:layout_marginLeft="@dimen/dp10"
+            android:text="@string/http_et"/>
         <EditText
             android:id="@+id/url_et"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:textSize="@dimen/dp18"
+            android:text="@string/url_et"
             android:digits="@string/rule_text"
             android:layout_marginLeft="@dimen/dp10"
             android:hint="@string/daress_hint"
@@ -68,6 +75,7 @@
             android:layout_height="match_parent"
             android:textSize="@dimen/dp18"
             android:layout_marginLeft="@dimen/dp10"
+            android:text="@string/port_et"
             android:hint="@string/port_hint"
             android:numeric="integer"
             android:background="@null"/>
@@ -94,12 +102,19 @@
             android:textSize="@dimen/dp20"
             android:layout_marginLeft="@dimen/dp14"
             android:text="@string/adress"/>
-
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:textSize="@dimen/dp20"
+            android:layout_marginLeft="@dimen/dp10"
+            android:text="@string/https_et"/>
         <EditText
             android:id="@+id/video_url_et"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:textSize="@dimen/dp18"
+            android:text="@string/video_url_et"
             android:digits="@string/rule_text"
             android:layout_marginLeft="@dimen/dp10"
             android:hint="@string/daress_hint"
@@ -130,6 +145,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:textSize="@dimen/dp18"
+            android:text="@string/video_port_et"
             android:layout_marginLeft="@dimen/dp10"
             android:hint="@string/port_hint"
             android:numeric="integer"

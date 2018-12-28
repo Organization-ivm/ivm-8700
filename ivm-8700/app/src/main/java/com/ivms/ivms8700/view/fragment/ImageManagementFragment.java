@@ -17,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.ivms.ivms8700.R;
+import com.ivms.ivms8700.utils.NoDoubleClickListener;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -53,7 +54,7 @@ public class ImageManagementFragment extends Fragment {
         }
         unbinder = ButterKnife.bind(this, view);
         setListener();
-        initFragment(0,false);
+        initFragment(0, false);
         return view;
     }
 
@@ -81,24 +82,23 @@ public class ImageManagementFragment extends Fragment {
 //    }
 
     private void setListener() {
-        llVideoScreenshot.setOnClickListener(new View.OnClickListener() {
+        llVideoScreenshot.setOnClickListener(new NoDoubleClickListener() {
             @Override
-            public void onClick(View v) {
+            protected void onNoDoubleClick(View v) {
                 selectWhat = 0;
-                initFragment(0,false);
-
+                initFragment(0, false);
             }
         });
-        llVideoVideo.setOnClickListener(new View.OnClickListener() {
+        llVideoVideo.setOnClickListener(new NoDoubleClickListener() {
             @Override
-            public void onClick(View v) {
+            protected void onNoDoubleClick(View v) {
                 selectWhat = 1;
-                initFragment(1,false);
+                initFragment(1, false);
             }
         });
-        ivScreen.setOnClickListener(new View.OnClickListener() {
+        ivScreen.setOnClickListener(new NoDoubleClickListener() {
             @Override
-            public void onClick(View v) {
+            protected void onNoDoubleClick(View v) {
                 if (selectWhat == 0) {
                     screenshotFragment.changeShow();
                     screenshotFragment.choose();
@@ -110,8 +110,6 @@ public class ImageManagementFragment extends Fragment {
                 }
             }
         });
-
-
     }
 
     @Override
@@ -131,21 +129,21 @@ public class ImageManagementFragment extends Fragment {
     }
 
 
-    private void initFragment(int index,boolean needReStart) {
+    private void initFragment(int index, boolean needReStart) {
         // 由于是引用了V4包下的Fragment，所以这里的管理器要用getSupportFragmentManager获取
-        if(fragmentManager == null){
+        if (fragmentManager == null) {
 
             fragmentManager = getChildFragmentManager();
         }
         // 开启事务
         FragmentTransaction transaction = fragmentManager.beginTransaction();
-        if(needReStart){
+        if (needReStart) {
             transaction.remove(screenshotFragment);
-            if(null != screenshotFragment){
+            if (null != screenshotFragment) {
                 screenshotFragment.clearDate();
             }
             transaction.remove(localVideoFragment);
-            if(null != localVideoFragment){
+            if (null != localVideoFragment) {
                 screenshotFragment.clearDate();
             }
         }
@@ -195,12 +193,13 @@ public class ImageManagementFragment extends Fragment {
         }
 
     }
-    public void onKeyDown(int keyCode, KeyEvent event){
+
+    public void onKeyDown(int keyCode, KeyEvent event) {
         if (selectWhat == 0) {
-            screenshotFragment.onKeyDown(keyCode,event);
+            screenshotFragment.onKeyDown(keyCode, event);
 
         } else {
-            localVideoFragment.onKeyDown(keyCode,event);
+            localVideoFragment.onKeyDown(keyCode, event);
 
         }
 

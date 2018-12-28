@@ -16,7 +16,7 @@
     <string name="video">视频</string>
     <string name="image_management">图像管理</string>
     <string name="message">消息</string>
-    <string name="my">我的</string>
+    <string name="my">运维管理</string>
     <string name="video_snapshot">视频截图</string>
     <string name="local_video">本地录像</string>
     <string name="share">分享</string>
@@ -24,6 +24,14 @@
     <string name="username">admin</string>
 
     <string name="main_url_hint">服务器地址(https://10.33.31.200:443)</string>
+    <string name="http_et">http://</string>
+    <string name="https_et">https://</string>
+    <string name="url_et">222.66.82.4</string>
+    <string name="port_et">80</string>
+    <string name="video_url_et">222.66.82.2</string>
+    <string name="video_port_et">443</string>
+
+
     <string name="main_user_name_hint">用户名</string>
     <string name="main_psd_hint">密码</string>
     <string name="main_login">登陆</string>
@@ -65,6 +73,7 @@
     <string name="renlianshibie_kaoqin_detail">考勤详细</string>
     <string name="shexiangji_tongji">摄像机在线率统计</string>
     <string name="shexiangji_huizong">摄像机实时在线汇总</string>
+    <string name="weather_lay">气象</string>
     <string name="isjieshouxiaoxi">是否接收消息</string>
     <string name="outapp">注销登录</string>
     <string-array name="camera_select_items">
@@ -91,6 +100,7 @@
     <string name="xl_select">线路：</string>
     <string name="zd_select">站点：</string>
     <string name="time_select">时间：</string>
+    <string name="type_txt">类型：</string>
     <string name="keyword_select">关键字：</string>
     <string name="keyword_ex">如：姓名</string>
     <string name="notarize_search">确认查询</string>
@@ -101,6 +111,14 @@
     <string name="bm_txt">部门：</string>
     <string name="phone_txt">电话：</string>
     <string name="rq_txt">拍摄日期：</string>
+    <string name="your_select">您已经选择了</string>
+    <string name="plase_xl">请先选择线路</string>
 
-
+    <string name="sure_log_out">确定退出系统吗？</string>
+    <string name="sure">确定</string>
+    <string name="cancle">取消</string>
+    <string name="online_number">在线数量:&#160;&#160;&#160;</string>
+    <string name="offline_number">\n离线数量:&#160;&#160;&#160;</string>
+    <string name="xl_toast">线路不能为空</string>
+    <string name="time_toast">时间不能为空</string>
 </resources>

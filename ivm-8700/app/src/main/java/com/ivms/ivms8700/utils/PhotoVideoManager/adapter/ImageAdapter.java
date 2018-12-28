@@ -62,6 +62,16 @@ public class ImageAdapter extends BaseAdapter implements OnScrollListener {
         this.mImageDownloader = new ImageDownloader(context);
         gridView.setOnScrollListener(this);
     }
+    public ImageAdapter(Context context,GridView gridView ){
+//        this.items = list;
+//        Log.i("tag", "===adapter===" + list.size());
+        inflater = LayoutInflater.from(context);
+        this.context = context;
+        this.gridView = gridView;
+//        this.imageThumUrls = paths;
+        this.mImageDownloader = new ImageDownloader(context);
+        gridView.setOnScrollListener(this);
+    }
 
 
     @Override

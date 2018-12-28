@@ -6,7 +6,7 @@
     android:background="#F6F6F6">
    <LinearLayout
        android:layout_width="match_parent"
-       android:layout_height="@dimen/dp260"
+       android:layout_height="@dimen/dp220"
        android:gravity="center"
        android:orientation="vertical"
        android:background="@drawable/juxing">
@@ -27,7 +27,7 @@
     <RelativeLayout
         android:id="@+id/face_clock_btn"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp60"
+        android:layout_height="@dimen/dp50"
         android:gravity="center_vertical"
         android:layout_marginTop="@dimen/dp10"
         android:background="#ffffff">
@@ -40,7 +40,7 @@
             android:layout_marginLeft="@dimen/dp60"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/dp18"
+            android:textSize="@dimen/dp16"
             android:text="@string/renlianshibie_kaoqin"/>
         <ImageView
             android:layout_alignParentRight="true"
@@ -52,7 +52,7 @@
     <RelativeLayout
         android:id="@+id/helmet_identification_btn"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp60"
+        android:layout_height="@dimen/dp50"
         android:gravity="center_vertical"
         android:layout_marginTop="0.4dp"
         android:background="#ffffff">
@@ -65,7 +65,7 @@
             android:layout_marginLeft="@dimen/dp60"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/dp18"
+            android:textSize="@dimen/dp16"
             android:text="@string/helmet_identification"/>
         <ImageView
             android:layout_alignParentRight="true"
@@ -75,8 +75,9 @@
             android:background="@drawable/arrow1"/>
     </RelativeLayout>
     <RelativeLayout
+        android:id="@+id/camera_statisic_lay"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp60"
+        android:layout_height="@dimen/dp50"
         android:gravity="center_vertical"
         android:layout_marginTop="@dimen/dp10"
         android:background="#ffffff">
@@ -89,7 +90,7 @@
             android:layout_marginLeft="@dimen/dp60"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/dp18"
+            android:textSize="@dimen/dp16"
             android:text="@string/shexiangji_tongji"/>
         <ImageView
             android:layout_alignParentRight="true"
@@ -99,8 +100,9 @@
             android:background="@drawable/arrow1"/>
     </RelativeLayout>
     <RelativeLayout
+        android:id="@+id/online_summary_lay"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp60"
+        android:layout_height="@dimen/dp50"
         android:gravity="center_vertical"
         android:layout_marginTop="0.4dp"
         android:background="#ffffff">
@@ -113,7 +115,7 @@
             android:layout_marginLeft="@dimen/dp60"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/dp18"
+            android:textSize="@dimen/dp16"
             android:text="@string/shexiangji_huizong"/>
         <ImageView
             android:layout_alignParentRight="true"
@@ -122,10 +124,34 @@
             android:layout_height="@dimen/dp15"
             android:background="@drawable/arrow1"/>
     </RelativeLayout>
-
+    <RelativeLayout
+        android:id="@+id/online_weather_lay"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp50"
+        android:gravity="center_vertical"
+        android:layout_marginTop="0.4dp"
+        android:background="#ffffff">
+        <ImageView
+            android:layout_width="@dimen/dp24"
+            android:layout_height="@dimen/dp24"
+            android:layout_marginLeft="@dimen/dp16"
+            android:background="@drawable/weather_img"/>
+        <TextView
+            android:layout_marginLeft="@dimen/dp60"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/dp16"
+            android:text="@string/weather_lay"/>
+        <ImageView
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="@dimen/dp18"
+            android:layout_width="@dimen/dp8"
+            android:layout_height="@dimen/dp15"
+            android:background="@drawable/arrow1"/>
+    </RelativeLayout>
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp60"
+        android:layout_height="@dimen/dp50"
         android:gravity="center_vertical"
         android:layout_marginTop="@dimen/dp10"
         android:background="#ffffff">
@@ -138,7 +164,7 @@
             android:layout_marginLeft="@dimen/dp60"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/dp18"
+            android:textSize="@dimen/dp16"
             android:text="@string/isjieshouxiaoxi"/>
         <ImageView
             android:id="@+id/message_btn"
@@ -152,9 +178,9 @@
     <RelativeLayout
         android:id="@+id/out_app_btn"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp60"
+        android:layout_height="@dimen/dp56"
         android:gravity="center"
-        android:layout_marginTop="@dimen/dp30"
+        android:layout_marginTop="@dimen/dp20"
         android:background="#ffffff">
 
         <TextView

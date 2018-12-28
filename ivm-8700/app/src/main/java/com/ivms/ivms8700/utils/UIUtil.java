@@ -6,6 +6,8 @@ import android.net.wifi.WifiManager;
 import android.widget.Toast;
 
 import com.hikvision.sdk.VMSNetSDK;
+import com.ivms.ivms8700.R;
+import com.ivms.ivms8700.view.customui.MyProgressDialog;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -13,7 +15,7 @@ import java.util.Date;
 
 public final class UIUtil {
 
-	private static ProgressDialog dialog;
+	private static MyProgressDialog dialog;
 
 	private UIUtil() {
 	}
@@ -27,11 +29,13 @@ public final class UIUtil {
 	}
 
 	public static void showProgressDialog(Context c, String msg) {
-		dialog = ProgressDialog.show(c, "", msg);
+		dialog = new MyProgressDialog(c,msg);
+		dialog.show();
 	}
 
 	public static void showProgressDialog(Context c, int resId) {
-		dialog = ProgressDialog.show(c, "", c.getString(resId));
+		dialog = new MyProgressDialog(c,resId);
+		dialog.show();
 	}
 
 	public static void cancelProgressDialog() {

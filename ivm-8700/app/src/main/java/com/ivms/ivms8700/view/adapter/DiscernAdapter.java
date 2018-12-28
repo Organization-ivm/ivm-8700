@@ -1,14 +1,21 @@
 package com.ivms.ivms8700.view.adapter;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
 import com.ivms.ivms8700.R;
 import com.ivms.ivms8700.bean.DiscernEntity;
+import com.polites.android.GestureImageView;
+
 import java.util.List;
 
 /***
@@ -21,6 +28,7 @@ public class DiscernAdapter extends RecyclerView.Adapter<DiscernAdapter.ViewHold
 
     private List<DiscernEntity> discernList;
     private Context mContext;
+    private Dialog dia;
     public DiscernAdapter(List<DiscernEntity> mDiscernList, Context mContext) {
         this.discernList = mDiscernList;
         this.mContext=mContext;
@@ -43,7 +51,7 @@ public class DiscernAdapter extends RecyclerView.Adapter<DiscernAdapter.ViewHold
             @Override
             public void onClick(View v) {
 
-
+                showDialog(discernEntity.getSafeCapCapture());
             }
         });
 
@@ -69,5 +77,21 @@ public class DiscernAdapter extends RecyclerView.Adapter<DiscernAdapter.ViewHold
         }
     }
 
-
+    private void showDialog(String url) {
+        dia =new Dialog(mContext, R.style.edit_AlertDialog_style);
+        dia.setContentView(R.layout.activity_start_dialog);
+        GestureImageView imageView =(GestureImageView) dia.findViewById(R.id.start_img);
+        Glide.with(mContext).load("http://222.66.82.4:80/shm/"+url).into(imageView);
+        dia.show();
+        dia.setCanceledOnTouchOutside(true);
+        Window w = dia.getWindow();
+        WindowManager.LayoutParams lp = w.getAttributes();
+        lp.x = 0; lp.y = 40; dia.onWindowAttributesChanged(lp);
+        imageView.setOnClickListener( new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dia.dismiss();
+            }
+        });
+    }
 }
