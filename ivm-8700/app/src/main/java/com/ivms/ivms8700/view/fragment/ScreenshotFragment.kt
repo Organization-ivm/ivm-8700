@@ -61,6 +61,7 @@ class ScreenshotFragment : Fragment(), ImageAdapter.OnShowItemClickListener {
     override fun onHiddenChanged(hidden: Boolean) {
         super.onHiddenChanged(hidden)
         if (!hidden) {
+            Log.i("ScreenshotFragment","onHiddenChanged")
             initDataList()
 
         }
@@ -142,7 +143,7 @@ class ScreenshotFragment : Fragment(), ImageAdapter.OnShowItemClickListener {
                 dataList!!.removeAll(selectedList!!)
                 selectedList!!.clear()
                 dataList!!.clear()
-                myAdapter!!.clearData()
+//                myAdapter!!.clearData()
                 getAllFiles(path)
                 Log.i("tag", "==items.size===" + items!!.size)
                 for (i in 0..paths.size - 1) {
@@ -154,7 +155,7 @@ class ScreenshotFragment : Fragment(), ImageAdapter.OnShowItemClickListener {
                 }
                 changeShow()
                 choose()
-                myAdapter!!.imageThumUrls = paths
+//                myAdapter!!.imageThumUrls = paths
                 myAdapter!!.setItems(dataList)
                 gridView.setAdapter(myAdapter)
                 myAdapter!!.notifyDataSetChanged()
@@ -196,6 +197,7 @@ class ScreenshotFragment : Fragment(), ImageAdapter.OnShowItemClickListener {
 
     private fun initView(v: View) {
         Log.i("URI",path);
+        Log.i("ScreenshotFragment","onCreatView")
         gridView = v.findViewById(R.id.gridview) as GridView
         tvShare = v.findViewById(R.id.tvshare) as TextView
         tvDelete = v.findViewById(R.id.tvdelete) as TextView
@@ -203,11 +205,8 @@ class ScreenshotFragment : Fragment(), ImageAdapter.OnShowItemClickListener {
         iv_background = v.findViewById(R.id.background2) as ImageView
         dataList = ArrayList<Bean>()
         initDataList()
-//        myAdapter = ImageAdapter(context, paths, gridView, dataList)
-        myAdapter = ImageAdapter(context, gridView)
+        myAdapter = ImageAdapter(context, paths, gridView, dataList)
         myAdapter!!.setOnShowItemClickListener(this)
-        myAdapter!!.imageThumUrls = paths
-        myAdapter!!.setItems(dataList)
         gridView.setAdapter(myAdapter)
     }
 
@@ -280,8 +279,8 @@ class ScreenshotFragment : Fragment(), ImageAdapter.OnShowItemClickListener {
             }
             parentFragment!!.activity!!.runOnUiThread {
                 cancelLoadingProgress()
-                myAdapter!!.imageThumUrls = paths
                 myAdapter!!.setItems(dataList)
+//                myAdapter!!.setImageThumUrls(paths)
 
                 myAdapter!!.notifyDataSetChanged()
             }
@@ -303,7 +302,7 @@ class ScreenshotFragment : Fragment(), ImageAdapter.OnShowItemClickListener {
                     getAllFiles(path1)
                 } else {
                     val name = files[i].name.split("\\.".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-                    if (name.size == 2 && name[1] == "jpg" || name[1] == "png") {
+                    if (name.size == 2 &&(name[1] == "jpg" || name[1] == "png")) {
                         items.add(files[i].name)
                         paths.add(files[i].path)
                     }
@@ -330,9 +329,6 @@ class ScreenshotFragment : Fragment(), ImageAdapter.OnShowItemClickListener {
                 item.setChecked(false)
             }
             selectedList!!.clear()
-            myAdapter!!.imageThumUrls = paths
-            myAdapter!!.setItems(dataList)
-
             myAdapter!!.notifyDataSetChanged()
 
 
@@ -340,8 +336,6 @@ class ScreenshotFragment : Fragment(), ImageAdapter.OnShowItemClickListener {
         for (item in dataList!!) {
             item.setShow(isShow)
         }
-        myAdapter!!.imageThumUrls = paths
-        myAdapter!!.setItems(dataList)
         myAdapter!!.notifyDataSetChanged()
         isSel = !isSel
 
@@ -359,8 +353,6 @@ class ScreenshotFragment : Fragment(), ImageAdapter.OnShowItemClickListener {
                     isShow = false
                     item.setChecked(false)
                 }
-                myAdapter!!.imageThumUrls = paths
-                myAdapter!!.setItems(dataList)
                 myAdapter!!.notifyDataSetChanged()
 
             } else {
@@ -369,8 +361,6 @@ class ScreenshotFragment : Fragment(), ImageAdapter.OnShowItemClickListener {
             for (item in dataList!!) {
                 item.setShow(isShow)
             }
-            myAdapter!!.imageThumUrls = paths
-            myAdapter!!.setItems(dataList)
             myAdapter!!.notifyDataSetChanged()
             isSel = !isSel
         }

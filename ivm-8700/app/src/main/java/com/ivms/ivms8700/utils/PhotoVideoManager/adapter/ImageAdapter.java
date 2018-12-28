@@ -23,13 +23,12 @@ import com.ivms.ivms8700.R;
 import com.ivms.ivms8700.utils.PhotoVideoManager.bean.Bean;
 import com.ivms.ivms8700.utils.PhotoVideoManager.utils.ImageDownloader;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ImageAdapter extends BaseAdapter implements OnScrollListener {
     private GridView gridView;
     private Context context;
-    private List<String> imageThumUrls = new ArrayList<>();
+//    private List<String> imageThumUrls = new ArrayList<>();
     private ImageDownloader mImageDownloader;
     private boolean isFirstEnter = true;
     private int mFirstVisibleItem;
@@ -43,14 +42,14 @@ public class ImageAdapter extends BaseAdapter implements OnScrollListener {
     public void setItems(List<Bean> items) {
         this.items = items;
     }
-
-    public List<String> getImageThumUrls() {
-        return imageThumUrls;
-    }
-
-    public void setImageThumUrls(List<String> imageThumUrls) {
-        this.imageThumUrls = imageThumUrls;
-    }
+//
+//    public List<String> getImageThumUrls() {
+//        return imageThumUrls;
+//    }
+//
+//    public void setImageThumUrls(List<String> imageThumUrls) {
+//        this.imageThumUrls = imageThumUrls;
+//    }
 
     public ImageAdapter(Context context, List<String> paths, GridView gridView, List<Bean> list) {
         this.items = list;
@@ -58,7 +57,7 @@ public class ImageAdapter extends BaseAdapter implements OnScrollListener {
         inflater = LayoutInflater.from(context);
         this.context = context;
         this.gridView = gridView;
-        this.imageThumUrls = paths;
+//        this.imageThumUrls = paths;
         this.mImageDownloader = new ImageDownloader(context);
         gridView.setOnScrollListener(this);
     }
@@ -110,7 +109,7 @@ public class ImageAdapter extends BaseAdapter implements OnScrollListener {
         } else {
             holder.cb.setVisibility(View.GONE);
         }
-        String imageUrl = "" + imageThumUrls.get(position);
+        String imageUrl = "" + bean.getFilePath();
         //只显示缓存图片，如果缓存中没有则设置一张默认的图片
         Bitmap bitmap = mImageDownloader.showCacheBitmap(imageUrl.replaceAll("[^\\w]", ""));
         if (bitmap != null) {
@@ -177,7 +176,7 @@ public class ImageAdapter extends BaseAdapter implements OnScrollListener {
      */
     private void showImage(int firstVisibleItem, int visibleItemCount) {
         for (int i = firstVisibleItem; i < firstVisibleItem + visibleItemCount; i++) {
-            String mImageUrl = "" + imageThumUrls.get(i);
+            String mImageUrl = "" + items.get(i).getFilePath();
             final ImageView mImageView = (ImageView) gridView.findViewWithTag(mImageUrl);
             mImageDownloader.downloadImage(mImageUrl, new ImageDownloader.OnImageDownloadListener() {
                 @Override
@@ -190,9 +189,9 @@ public class ImageAdapter extends BaseAdapter implements OnScrollListener {
         }
     }
 
-    public void clearData() {
-        imageThumUrls.clear();
-    }
+//    public void clearData() {
+//        imageThumUrls.clear();
+//    }
 
     /**
      * 取消下载任务
