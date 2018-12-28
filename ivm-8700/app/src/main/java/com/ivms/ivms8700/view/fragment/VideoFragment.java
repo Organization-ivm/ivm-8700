@@ -68,10 +68,10 @@ import java.util.TimerTask;
 
 import static android.app.Activity.RESULT_OK;
 
-public class VideoFragment extends Fragment implements View.OnClickListener,SurfaceHolder.Callback, LiveControl.LiveCallBack, PlayBackCallBack {
+public class VideoFragment extends Fragment implements View.OnClickListener, SurfaceHolder.Callback, LiveControl.LiveCallBack, PlayBackCallBack {
 
-    private final String TAG="Alan";
-    private final int RECULET_CODE=1;//选择完监控点回调
+    private final String TAG = "Alan";
+    private final int RECULET_CODE = 1;//选择完监控点回调
     private View view;
 
     /**
@@ -97,7 +97,7 @@ public class VideoFragment extends Fragment implements View.OnClickListener,Surf
     /**
      * 预览控件 --当前点击的 CustomSurfaceView
      */
-    private CustomSurfaceView curSurfaceView =null;
+    private CustomSurfaceView curSurfaceView = null;
 
 
     /**
@@ -204,7 +204,7 @@ public class VideoFragment extends Fragment implements View.OnClickListener,Surf
     /**
      * 电子放大
      */
-    boolean isZoom =false;
+    boolean isZoom = false;
 
     /**
      * 控制层对象
@@ -222,14 +222,14 @@ public class VideoFragment extends Fragment implements View.OnClickListener,Surf
     private LinearLayout contrl_lay;
     private AlertDialog alertDialog; //信息框
     private int VIDEO_VIEW_COUNT = 1;
-    private int mCurIndex=0;//当前显示的下标
+    private int mCurIndex = 0;//当前显示的下标
     private RecyclerView video_recyclerview;
     private AdapterVideoRecyView video_adapter;
     private ImageView one_view_img;
     private ImageView four_view_img;
     private ImageView nine_view_img;
     private ImageView add_video;
-    List<VideoEntity> videList =null;
+    List<VideoEntity> videList = null;
     private Camera curCamer; //当前camer
     private ImageView playBackRecord_img;
     private LinearLayout fangda_lay;
@@ -246,14 +246,14 @@ public class VideoFragment extends Fragment implements View.OnClickListener,Surf
             huifang_view = (View) view.findViewById(R.id.huifang_view);
             contrl_lay = (LinearLayout) view.findViewById(R.id.contrl_lay); //云台控制
             playBackRecord = (LinearLayout) view.findViewById(R.id.playBackRecord); //本地录像
-            playBackRecord_img=(ImageView) view.findViewById(R.id.playBackRecord_img);
+            playBackRecord_img = (ImageView) view.findViewById(R.id.playBackRecord_img);
             playBackCapture = (LinearLayout) view.findViewById(R.id.playBackCapture); //本地截图
-            fangda_lay=(LinearLayout)view.findViewById(R.id.fangda_lay);
-            fangda_img=(ImageView)view.findViewById(R.id.fangda_img);
+            fangda_lay = (LinearLayout) view.findViewById(R.id.fangda_lay);
+            fangda_img = (ImageView) view.findViewById(R.id.fangda_img);
 
-            one_view_img=(ImageView)view.findViewById(R.id.one_view_img);
-            four_view_img=(ImageView)view.findViewById(R.id.four_view_img);
-            nine_view_img=(ImageView)view.findViewById(R.id.nine_view_img);
+            one_view_img = (ImageView) view.findViewById(R.id.one_view_img);
+            four_view_img = (ImageView) view.findViewById(R.id.four_view_img);
+            nine_view_img = (ImageView) view.findViewById(R.id.nine_view_img);
 
             one_view_img.setOnClickListener(this);
             four_view_img.setOnClickListener(this);
@@ -266,21 +266,22 @@ public class VideoFragment extends Fragment implements View.OnClickListener,Surf
             fangda_lay.setOnClickListener(this);
 
             video_recyclerview = (RecyclerView) view.findViewById(R.id.video_recyclerview);
-            setGrilView(VIDEO_VIEW_COUNT,1);
+            setGrilView(VIDEO_VIEW_COUNT, 1);
 
         }
         return view;
     }
+
     //生成对应video_view
     private void setGrilView(int viewCount, int rowCount) {
-        videList =new ArrayList<>();
-        for (int i=0;i<viewCount;i++){
-            VideoEntity videoEntity =new VideoEntity();
+        videList = new ArrayList<>();
+        for (int i = 0; i < viewCount; i++) {
+            VideoEntity videoEntity = new VideoEntity();
             videoEntity.setRowCout(rowCount);
-            LiveControl liveControl=new LiveControl();
+            LiveControl liveControl = new LiveControl();
             liveControl.setLiveCallBack(this);
             videoEntity.setmLiveControl(liveControl);
-            PlayBackControl playBackControl=new PlayBackControl();
+            PlayBackControl playBackControl = new PlayBackControl();
             playBackControl.setPlayBackCallBack(this);
             videoEntity.setmPlayBackControl(playBackControl);
             videoEntity.setSelect(false);
@@ -289,48 +290,49 @@ public class VideoFragment extends Fragment implements View.OnClickListener,Surf
         //适配器
         video_adapter = new AdapterVideoRecyView(getActivity(), videList);
         video_recyclerview.setAdapter(video_adapter);
-        GridLayoutManager manager=new GridLayoutManager(getActivity(),rowCount);
+        GridLayoutManager manager = new GridLayoutManager(getActivity(), rowCount);
         //布局管理器
         video_recyclerview.setLayoutManager(manager);
         //条目点击监听
         video_adapter.setOnItemClickListener(new AdapterVideoRecyView.OnItemClickListener() {
-        @Override
-        public void onItemClick(View view, int position) {
-             mCurIndex=position;
-            //设置SurfaceView为选中状态
-            if(videList.get(position).isSelect()){//之前已被选中
-                LinearLayout itemView=(LinearLayout)view;
-                curSurfaceView=itemView.findViewById(R.id.surfaceView);
-                progressBar=(ProgressBar)itemView.findViewById(R.id.live_progress_bar);
-                add_video=(ImageView)itemView.findViewById(R.id.add_monitory);
-                mCurIndex=position;
-                tmPlayBackControl=videList.get(position).getmPlayBackControl();
-                tmLiveControl=videList.get(position).getmLiveControl();
-                intentAddM();
-            }else{
-                for (int i=0;i<videList.size();i++){
-                    if(i==position){
-                        videList.get(i).setSelect(true);
-                    }else{
-                        videList.get(i).setSelect(false);
-                    }
-                }
-                video_adapter.notifyDataSetChanged();
-                gotoLive(curCamer);
-            }
+            @Override
+            public void onItemClick(View view, int position) {
+                mCurIndex = position;
+                //设置SurfaceView为选中状态
+//            if(videList.get(position).isSelect()){//之前已被选中
+                LinearLayout itemView = (LinearLayout) view;
+                curSurfaceView = itemView.findViewById(R.id.surfaceView);
+                progressBar = (ProgressBar) itemView.findViewById(R.id.live_progress_bar);
+                add_video = (ImageView) itemView.findViewById(R.id.add_monitory);
+                mCurIndex = position;
+                tmPlayBackControl = videList.get(position).getmPlayBackControl();
+                tmLiveControl = videList.get(position).getmLiveControl();
+//                intentAddM();
+//            }else{
+//                for (int i=0;i<videList.size();i++){
+//                    if(i==position){
+//                        videList.get(i).setSelect(true);
+//                    }else{
+//                        videList.get(i).setSelect(false);
+//                    }
+//                }
+//                video_adapter.notifyDataSetChanged();
+//                gotoLive(curCamer);
+//            }
 
-        } });
+            }
+        });
         //添加监控点
         video_adapter.setOnItemImgClickListener(new AdapterVideoRecyView.OnItemImgClickListener() {
             @Override
             public void onItemImgClick(View view, int position) {
-                LinearLayout itemView=(LinearLayout)view;
-                curSurfaceView=itemView.findViewById(R.id.surfaceView);
-                progressBar=(ProgressBar)itemView.findViewById(R.id.live_progress_bar);
-                add_video=(ImageView)itemView.findViewById(R.id.add_monitory);
-                mCurIndex=position;
-                tmPlayBackControl=videList.get(position).getmPlayBackControl();
-                tmLiveControl=videList.get(position).getmLiveControl();
+                LinearLayout itemView = (LinearLayout) view;
+                curSurfaceView = itemView.findViewById(R.id.surfaceView);
+                progressBar = (ProgressBar) itemView.findViewById(R.id.live_progress_bar);
+                add_video = (ImageView) itemView.findViewById(R.id.add_monitory);
+                mCurIndex = position;
+                tmPlayBackControl = videList.get(position).getmPlayBackControl();
+                tmLiveControl = videList.get(position).getmLiveControl();
                 intentAddM();
             }
         });
@@ -341,16 +343,16 @@ public class VideoFragment extends Fragment implements View.OnClickListener,Surf
         switch (v.getId()) {
             case R.id.live_lay:
                 initControl();
-                VIDEO_VIEW_COUNT=1;
-                setGrilView(VIDEO_VIEW_COUNT,1);
+                VIDEO_VIEW_COUNT = 1;
+                setGrilView(VIDEO_VIEW_COUNT, 1);
                 palyType = 1;
                 live_view.setVisibility(View.VISIBLE);
                 huifang_view.setVisibility(View.INVISIBLE);
                 break;
             case R.id.huifang_lay:
                 initControl();
-                VIDEO_VIEW_COUNT=1;
-                setGrilView(VIDEO_VIEW_COUNT,1);
+                VIDEO_VIEW_COUNT = 1;
+                setGrilView(VIDEO_VIEW_COUNT, 1);
                 palyType = 2;
                 live_view.setVisibility(View.INVISIBLE);
                 huifang_view.setVisibility(View.VISIBLE);
@@ -363,11 +365,11 @@ public class VideoFragment extends Fragment implements View.OnClickListener,Surf
                 }
                 break;
             case R.id.fangda_lay://电子放大
-                if(isZoom){
-                    isZoom=false;
+                if (isZoom) {
+                    isZoom = false;
                     fangda_img.setBackgroundResource(R.drawable.fangda);
-                }else{
-                    isZoom=true;
+                } else {
+                    isZoom = true;
                     fangda_img.setBackgroundResource(R.drawable.fangda_select);
                 }
                 zoomBtnOnClick();
@@ -380,21 +382,23 @@ public class VideoFragment extends Fragment implements View.OnClickListener,Surf
                 }
                 break;
             case R.id.contrl_lay://云台控制
-                if(palyType==1) {
-                    if(null!=mLiveControl&&mLiveControl.getLiveState()==LiveControl.LIVE_PLAY) {//处于播放状态
+                if (palyType == 1) {
+                    if (null != mLiveControl && mLiveControl.getLiveState() == LiveControl.LIVE_PLAY) {//处于播放状态
                         showList();
-                    }else{
-                        UIUtil.showToast(getActivity(),"未处于预览状态");
+                    } else {
+                        UIUtil.showToast(getActivity(), "未处于预览状态");
                     }
-                }else{
+                } else {
                     UIUtil.showToast(getActivity(), "远程回放不支持云台控制");
                 }
                 break;
             case R.id.one_view_img://一屏
-                if(VIDEO_VIEW_COUNT!=1){
+                if (VIDEO_VIEW_COUNT != 1) {
+                    isZoom = false;
+                    fangda_img.setBackgroundResource(R.drawable.fangda);
                     initControl();
-                    VIDEO_VIEW_COUNT=1;
-                    setGrilView(VIDEO_VIEW_COUNT,1);
+                    VIDEO_VIEW_COUNT = 1;
+                    setGrilView(VIDEO_VIEW_COUNT, 1);
                     one_view_img.setBackgroundResource(R.drawable.one_2);
                     four_view_img.setBackgroundResource(R.drawable.four_2);
                     nine_view_img.setBackgroundResource(R.drawable.nine_1);
@@ -402,20 +406,24 @@ public class VideoFragment extends Fragment implements View.OnClickListener,Surf
 
                 break;
             case R.id.four_view_img://四屏
-                if(VIDEO_VIEW_COUNT!=4){
+                if (VIDEO_VIEW_COUNT != 4) {
+                    isZoom = false;
+                    fangda_img.setBackgroundResource(R.drawable.fangda);
                     initControl();
-                    VIDEO_VIEW_COUNT=4;
-                    setGrilView(  VIDEO_VIEW_COUNT,2);
+                    VIDEO_VIEW_COUNT = 4;
+                    setGrilView(VIDEO_VIEW_COUNT, 2);
                     one_view_img.setBackgroundResource(R.drawable.one_1);
                     four_view_img.setBackgroundResource(R.drawable.four_1);
                     nine_view_img.setBackgroundResource(R.drawable.nine_1);
                 }
                 break;
             case R.id.nine_view_img://九屏
-                if(VIDEO_VIEW_COUNT!=9){
+                if (VIDEO_VIEW_COUNT != 9) {
+                    isZoom = false;
+                    fangda_img.setBackgroundResource(R.drawable.fangda);
                     initControl();
-                    VIDEO_VIEW_COUNT=9;
-                    setGrilView(VIDEO_VIEW_COUNT,3);
+                    VIDEO_VIEW_COUNT = 9;
+                    setGrilView(VIDEO_VIEW_COUNT, 3);
                     one_view_img.setBackgroundResource(R.drawable.one_1);
                     four_view_img.setBackgroundResource(R.drawable.four_2);
                     nine_view_img.setBackgroundResource(R.drawable.nine_2);
@@ -424,12 +432,13 @@ public class VideoFragment extends Fragment implements View.OnClickListener,Surf
                 break;
         }
     }
+
     /**
      * @author lvlingdi 2016-5-6 上午10:31:05
      */
     private void zoomBtnOnClick() {
 
-        if (isZoom&&null!=curSurfaceView) {
+        if (isZoom && null != curSurfaceView) {
             curSurfaceView.setOnZoomListener(new OnZoomListener() {
 
                 @Override
@@ -442,33 +451,34 @@ public class VideoFragment extends Fragment implements View.OnClickListener,Surf
                 }
             });
         } else {
-            if(null!=curSurfaceView) {
+            if (null != curSurfaceView) {
                 curSurfaceView.setOnZoomListener(null);
                 if (null != mLiveControl) {
                     mLiveControl.setDisplayRegion(false, null, null);
                 }
-            }else{
-                UIUtil.showToast(getActivity(),"未开始播放");
+            } else {
+                UIUtil.showToast(getActivity(), "未开始播放");
             }
         }
 
     }
+
     //初始化控制层
     private void initControl() {
-        for (int i=0;i<videList.size();i++){
-            if(null!=videList.get(i).getmLiveControl()){
-                LiveControl liveControl=videList.get(i).getmLiveControl();
+        for (int i = 0; i < videList.size(); i++) {
+            if (null != videList.get(i).getmLiveControl()) {
+                LiveControl liveControl = videList.get(i).getmLiveControl();
                 liveControl.stop();
             }
-            if(null!=videList.get(i).getmPlayBackControl()){
-                PlayBackControl playBackControl=videList.get(i).getmPlayBackControl();
+            if (null != videList.get(i).getmPlayBackControl()) {
+                PlayBackControl playBackControl = videList.get(i).getmPlayBackControl();
                 playBackControl.stopPlayBack();
             }
         }
-        if(null!=mLiveControl){
+        if (null != mLiveControl) {
             mLiveControl.stop();
         }
-        if(null!=tmPlayBackControl){
+        if (null != tmPlayBackControl) {
             tmPlayBackControl.stopPlayBack();
         }
     }
@@ -478,20 +488,20 @@ public class VideoFragment extends Fragment implements View.OnClickListener,Surf
         super.onActivityResult(requestCode, resultCode, data);
 
 
-        switch (requestCode){
-            case RECULET_CODE ://监控列表回调
+        switch (requestCode) {
+            case RECULET_CODE://监控列表回调
                 if (resultCode == RESULT_OK) {
-                    if(null!=progressBar){
+                    if (null != progressBar) {
                         progressBar.setVisibility(View.VISIBLE);
                     }
-                    if(null!=add_video){
+                    if (null != add_video) {
                         add_video.setVisibility(View.GONE);
                     }
-                    mPlayBackControl=tmPlayBackControl;
-                    mLiveControl=tmLiveControl;
+                    mPlayBackControl = tmPlayBackControl;
+                    mLiveControl = tmLiveControl;
                     Bundle extras = data.getExtras();
-                    Camera camera= (Camera)extras.get("camera");
-                    curCamer=camera;
+                    Camera camera = (Camera) extras.get("camera");
+                    curCamer = camera;
                     switch (palyType) {
                         case 1:
                             //  预览
@@ -504,7 +514,7 @@ public class VideoFragment extends Fragment implements View.OnClickListener,Surf
                         case 2:
                             // 回放
                             if (MyVMSNetSDK.getInstance().isHasPlayBackPermission(camera)) {
-                                    gotoPlayBack(camera);
+                                gotoPlayBack(camera);
                             } else {
                                 UIUtil.showToast(getActivity(), R.string.no_permission);
                             }
@@ -1082,13 +1092,25 @@ public class VideoFragment extends Fragment implements View.OnClickListener,Surf
     //云台控制方法
     private void ptzBtnOnClick() {
         if (null != mLiveControl && LiveControl.LIVE_PLAY == mLiveControl.getLiveState()) {
-            if (mIsPtzStart) {
-                MyVMSNetSDK.getInstance().sendPTZCtrlCmd(cameraInfo, PTZCmd.ACTION_STOP, mPtzcommand);
-                mIsPtzStart = false;
-            } else {
-                MyVMSNetSDK.getInstance().sendPTZCtrlCmd(cameraInfo, PTZCmd.ACTION_START, mPtzcommand);
-                mIsPtzStart = true;
-            }
+//            if (mIsPtzStart) {
+//                MyVMSNetSDK.getInstance().sendPTZCtrlCmd(cameraInfo, PTZCmd.ACTION_STOP, mPtzcommand);
+//                mIsPtzStart = false;
+//            } else {
+            MyVMSNetSDK.getInstance().sendPTZCtrlCmd(cameraInfo, PTZCmd.ACTION_START, mPtzcommand);
+            mIsPtzStart = true;
+
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    //执行的方法
+                    MyVMSNetSDK.getInstance().sendPTZCtrlCmd(cameraInfo, PTZCmd.ACTION_STOP, mPtzcommand);
+//                mIsPtzStart = false;
+                }
+            }, 1000);//3秒后执行Runnable中的run方法
+
+
+//            }
         }
     }
 
@@ -1219,7 +1241,7 @@ public class VideoFragment extends Fragment implements View.OnClickListener,Surf
     private void intentAddM() {
 
         Intent intent = new Intent(getActivity(), AddMonitoryActivity.class);
-        startActivityForResult(intent,RECULET_CODE);
+        startActivityForResult(intent, RECULET_CODE);
     }
 
     @Override
@@ -1234,7 +1256,7 @@ public class VideoFragment extends Fragment implements View.OnClickListener,Surf
 
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
-        Log.i(TAG,"surfaceDestroyed");
+        Log.i(TAG, "surfaceDestroyed");
         initControl();
     }
 
