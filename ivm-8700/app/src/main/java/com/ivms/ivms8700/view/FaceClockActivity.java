@@ -7,9 +7,11 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -19,6 +21,7 @@ import com.ivms.ivms8700.R;
 import com.ivms.ivms8700.bean.FaceEntity;
 import com.ivms.ivms8700.control.Constants;
 import com.ivms.ivms8700.control.MyApplication;
+import com.ivms.ivms8700.utils.LocalDbUtil;
 import com.ivms.ivms8700.utils.UIUtil;
 import com.ivms.ivms8700.utils.okmanager.OkHttpClientManager;
 import com.ivms.ivms8700.view.adapter.FaceAdapter;
@@ -52,8 +55,11 @@ public class FaceClockActivity extends Activity implements View.OnClickListener,
     private String[] lineCodeList = null;
     private String[] stationCodeList = null;
     private String[] stationNameList = null;
-
+    private LocalDbUtil localDbUtil;
+    private String local_url;
+    private String userName;
     private JSONArray loginJsonArray;
+    private EditText key_et;
 
 
     @Override
@@ -61,14 +67,31 @@ public class FaceClockActivity extends Activity implements View.OnClickListener,
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_face_clock);
         initView();
-//        refreshData();
     }
     //刷新数据
     private void refreshData() {
-        OkHttpClientManager.getInstance().asyncJsonObjectByUrl("http://222.66.82.4/shm/faceRecognize?recognizeTime=2018-12-13&lineCode=310000L14&stationCode=310000L14S13&userName=mobile&token="+ Constants.APP_TOKEN,this);
+        UIUtil.showProgressDialog(this,R.string.loading_process_tip);
+        String url = "";
+        url+=local_url+"/shm/faceRecognize?";
+        url+="recognizeTime="+time_btn.getText().toString().trim();
+        url+="&lineCode="+xl_btn.getTag().toString().trim();
+        if(!zd_btn.getTag().toString().isEmpty()){
+            url+="&stationCode="+zd_btn.getTag().toString().trim();
+        }
+        if(!key_et.getText().toString().isEmpty()){
+            url+="&queryString="+key_et.getText().toString().trim();
+        }
+
+        url+="&userName="+userName;
+        url += "&token=" + Constants.APP_TOKEN;
+        Log.i("Alan","人脸识别url=-="+url);
+        OkHttpClientManager.getInstance().asyncJsonObjectByUrl(url,this);
     }
 
     private void initView() {
+        localDbUtil = new LocalDbUtil(this);
+        local_url = localDbUtil.getString("local_url");
+        userName = localDbUtil.getString("userName");
         back_btn=(ImageView)findViewById(R.id.back_btn);
         back_btn.setOnClickListener(this);
         save_btn=(TextView)findViewById(R.id.right_btn);
@@ -83,6 +106,7 @@ public class FaceClockActivity extends Activity implements View.OnClickListener,
         zd_btn.setOnClickListener(this);
         time_btn = (TextView) findViewById(R.id.time_btn);
         time_btn.setOnClickListener(this);
+        key_et=(EditText)findViewById(R.id.key_et);
         sure_btn=(Button)findViewById(R.id.sure_btn);
         sure_btn.setOnClickListener(this);
         //初始化RecyclerView
@@ -144,15 +168,16 @@ public class FaceClockActivity extends Activity implements View.OnClickListener,
                  finish();
                 break;
             case R.id.xl_btn:
-
                 selectLine();
+                zd_btn.setText("");
+                zd_btn.setTag("");
                 break;
             case R.id.zd_btn:
-                String  lineCode = xl_btn.getTag().toString();
-                if(!lineCode.isEmpty()){
+                String lineCode = xl_btn.getTag().toString();
+                if (!lineCode.isEmpty()) {
                     getStationData(lineCode);
-                }else{
-                    UIUtil.showToast(this,getString(R.string.plase_xl));
+                } else {
+                    UIUtil.showToast(this, getString(R.string.plase_xl));
                 }
                 break;
             case R.id.time_btn:
@@ -178,7 +203,15 @@ public class FaceClockActivity extends Activity implements View.OnClickListener,
                         .get(Calendar.DAY_OF_MONTH));
                 dialog.show();
                 break;
-            case R.id.sure_btn://确认查询
+            case R.id.sure_btn:
+                if (xl_btn.getTag().toString().isEmpty()) {
+                    UIUtil.showToast(this, getString(R.string.xl_toast));
+                    return;
+                }
+                if (time_btn.getText().toString().isEmpty()) {
+                    UIUtil.showToast(this, getString(R.string.time_toast));
+                    return;
+                }
                 refreshData();
                 break;
         }
@@ -212,6 +245,7 @@ public class FaceClockActivity extends Activity implements View.OnClickListener,
     //网络请求回调
     @Override
     public void onResponse(JSONObject jsonObject) {
+        UIUtil.cancelProgressDialog();
         try {
             mFaceList.clear();
             JSONObject data=jsonObject.getJSONObject("data");

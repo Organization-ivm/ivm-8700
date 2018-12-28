@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -72,6 +73,7 @@ public class CameraStatisticsActivity extends Activity implements OkHttpClientMa
     private String local_url;
     private String userName;
     private TextView type_btn;
+    private ChartDataAdapter cda;
 
 
     @Override
@@ -81,6 +83,7 @@ public class CameraStatisticsActivity extends Activity implements OkHttpClientMa
 
             initView();
             initLineData();
+            initData();
 //            refreshData();
          }
     private void initView() {
@@ -131,7 +134,7 @@ public class CameraStatisticsActivity extends Activity implements OkHttpClientMa
             cd = new LineData(damaXList, sets);
             list.add(new LineChartItem(cd, getApplicationContext()));
 
-            ChartDataAdapter cda = new ChartDataAdapter(getApplicationContext(), list);
+           cda = new ChartDataAdapter(getApplicationContext(), list);
             lv.setAdapter(cda);
         } catch (JSONException e1) {
             e1.printStackTrace();
@@ -189,6 +192,7 @@ public class CameraStatisticsActivity extends Activity implements OkHttpClientMa
     }
     @Override
     public void onResponse(JSONObject jsonObject) {
+        UIUtil.cancelProgressDialog();
         try {
             valuesList.clear();
             JSONObject data = jsonObject.getJSONObject("data");
@@ -211,7 +215,7 @@ public class CameraStatisticsActivity extends Activity implements OkHttpClientMa
                 }
 
             }
-            initData();
+          initData();
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -226,16 +230,30 @@ public class CameraStatisticsActivity extends Activity implements OkHttpClientMa
                 break;
             case R.id.xl_btn:
                 selectLine();
+                zd_btn.setText("");
+                zd_btn.setTag("");
                 break;
             case R.id.zd_btn:
-                String  lineCode = xl_btn.getTag().toString();
-                if(!lineCode.isEmpty()){
+                String lineCode = xl_btn.getTag().toString();
+                if (!lineCode.isEmpty()) {
                     getStationData(lineCode);
-                }else{
-                    UIUtil.showToast(this,getString(R.string.plase_xl));
+                } else {
+                    UIUtil.showToast(this, getString(R.string.plase_xl));
                 }
                 break;
             case R.id.sure_btn:
+                if (xl_btn.getTag().toString().isEmpty()) {
+                    UIUtil.showToast(this, getString(R.string.xl_toast));
+                    return;
+                }
+                if (time_btn.getText().toString().isEmpty()) {
+                    UIUtil.showToast(this, getString(R.string.time_toast));
+                    return;
+                }
+                if (type_btn.getTag().toString().isEmpty()) {
+                    UIUtil.showToast(this, getString(R.string.type_toast));
+                    return;
+                }
                 refreshData();
                 break;
             case R.id.type_btn:
@@ -268,7 +286,21 @@ public class CameraStatisticsActivity extends Activity implements OkHttpClientMa
     }
 
     private void refreshData() {
-        OkHttpClientManager.getInstance().asyncJsonObjectByUrl(local_url+"/shm/cameraOnlineRate?type=day&lineCode=310000L14&stationCode=310000L14S01&queryTime=2018-11-08&userName=mobile&token="+ Constants.APP_TOKEN, this);
+        UIUtil.showProgressDialog(this,R.string.loading_process_tip);
+        String url="";
+        url+=local_url+"/shm/cameraOnlineRate?";
+        url+="type="+type_btn.getTag().toString();
+        url+="&lineCode="+xl_btn.getTag().toString().trim();
+        if (!zd_btn.getTag().toString().isEmpty()) {
+            url += "&stationCode=" + zd_btn.getTag().toString().trim();
+        }
+        url+="&queryTime="+time_btn.getText().toString().trim();
+        url+="&userName="+userName;
+        url += "&token=" + Constants.APP_TOKEN;
+
+        Log.i("Alan", "摄像机在线率url=-=" + url);
+
+        OkHttpClientManager.getInstance().asyncJsonObjectByUrl(url, this);
     }
 
     //选择线路

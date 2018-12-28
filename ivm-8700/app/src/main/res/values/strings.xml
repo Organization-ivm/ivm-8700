@@ -121,4 +121,5 @@
     <string name="offline_number">\n离线数量:&#160;&#160;&#160;</string>
     <string name="xl_toast">线路不能为空</string>
     <string name="time_toast">时间不能为空</string>
+    <string name="type_toast">类型不能为空</string>
 </resources>
