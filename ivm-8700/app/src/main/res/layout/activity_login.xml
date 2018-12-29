@@ -10,7 +10,7 @@
        <ImageView
            android:layout_width="@dimen/dp103"
            android:layout_height="@dimen/dp104"
-           android:layout_marginTop="@dimen/dp152"
+           android:layout_marginTop="@dimen/dp120"
            android:background="@drawable/logo" />
         <EditText
             android:id="@+id/username"

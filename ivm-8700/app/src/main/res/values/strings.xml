@@ -122,4 +122,5 @@
     <string name="xl_toast">线路不能为空</string>
     <string name="time_toast">时间不能为空</string>
     <string name="type_toast">类型不能为空</string>
+    <string name="video_ing">正在录像..</string>
 </resources>

@@ -158,12 +158,14 @@
         <ImageView
             android:layout_width="@dimen/dp24"
             android:layout_height="@dimen/dp24"
+            android:gravity="center_vertical"
             android:layout_marginLeft="@dimen/dp16"
             android:background="@drawable/tuisong"/>
         <TextView
             android:layout_marginLeft="@dimen/dp60"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:gravity="center_vertical"
             android:textSize="@dimen/dp16"
             android:text="@string/isjieshouxiaoxi"/>
         <ImageView

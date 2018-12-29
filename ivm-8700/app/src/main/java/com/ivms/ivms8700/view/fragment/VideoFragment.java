@@ -73,7 +73,18 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Sur
     private final String TAG = "Alan";
     private final int RECULET_CODE = 1;//选择完监控点回调
     private View view;
-
+    /**
+     * 开启语音对讲失败
+     */
+    private static final int OPEN_TALK_FAILURE = 3;
+    /**
+     * 开启语音对讲成功
+     */
+    private static final int OPEN_TALK_SUCCESS = 4;
+    /**
+     * 关闭语音对讲
+     */
+    private static final int CLOSE_TALK_SUCCESS = 5;
     /**
      * 监控点
      */
@@ -234,6 +245,11 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Sur
     private ImageView playBackRecord_img;
     private LinearLayout fangda_lay;
     private ImageView fangda_img;
+    private LinearLayout voice_intercom;
+    /**
+     * 语音对讲是否开启
+     */
+    private boolean mIsTalkOpen;
 
     @Nullable
     @Override
@@ -244,6 +260,7 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Sur
             huifang_lay = (LinearLayout) view.findViewById(R.id.huifang_lay);
             live_view = (View) view.findViewById(R.id.live_view);
             huifang_view = (View) view.findViewById(R.id.huifang_view);
+            voice_intercom= (LinearLayout) view.findViewById(R.id.contrl_lay); //语音控制
             contrl_lay = (LinearLayout) view.findViewById(R.id.contrl_lay); //云台控制
             playBackRecord = (LinearLayout) view.findViewById(R.id.playBackRecord); //本地录像
             playBackRecord_img = (ImageView) view.findViewById(R.id.playBackRecord_img);
@@ -255,6 +272,7 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Sur
             four_view_img = (ImageView) view.findViewById(R.id.four_view_img);
             nine_view_img = (ImageView) view.findViewById(R.id.nine_view_img);
 
+            voice_intercom.setOnClickListener(this);
             one_view_img.setOnClickListener(this);
             four_view_img.setOnClickListener(this);
             nine_view_img.setOnClickListener(this);
@@ -342,6 +360,12 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Sur
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.live_lay:
+                if(mIsRecord){
+                    //停止录像
+                    recordBtnOnClick_live();
+                }
+                isZoom = false;
+                fangda_img.setBackgroundResource(R.drawable.fangda);
                 initControl();
                 VIDEO_VIEW_COUNT = 1;
                 setGrilView(VIDEO_VIEW_COUNT, 1);
@@ -350,6 +374,11 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Sur
                 huifang_view.setVisibility(View.INVISIBLE);
                 break;
             case R.id.huifang_lay:
+                if(mIsRecord){
+                    recordBtnOnClick_live();
+                }
+                isZoom = false;
+                fangda_img.setBackgroundResource(R.drawable.fangda);
                 initControl();
                 VIDEO_VIEW_COUNT = 1;
                 setGrilView(VIDEO_VIEW_COUNT, 1);
@@ -394,6 +423,10 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Sur
                 break;
             case R.id.one_view_img://一屏
                 if (VIDEO_VIEW_COUNT != 1) {
+                    if( mIsRecord ){
+                        UIUtil.showToast(getActivity(),getString(R.string.video_ing));
+                        return;
+                    }
                     isZoom = false;
                     fangda_img.setBackgroundResource(R.drawable.fangda);
                     initControl();
@@ -407,6 +440,10 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Sur
                 break;
             case R.id.four_view_img://四屏
                 if (VIDEO_VIEW_COUNT != 4) {
+                    if( mIsRecord ){
+                        UIUtil.showToast(getActivity(),getString(R.string.video_ing));
+                        return;
+                    }
                     isZoom = false;
                     fangda_img.setBackgroundResource(R.drawable.fangda);
                     initControl();
@@ -419,6 +456,10 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Sur
                 break;
             case R.id.nine_view_img://九屏
                 if (VIDEO_VIEW_COUNT != 9) {
+                    if( mIsRecord ){
+                        UIUtil.showToast(getActivity(),getString(R.string.video_ing));
+                        return;
+                    }
                     isZoom = false;
                     fangda_img.setBackgroundResource(R.drawable.fangda);
                     initControl();
@@ -429,6 +470,10 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Sur
                     nine_view_img.setBackgroundResource(R.drawable.nine_2);
 
                 }
+                break;
+
+            case R.id.voice_intercom:
+
                 break;
         }
     }

@@ -249,6 +249,7 @@ public class MyVMSNetSDK implements ILoginNetSDK, IResourceNetSDK {
         return rtspUri;
     }
 
+
     public String getBuild() {
         return this.build;
     }
