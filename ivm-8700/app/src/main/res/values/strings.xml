@@ -121,4 +121,18 @@
     <string name="offline_number">\n离线数量:&#160;&#160;&#160;</string>
     <string name="xl_toast">线路不能为空</string>
     <string name="time_toast">时间不能为空</string>
+    <string name="message_safety_hat">安全帽</string>
+    <string name="message_face">人脸</string>
+
+
+
+
+
+
 </resources>
+
+
+
+
+
+

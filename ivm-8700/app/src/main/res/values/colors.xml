@@ -11,4 +11,7 @@
     <color name="tabTransparent">#10ffffff</color>
     <color name="Translucency">#e0000000</color>
     <color name="transparent">#00000000</color>
+    <color name="main_text_a0a0a0">#A0A0A0</color>
+    <color name="text_gray_lv4">#ff999999</color>
+
 </resources>

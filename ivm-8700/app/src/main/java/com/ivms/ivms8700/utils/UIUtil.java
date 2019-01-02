@@ -1,8 +1,12 @@
 package com.ivms.ivms8700.utils;
 
+import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.net.wifi.WifiManager;
+import android.support.v4.content.ContextCompat;
+import android.telephony.TelephonyManager;
 import android.widget.Toast;
 
 import com.hikvision.sdk.VMSNetSDK;
@@ -57,6 +61,14 @@ public final class UIUtil {
 		String format = "yyyy/MM/dd HH:mm:ss";
 		SimpleDateFormat sdf = new SimpleDateFormat(format);
 		return sdf.format(new Date(Long.valueOf(seconds)));
+	}
+	public static String getDeviceId(Context context){
+		String  deviceId = null;
+		if(ContextCompat.checkSelfPermission(context, Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
+			TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+			deviceId = tm.getDeviceId();
+		}
+		return deviceId;
 	}
 
 }
