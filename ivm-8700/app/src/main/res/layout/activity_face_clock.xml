@@ -146,7 +146,7 @@
                      android:textColor="#292421"
                      android:textSize="14sp" />
                  <EditText
-                     android:id="@+id/key_btn"
+                     android:id="@+id/key_et"
                      android:layout_width="0dp"
                      android:layout_height="wrap_content"
                      android:layout_weight="1"

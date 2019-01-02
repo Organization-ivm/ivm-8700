@@ -163,6 +163,7 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/voice_intercom"
                     android:layout_width="@dimen/dp0"
                     android:layout_height="match_parent"
                     android:layout_weight="1"

@@ -204,7 +204,8 @@ public class LoginActivity extends Activity implements ILoginView, View.OnClickL
                     UIUtil.showToast(this, msg);
                 }
 
-            } else {
+            }else{
+                UIUtil.cancelProgressDialog();
                 UIUtil.showToast(this, R.string.login_failed);
             }
         } catch (JSONException e) {

@@ -61,6 +61,7 @@ public class FaceDetailActivity extends Activity implements View.OnClickListener
         num_txt=(TextView)findViewById(R.id.num_txt);
         name_txt=(TextView)findViewById(R.id.name_txt);
         user_img=(ImageView)findViewById(R.id.user_img);
+        Glide.with(this).load(R.drawable._loading).into(user_img);//图片占位图
         sex_txt=(TextView)findViewById(R.id.sex_txt);
         dw_txt=(TextView)findViewById(R.id.dw_txt);
         bm_txt=(TextView)findViewById(R.id.bm_txt);
@@ -78,7 +79,7 @@ public class FaceDetailActivity extends Activity implements View.OnClickListener
             phone_txt.setText(faceEntity.getPhone());
             rq_txt.setText(faceEntity.getDate());
             imageUrl ="http://222.66.82.4:80/shm/"+faceEntity.getFaceCapture();
-            Log.i("Alan","url="+imageUrl);
+            Log.i("Alan","imageUrl="+imageUrl);
 
             Glide.with(this).load(imageUrl).into(user_img);
     }

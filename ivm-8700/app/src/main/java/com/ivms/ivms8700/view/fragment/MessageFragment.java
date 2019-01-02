@@ -20,6 +20,7 @@ import com.ivms.ivms8700.bean.DiscernEntity;
 import com.ivms.ivms8700.bean.MessageEntity;
 import com.ivms.ivms8700.control.Constants;
 import com.ivms.ivms8700.utils.LocalDbUtil;
+import com.ivms.ivms8700.utils.NoDoubleClickListener;
 import com.ivms.ivms8700.utils.UIUtil;
 import com.ivms.ivms8700.utils.okmanager.OkHttpClientManager;
 import com.ivms.ivms8700.view.adapter.DiscernAdapter;
@@ -54,6 +55,8 @@ public class MessageFragment extends Fragment implements OkHttpClientManager.Jso
     TextView tvTitle;
     @BindView(R.id.RvMessage)
     RecyclerView RvMessage;
+   @BindView(R.id.rlContent)
+    RelativeLayout rlContent;
     Unbinder unbinder;
     private View view;
     private LocalDbUtil localDbUtil;
@@ -63,7 +66,12 @@ public class MessageFragment extends Fragment implements OkHttpClientManager.Jso
     private List<String> list = new ArrayList<>();
     private String deviceId;
     private List<MessageEntity.Msg> msgList;
-//    private String testStr = "{\"data\":{\"list\":[{\"msg\":\"{'type':'faceRecognize','stationCode':'310000L14S13','recognizeTime':'2018-12-13 16:37:42'}\"},{\"msg\":\"{'type':'safeCapRecognize','stationCode':'310000L14S13',' recognizeTime':'2018-11-07 11:22:42'}\"}]},\"msg\":\"获取成功!\",\"result\":\"success\"}";
+    /**
+     * 0,安全帽，
+     * 1，人脸
+     */
+    private int safeOrFace = 0;
+    private String testStr = "{\"data\":{\"list\":[{\"msg\":\"{'type':'faceRecognize','stationCode':'310000L14S13','recognizeTime':'2018-12-13 16:37:42'}\"},{\"msg\":\"{'type':'safeCapRecognize','stationCode':'310000L14S13','recognizeTime':'2018-11-07 11:22:42'}\"}]},\"msg\":\"获取成功!\",\"result\":\"success\"}";
 
 
     @Nullable
@@ -75,10 +83,38 @@ public class MessageFragment extends Fragment implements OkHttpClientManager.Jso
         unbinder = ButterKnife.bind(this, view);
         initView();
         initDate();
+        setListener();
 
 
         return view;
     }
+
+    private void setListener() {
+        llSafetyHat.setOnClickListener(new NoDoubleClickListener() {
+            @Override
+            protected void onNoDoubleClick(View v) {
+                initDate();
+                liveView.setVisibility(View.VISIBLE);
+                localView.setVisibility(View.GONE);
+
+                safeOrFace=  0;
+
+            }
+        });
+        llFace.setOnClickListener(new NoDoubleClickListener() {
+            @Override
+            protected void onNoDoubleClick(View v) {
+                liveView.setVisibility(View.GONE);
+                localView.setVisibility(View.VISIBLE);
+                safeOrFace = 1;
+
+                initDate();
+
+            }
+        });
+
+    }
+
 
     @Override
     public void onHiddenChanged(boolean hidden) {
@@ -127,16 +163,20 @@ public class MessageFragment extends Fragment implements OkHttpClientManager.Jso
     public void onResponse(JSONObject jsonObject) {
         UIUtil.cancelProgressDialog();
         try {
-            String result = jsonObject.getString("result");
+            JSONObject jsonObject1 = new JSONObject(testStr);
+//            String result = jsonObject.getString("result");
+            String result = jsonObject1.getString("result");
             list.clear();
             if (result.equals("success")) {
-                String str = jsonObject.toString();
+                rlContent.setVisibility(View.VISIBLE);
+                String str = jsonObject1.toString();
                 Gson gson = new Gson();
                 MessageEntity enty = gson.fromJson(str, MessageEntity.class);
                 msgList = new ArrayList<>();
 
                 for (int i = 0; i < enty.getData().getList().size(); i++) {
                     JSONObject json = new JSONObject(enty.getData().getList().get(i).getMsg());
+
                     MessageEntity.Msg msg = new MessageEntity.Msg();
                     msg.setType(json.getString("type"));
                     msg.setStationCode(json.getString("stationCode"));
