@@ -3,13 +3,8 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:background="#ffffff"
-    android:paddingRight="10dp"
-    android:paddingLeft="10dp"
     android:id="@+id/rl_menu"
-    android:descendantFocusability="blocksDescendants"
-    android:paddingTop="15dp"
-    android:paddingBottom="15dp">
-
+    android:descendantFocusability="blocksDescendants">
     <ImageView
         android:id="@+id/icon"
         android:layout_width="wrap_content"
@@ -22,13 +17,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="15dp"
-
         android:layout_centerVertical="true"
         android:layout_toRightOf="@id/icon"
         android:gravity="center_vertical"
         android:text=""
         android:textColor="#ff595c61"
-        android:textSize="13sp" />
+        android:textSize="16sp" />
 
 
 </RelativeLayout>

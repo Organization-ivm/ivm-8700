@@ -50,12 +50,12 @@
             android:name=".view.AddMonitoryActivity"
             android:theme="@style/dialogstyle" />
 
-        <service
-            android:name=".service.CheckService"
-            android:priority="1000" />
-        <service
-            android:name=".service.CheckExitService"
-             />
+        <!--<service-->
+            <!--android:name=".service.CheckService"-->
+            <!--android:priority="1000" />-->
+        <!--<service-->
+            <!--android:name=".service.CheckExitService"-->
+             <!--/>-->
         <!-- <receiver android:name="com.ivms.ivms8700.service.BootBroadcastReceiver"> -->
         <!-- <intent-filter> -->
         <!-- <action android:name="android.intent.action.BOOT_COMPLETED"></action> -->
@@ -107,7 +107,9 @@
 
         </activity>
         <activity android:name=".view.WeatherActivity" />
-        <activity android:name=".view.AddCamerActivity"></activity>
+        <activity
+            android:name=".view.AddCamerActivity"
+            android:theme="@style/dialogstyle"></activity>
     </application>
 
 </manifest>

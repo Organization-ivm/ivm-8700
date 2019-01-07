@@ -540,7 +540,7 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Sur
             case RECULET_CODE://监控列表回调
                 if (resultCode == RESULT_OK) {
                     if (null != progressBar) {
-                        progressBar.setVisibility(View.VISIBLE);
+                        progressBar.setVisibility(View.GONE);
                     }
                     if (null != add_video) {
                         add_video.setVisibility(View.GONE);
@@ -553,20 +553,20 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Sur
                     switch (palyType) {
                         case 1:
                             //  预览
-                            if (MyVMSNetSDK.getInstance().isHasLivePermission(camera)) {
-
+//                            if (MyVMSNetSDK.getInstance().isHasLivePermission(camera)) {
+//
                                 gotoLive(camera);
-                            } else {
-                                UIUtil.showToast(getActivity(), R.string.no_permission);
-                            }
+//                            } else {
+//                                UIUtil.showToast(getActivity(), R.string.no_permission);
+//                            }
                             break;
                         case 2:
                             // 回放
-                            if (MyVMSNetSDK.getInstance().isHasPlayBackPermission(camera)) {
+//                            if (MyVMSNetSDK.getInstance().isHasPlayBackPermission(camera)) {
                                 gotoPlayBack(camera);
-                            } else {
-                                UIUtil.showToast(getActivity(), R.string.no_permission);
-                            }
+//                            } else {
+//                                UIUtil.showToast(getActivity(), R.string.no_permission);
+//                            }
                             break;
                         default:
                             break;
