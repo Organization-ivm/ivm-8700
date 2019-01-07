@@ -1,6 +1,5 @@
 package com.ivms.ivms8700.view.fragment
 
-import android.content.ContentResolver
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -23,7 +22,6 @@ import com.ivms.ivms8700.utils.PhotoVideoManager.adapter.VideoAdapter
 import com.ivms.ivms8700.utils.PhotoVideoManager.utils.VideoUtils
 import com.ivms.ivms8700.utils.ShareUtils
 import com.ivms.ivms8700.utils.UIUtil
-import com.ivms.ivms8700.view.MainActivity
 import kotlinx.android.synthetic.main.fragment_video.*
 import java.io.File
 import java.util.ArrayList
@@ -37,9 +35,9 @@ class LocalVideoFragment : Fragment(), VideoAdapter.OnShowItemClickListener {
 
 
     lateinit var gridView: GridView
-    lateinit var iv_background: ImageView
-    //    private val path = Environment.getExternalStorageDirectory().toString() + "/HIKVISION/"
-    private val path = Environment.getExternalStoragePublicDirectory("").toString() + "/HIKVISION/"
+//    lateinit var iv_background: ImageView
+        private val path = Environment.getExternalStorageDirectory().toString() + "/HIKVISION/"
+//    private val path = Environment.getExternalStoragePublicDirectory("").toString() + "/HIKVISION/"
     lateinit var tvShare: TextView
     lateinit var tvDelete: TextView
     var dataList: MutableList<VideoInfo>? = null
@@ -139,7 +137,7 @@ class LocalVideoFragment : Fragment(), VideoAdapter.OnShowItemClickListener {
             } else {
                 Toast.makeText(context, "请选择条目", Toast.LENGTH_SHORT).show()
             }
-            isshowImage()
+//            isshowImage()
         }
         tvShare.setOnClickListener {
 
@@ -182,20 +180,20 @@ class LocalVideoFragment : Fragment(), VideoAdapter.OnShowItemClickListener {
 
 
     //是否显示背景
-    private fun isshowImage() {
-        if (videoList.size == 0 || dataList!!.size == 0) {
-            iv_background.setVisibility(View.VISIBLE)
-        } else {
-            iv_background.setVisibility(View.GONE)
-        }
-    }
+//    private fun isshowImage() {
+//        if (videoList.size == 0 || dataList!!.size == 0) {
+//            iv_background.setVisibility(View.VISIBLE)
+//        } else {
+//            iv_background.setVisibility(View.GONE)
+//        }
+//    }
 
     private fun initView(v: View) {
         gridView = v.findViewById(R.id.gridview) as GridView
         tvShare = v.findViewById(R.id.tvshare) as TextView
         tvDelete = v.findViewById(R.id.tvdelete) as TextView
         selectedList = ArrayList<VideoInfo>()
-        iv_background = v.findViewById(R.id.background3) as ImageView
+//        iv_background = v.findViewById(R.id.background3) as ImageView
         dataList = ArrayList<VideoInfo>()
 
         initDataList()

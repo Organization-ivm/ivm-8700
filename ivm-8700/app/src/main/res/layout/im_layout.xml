@@ -89,8 +89,10 @@
     <FrameLayout
         android:id="@+id/flfragment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/titlechoose">
+        android:layout_height="fill_parent"
+
+        android:layout_below="@+id/titlechoose"
+        android:orientation="vertical">
 
 
     </FrameLayout>

@@ -1,22 +1,15 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.ivms.ivms8700.view.fragment.ScreenshotFragment">
-    <ImageView
-        android:id="@+id/background2"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scaleType="fitXY"
-        android:src="@mipmap/filenull"
-        android:visibility="gone" />
+    android:layout_height="fill_parent"
+  >
 
-    <GridView
+    <com.ivms.ivms8700.view.MyGridView
         android:id="@+id/gridview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:horizontalSpacing="2dp"
         android:numColumns="4"
+        android:visibility="visible"
         android:verticalSpacing="2dp" />
 
 

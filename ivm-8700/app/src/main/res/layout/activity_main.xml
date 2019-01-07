@@ -8,18 +8,13 @@
     android:orientation="vertical"
     tools:context="com.ivms.ivms8700.view.MainActivity">
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dp0"
-        android:layout_weight="1"
-        android:scrollbars="none"
-        android:background="#F6F6F6">
 
-        <FrameLayout
-            android:id="@+id/frag_cont"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"></FrameLayout>
-    </ScrollView>
+    <FrameLayout
+        android:id="@+id/frag_cont"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1.0"
+        ></FrameLayout>
 
     <LinearLayout
         android:layout_width="match_parent"

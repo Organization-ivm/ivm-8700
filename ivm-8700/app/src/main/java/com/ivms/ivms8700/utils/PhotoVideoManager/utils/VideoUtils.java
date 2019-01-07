@@ -5,14 +5,17 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.MediaMetadataRetriever;
+import android.media.MediaPlayer;
 import android.media.ThumbnailUtils;
 import android.provider.MediaStore;
 import android.util.DisplayMetrics;
+import android.util.Log;
 
 
 import com.ivms.ivms8700.R;
 import com.ivms.ivms8700.control.MyApplication;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -95,11 +98,26 @@ public class VideoUtils {
 
     //获取视频总时长
     public static int getVideoDuration(String path) {
-        MediaMetadataRetriever media = new MediaMetadataRetriever();
-        media.setDataSource(path);
-        String duration = media.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION); //
-        return Integer.parseInt(duration);
+//        MediaMetadataRetriever media = new MediaMetadataRetriever();
+//        media.setDataSource(path);
+//        String duration = media.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION); //
+//        return Integer.parseInt(duration);
+        MediaPlayer mediaPlayer = new MediaPlayer();
+        int i = 0;
+        try {
+            mediaPlayer.setDataSource(path);
+            mediaPlayer.prepare();
+          i =   mediaPlayer.getDuration();
+            Log.i("VideoUtils",i+"");
+        } catch (IOException e) {
+            Log.i("VideoUtils","cash");
+            e.printStackTrace();
+        }
+        Log.i("VideoUtils",i+"");
+        return i;
+
     }
+
 
 
 }

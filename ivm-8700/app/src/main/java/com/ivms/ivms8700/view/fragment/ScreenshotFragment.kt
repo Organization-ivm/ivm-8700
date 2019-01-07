@@ -29,7 +29,7 @@ class ScreenshotFragment : Fragment(), ImageAdapter.OnShowItemClickListener {
 
 
     lateinit var gridView: GridView
-    lateinit var iv_background: ImageView
+//    lateinit var iv_background: ImageView
 //        private val path = Environment.getExternalStorageDirectory().toString() + "/HIKVISION/"
     private val path = Environment.getExternalStoragePublicDirectory("").toString() + "/HIKVISION/"
     lateinit var v: View
@@ -49,7 +49,8 @@ class ScreenshotFragment : Fragment(), ImageAdapter.OnShowItemClickListener {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
-        v = inflater.inflate(R.layout.fragment_screenshot, container, false)
+
+        v = inflater.inflate(R.layout.fragment_screenshot,container,false)
         initView(v)
         setListener()
 
@@ -162,7 +163,7 @@ class ScreenshotFragment : Fragment(), ImageAdapter.OnShowItemClickListener {
             } else {
                 Toast.makeText(context, "请选择条目", Toast.LENGTH_SHORT).show()
             }
-            isshowImage();
+//            isshowImage();
         }
         tvShare.setOnClickListener {
             if (selectedList != null && selectedList!!.size > 0) {
@@ -187,13 +188,13 @@ class ScreenshotFragment : Fragment(), ImageAdapter.OnShowItemClickListener {
     }
 
     //是否显示背景
-    private fun isshowImage() {
-        if (paths.size == 0 || dataList!!.size == 0) {
-            iv_background.visibility = View.VISIBLE
-        } else {
-            iv_background.visibility = View.GONE
-        }
-    }
+//    private fun isshowImage() {
+//        if (paths.size == 0 || dataList!!.size == 0) {
+//            iv_background.visibility = View.VISIBLE
+//        } else {
+//            iv_background.visibility = View.GONE
+//        }
+//    }
 
     private fun initView(v: View) {
         Log.i("URI",path);
@@ -202,7 +203,7 @@ class ScreenshotFragment : Fragment(), ImageAdapter.OnShowItemClickListener {
         tvShare = v.findViewById(R.id.tvshare) as TextView
         tvDelete = v.findViewById(R.id.tvdelete) as TextView
         selectedList = ArrayList<Bean>()
-        iv_background = v.findViewById(R.id.background2) as ImageView
+//        iv_background = v.findViewById(R.id.background2) as ImageView
         dataList = ArrayList<Bean>()
         initDataList()
         myAdapter = ImageAdapter(context, paths, gridView, dataList)
