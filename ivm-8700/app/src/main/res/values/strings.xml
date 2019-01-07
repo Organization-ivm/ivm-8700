@@ -82,7 +82,7 @@
     </string-array>
     <string name="rule_text">0123456789abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ`¬!"£$%^*()~=#{}[];':,./?/*-_+&#060;&#062;&#064;&#038;</string>
 
-    <string name="video_screenshot">视屏截图</string>
+    <string name="video_screenshot">视频截图</string>
     <string name="video_video">本地录像</string>
     <string name="video_del">删除</string>
     <string name="video_share">分享</string>

@@ -502,7 +502,7 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Sur
                 break;
 
             case R.id.voice_intercom:
-
+                UIUtil.showToast(getActivity(),"正在建设中..");
                 break;
         }
     }
