@@ -59,6 +59,10 @@ class ScreenshotFragment : Fragment(), ImageAdapter.OnShowItemClickListener {
         return v
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+    }
+
     override fun onHiddenChanged(hidden: Boolean) {
         super.onHiddenChanged(hidden)
         if (!hidden) {

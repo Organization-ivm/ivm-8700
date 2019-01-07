@@ -11,21 +11,15 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.SurfaceHolder;
 import android.view.View;
 import android.view.ViewGroup;
-
-import android.widget.CheckBox;
-import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-
 import android.widget.ProgressBar;
 import android.widget.RadioGroup;
-import android.widget.SeekBar;
 
 import com.hik.mcrsdk.rtsp.RtspClient;
 import com.hikvision.sdk.VMSNetSDK;
@@ -51,7 +45,6 @@ import com.ivms.ivms8700.playback.PlayBackCallBack;
 import com.ivms.ivms8700.playback.PlayBackControl;
 import com.ivms.ivms8700.playback.PlayBackParams;
 import com.ivms.ivms8700.utils.UIUtil;
-import com.ivms.ivms8700.view.AddCamerActivity;
 import com.ivms.ivms8700.view.AddMonitoryActivity;
 import com.ivms.ivms8700.view.adapter.AdapterVideoRecyView;
 import com.ivms.ivms8700.view.customui.CustomRect;
@@ -62,16 +55,14 @@ import org.MediaPlayer.PlayM4.Player;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import static android.app.Activity.RESULT_OK;
 
-public class VideoFragment extends Fragment implements View.OnClickListener, SurfaceHolder.Callback, LiveControl.LiveCallBack, PlayBackCallBack {
+public class MyVideoFragment extends Fragment implements View.OnClickListener, SurfaceHolder.Callback, LiveControl.LiveCallBack, PlayBackCallBack {
 
     private final String TAG = "Alan";
     private final int RECULET_CODE = 1;//选择完监控点回调
@@ -101,12 +92,12 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Sur
      * 监控点详细信息
      */
     private CameraInfo cameraInfo = new CameraInfo();
-     Map cameraMap=new HashMap<Integer,CameraInfo>();
+
     /**
      * 监控点关联的监控设备信息
      */
     private DeviceInfo deviceInfo = null;
-    Map deviceMap=new HashMap<>();
+
 
     /**
      * 预览控件 --当前点击的 CustomSurfaceView
@@ -237,7 +228,6 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Sur
     private AlertDialog alertDialog; //信息框
     private int VIDEO_VIEW_COUNT = 1;
     private int mCurIndex = 0;//当前显示的下标
-
     private RecyclerView video_recyclerview;
     private AdapterVideoRecyView video_adapter;
     private ImageView one_view_img;
@@ -329,7 +319,7 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Sur
                 mCurIndex = position;
                 tmPlayBackControl = videList.get(position).getmPlayBackControl();
                 tmLiveControl = videList.get(position).getmLiveControl();
-                intentAddM();
+//                intentAddM();
 //            }else{
 //                for (int i=0;i<videList.size();i++){
 //                    if(i==position){
@@ -339,6 +329,7 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Sur
 //                    }
 //                }
 //                video_adapter.notifyDataSetChanged();
+//                gotoLive(curCamer);
 //            }
 
             }
@@ -485,7 +476,7 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Sur
      * @author lvlingdi 2016-5-6 上午10:31:05
      */
     private void zoomBtnOnClick() {
-        mLiveControl=tmLiveControl;
+
         if (isZoom && null != curSurfaceView) {
             curSurfaceView.setOnZoomListener(new OnZoomListener() {
 
@@ -554,7 +545,6 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Sur
                         case 1:
                             //  预览
                             if (MyVMSNetSDK.getInstance().isHasLivePermission(camera)) {
-
                                 gotoLive(camera);
                             } else {
                                 UIUtil.showToast(getActivity(), R.string.no_permission);
@@ -1104,7 +1094,6 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Sur
             public void onSuccess(Object data) {
                 if (data instanceof CameraInfo) {
                     cameraInfo = (CameraInfo) data;
-                    cameraMap.put(mCurIndex,cameraInfo);
                     if (palyType == 1) {
                         liveHandler.sendEmptyMessage(Constants.Live.getCameraInfo_Success);
                     } else {
@@ -1146,7 +1135,6 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Sur
 //                MyVMSNetSDK.getInstance().sendPTZCtrlCmd(cameraInfo, PTZCmd.ACTION_STOP, mPtzcommand);
 //                mIsPtzStart = false;
 //            } else {
-            cameraInfo=(CameraInfo) cameraMap.get(mCurIndex);
             MyVMSNetSDK.getInstance().sendPTZCtrlCmd(cameraInfo, PTZCmd.ACTION_START, mPtzcommand);
             mIsPtzStart = true;
 
@@ -1291,7 +1279,7 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Sur
     //跳转到选择监控点界面
     private void intentAddM() {
 
-        Intent intent = new Intent(getActivity(), AddCamerActivity.class);
+        Intent intent = new Intent(getActivity(), AddMonitoryActivity.class);
         startActivityForResult(intent, RECULET_CODE);
     }
 

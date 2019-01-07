@@ -1,6 +1,7 @@
 package com.ivms.ivms8700.control;
 
 import android.app.Application;
+import android.content.Intent;
 import android.util.Log;
 
 import com.hik.mcrsdk.MCRSDK;
@@ -8,6 +9,7 @@ import com.hik.mcrsdk.rtsp.RtspClient;
 import com.hikvision.sdk.VMSNetSDK;
 import com.hikvision.sdk.net.bean.LoginData;
 import com.ivms.ivms8700.mysdk.MyVMSNetSDK;
+import com.ivms.ivms8700.service.CheckExitService;
 
 import org.json.JSONArray;
 
@@ -19,12 +21,18 @@ public class MyApplication extends Application implements AppForegroundStateMana
     public void onCreate() {
         super.onCreate();
         ins = this;
+        startCheckExiteService();
         MCRSDK.init();
         RtspClient.initLib();
         MCRSDK.setPrint(1, null);
         MyVMSNetSDK.init(this);
         VMSNetSDK.init(this);
         AppForegroundStateManager.getInstance().addListener(this);
+    }
+
+    public void startCheckExiteService(){
+        Intent intent=new Intent(this,CheckExitService.class);
+        this.startService(intent);
     }
 
     public static MyApplication getIns() {
