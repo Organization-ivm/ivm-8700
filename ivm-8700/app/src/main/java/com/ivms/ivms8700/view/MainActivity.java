@@ -1,6 +1,10 @@
 package com.ivms.ivms8700.view;
 
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
+import android.app.ActivityManager;
+import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -10,15 +14,21 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ivms.ivms8700.R;
+import com.ivms.ivms8700.control.Constants;
+import com.ivms.ivms8700.utils.LocalDbUtil;
 import com.ivms.ivms8700.utils.UIUtil;
+import com.ivms.ivms8700.utils.okmanager.OkHttpClientManager;
 import com.ivms.ivms8700.view.fragment.ImageManagementFragment;
 import com.ivms.ivms8700.view.fragment.MessageFragment;
 import com.ivms.ivms8700.view.fragment.MyFragment;
 import com.ivms.ivms8700.view.fragment.VideoFragment;
 
-public class MainActivity extends FragmentActivity implements View.OnClickListener {
+import java.util.List;
+
+public class MainActivity extends FragmentActivity implements View.OnClickListener, OkHttpClientManager.JsonStringCallback {
     // 底部菜单4个Linearlayout
       private LinearLayout ll_video;
       private LinearLayout ll_image_management;
@@ -39,6 +49,9 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     private ImageView video_img;
     private TextView video_txt;
     private int select = 0;
+    private LocalDbUtil localDbUtil;
+    private String local_url;
+    private String userName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +63,9 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     }
 
     private void initView() {
+        localDbUtil=new LocalDbUtil(this);
+        local_url=localDbUtil.getString("local_url");
+        userName=localDbUtil.getString("userName");
         ll_video=(LinearLayout)findViewById(R.id.video_lay);
         ll_image_management=(LinearLayout)findViewById(R.id.image_management_lay);
         ll_message=(LinearLayout)findViewById(R.id.message_lay);
@@ -227,13 +243,43 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         });
     }
 
+    //声明一个long类型变量：用于存放上一点击“返回键”的时刻
+    private long mExitTime;
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (select == 1) {
-            imFragment.onKeyDown(keyCode, event);
-
-
+//        if (select == 1) {
+//            imFragment.onKeyDown(keyCode, event);
+//        }
+        //判断用户是否点击了“返回键”
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            //与上次点击返回键时刻作差
+            if ((System.currentTimeMillis() - mExitTime) > 2000) {
+                //大于2000ms则认为是误操作，使用Toast进行提示
+                Toast.makeText(this, "再按一次退出程序", Toast.LENGTH_SHORT).show();
+                //并记录下本次点击“返回键”的时刻，以便下次进行判断
+                mExitTime = System.currentTimeMillis();
+            } else {
+                //小于2000ms则认为是用户确实希望退出程序-调用System.exit()方法进行退出
+                OkHttpClientManager.getInstance().asyncJsonStringByURL(local_url+"/shm/loginout?userName="+userName+"&token="+ Constants.APP_TOKEN, this);
+            }
+            return true;
         }
-        return true;
+        return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    public void onResponse(String result) {
+        exitAPP();
+    }
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    private void exitAPP() {
+        ActivityManager activityManager = (ActivityManager) this.getApplicationContext().getSystemService(Context.ACTIVITY_SERVICE);
+        List<ActivityManager.AppTask> appTaskList = activityManager.getAppTasks();
+        for (ActivityManager.AppTask appTask : appTaskList) {
+            appTask.finishAndRemoveTask();
+        }
+        // appTaskList.get(0).finishAndRemoveTask();
+        System.exit(0);
     }
 }

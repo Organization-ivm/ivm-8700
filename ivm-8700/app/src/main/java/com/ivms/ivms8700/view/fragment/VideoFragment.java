@@ -101,12 +101,12 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Sur
      * 监控点详细信息
      */
     private CameraInfo cameraInfo = new CameraInfo();
-     Map cameraMap=new HashMap<Integer,CameraInfo>();
+    Map cameraMap = new HashMap<Integer, CameraInfo>();
     /**
      * 监控点关联的监控设备信息
      */
     private DeviceInfo deviceInfo = null;
-    Map deviceMap=new HashMap<>();
+    Map deviceMap = new HashMap<>();
 
     /**
      * 预览控件 --当前点击的 CustomSurfaceView
@@ -264,7 +264,7 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Sur
             huifang_lay = (LinearLayout) view.findViewById(R.id.huifang_lay);
             live_view = (View) view.findViewById(R.id.live_view);
             huifang_view = (View) view.findViewById(R.id.huifang_view);
-            voice_intercom= (LinearLayout) view.findViewById(R.id.contrl_lay); //语音控制
+            voice_intercom = (LinearLayout) view.findViewById(R.id.contrl_lay); //语音控制
             contrl_lay = (LinearLayout) view.findViewById(R.id.contrl_lay); //云台控制
             playBackRecord = (LinearLayout) view.findViewById(R.id.playBackRecord); //本地录像
             playBackRecord_img = (ImageView) view.findViewById(R.id.playBackRecord_img);
@@ -292,6 +292,32 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Sur
 
         }
         return view;
+    }
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        if (hidden) { //相当于Fragment的onPause
+            if(liveHandler!=null){
+                liveHandler.removeCallbacksAndMessages(null);
+            }
+            if(mMessageHandler!=null){
+                mMessageHandler.removeCallbacksAndMessages(null);
+            }
+
+        } else { // 相当于Fragment的onResume
+            if (mIsRecord) {
+                //停止录像
+                recordBtnOnClick_live();
+            }
+            isZoom = false;
+            fangda_img.setBackgroundResource(R.drawable.fangda);
+            initControl();
+            VIDEO_VIEW_COUNT = 1;
+            setGrilView(VIDEO_VIEW_COUNT, 1);
+            palyType = 1;
+            live_view.setVisibility(View.VISIBLE);
+            huifang_view.setVisibility(View.INVISIBLE);
+        }
     }
 
     //生成对应video_view
@@ -363,7 +389,7 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Sur
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.live_lay:
-                if(mIsRecord){
+                if (mIsRecord) {
                     //停止录像
                     recordBtnOnClick_live();
                 }
@@ -377,7 +403,7 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Sur
                 huifang_view.setVisibility(View.INVISIBLE);
                 break;
             case R.id.huifang_lay:
-                if(mIsRecord){
+                if (mIsRecord) {
                     recordBtnOnClick_live();
                 }
                 isZoom = false;
@@ -426,8 +452,8 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Sur
                 break;
             case R.id.one_view_img://一屏
                 if (VIDEO_VIEW_COUNT != 1) {
-                    if( mIsRecord ){
-                        UIUtil.showToast(getActivity(),getString(R.string.video_ing));
+                    if (mIsRecord) {
+                        UIUtil.showToast(getActivity(), getString(R.string.video_ing));
                         return;
                     }
                     isZoom = false;
@@ -443,8 +469,8 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Sur
                 break;
             case R.id.four_view_img://四屏
                 if (VIDEO_VIEW_COUNT != 4) {
-                    if( mIsRecord ){
-                        UIUtil.showToast(getActivity(),getString(R.string.video_ing));
+                    if (mIsRecord) {
+                        UIUtil.showToast(getActivity(), getString(R.string.video_ing));
                         return;
                     }
                     isZoom = false;
@@ -459,8 +485,8 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Sur
                 break;
             case R.id.nine_view_img://九屏
                 if (VIDEO_VIEW_COUNT != 9) {
-                    if( mIsRecord ){
-                        UIUtil.showToast(getActivity(),getString(R.string.video_ing));
+                    if (mIsRecord) {
+                        UIUtil.showToast(getActivity(), getString(R.string.video_ing));
                         return;
                     }
                     isZoom = false;
@@ -485,7 +511,7 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Sur
      * @author lvlingdi 2016-5-6 上午10:31:05
      */
     private void zoomBtnOnClick() {
-        mLiveControl=tmLiveControl;
+        mLiveControl = tmLiveControl;
         if (isZoom && null != curSurfaceView) {
             curSurfaceView.setOnZoomListener(new OnZoomListener() {
 
@@ -555,7 +581,7 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Sur
                             //  预览
 //                            if (MyVMSNetSDK.getInstance().isHasLivePermission(camera)) {
 //
-                                gotoLive(camera);
+                            gotoLive(camera);
 //                            } else {
 //                                UIUtil.showToast(getActivity(), R.string.no_permission);
 //                            }
@@ -563,7 +589,7 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Sur
                         case 2:
                             // 回放
 //                            if (MyVMSNetSDK.getInstance().isHasPlayBackPermission(camera)) {
-                                gotoPlayBack(camera);
+                            gotoPlayBack(camera);
 //                            } else {
 //                                UIUtil.showToast(getActivity(), R.string.no_permission);
 //                            }
@@ -735,7 +761,6 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Sur
                     break;
 
                 case ConstantPlayBack.START_OPEN_FAILED:
-                    UIUtil.showToast(getActivity(), "启动播放库失败");
                     if (null != progressBar) {
                         progressBar.setVisibility(View.GONE);
                     }
@@ -1104,7 +1129,7 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Sur
             public void onSuccess(Object data) {
                 if (data instanceof CameraInfo) {
                     cameraInfo = (CameraInfo) data;
-                    cameraMap.put(mCurIndex,cameraInfo);
+                    cameraMap.put(mCurIndex, cameraInfo);
                     if (palyType == 1) {
                         liveHandler.sendEmptyMessage(Constants.Live.getCameraInfo_Success);
                     } else {
@@ -1146,7 +1171,7 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Sur
 //                MyVMSNetSDK.getInstance().sendPTZCtrlCmd(cameraInfo, PTZCmd.ACTION_STOP, mPtzcommand);
 //                mIsPtzStart = false;
 //            } else {
-            cameraInfo=(CameraInfo) cameraMap.get(mCurIndex);
+            cameraInfo = (CameraInfo) cameraMap.get(mCurIndex);
             MyVMSNetSDK.getInstance().sendPTZCtrlCmd(cameraInfo, PTZCmd.ACTION_START, mPtzcommand);
             mIsPtzStart = true;
 
@@ -1317,3 +1342,4 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Sur
     }
 
 }
+
