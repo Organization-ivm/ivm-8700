@@ -22,7 +22,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".view.LoginActivity">
+        <activity android:name=".view.LoginActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -31,10 +32,12 @@
         </activity>
         <activity
             android:name=".view.MainActivity"
-            android:label="@string/title_activity_main" />
+            android:label="@string/title_activity_main"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".view.SetingActivity"
-            android:label="@string/title_activity_seting" />
+            android:label="@string/title_activity_seting"
+            android:screenOrientation="portrait"/>
 
         <provider
             android:name="android.support.v4.content.FileProvider"
@@ -48,7 +51,8 @@
 
         <activity
             android:name=".view.AddMonitoryActivity"
-            android:theme="@style/dialogstyle" />
+            android:theme="@style/dialogstyle"
+            android:screenOrientation="portrait"/>
 
         <!--<service-->
             <!--android:name=".service.CheckService"-->
@@ -70,15 +74,18 @@
 
         <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
         <!-- </intent-filter> -->
-        <activity android:name=".view.FaceClockActivity" />
+        <activity android:name=".view.FaceClockActivity"
+            android:screenOrientation="portrait"/>
         <!-- <intent-filter> -->
         <!-- <action android:name="android.intent.action.MAIN" /> -->
 
 
         <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
         <!-- </intent-filter> -->
-        <activity android:name=".view.FaceDetailActivity" />
-        <activity android:name=".view.HelmetIdentActivity">
+        <activity android:name=".view.FaceDetailActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".view.HelmetIdentActivity"
+            android:screenOrientation="portrait">
 
             <!-- <intent-filter> -->
             <!-- <action android:name="android.intent.action.MAIN" /> -->
@@ -87,7 +94,8 @@
             <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
             <!-- </intent-filter> -->
         </activity>
-        <activity android:name=".view.CameraStatisticsActivity">
+        <activity android:name=".view.CameraStatisticsActivity"
+            android:screenOrientation="portrait">
 
             <!-- <intent-filter> -->
             <!-- <action android:name="android.intent.action.MAIN" /> -->
@@ -96,7 +104,8 @@
             <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
             <!-- </intent-filter> -->
         </activity>
-        <activity android:name=".view.OnlineSummaryActivity">
+        <activity android:name=".view.OnlineSummaryActivity"
+            android:screenOrientation="portrait">
 
             <!-- <intent-filter> -->
             <!-- <action android:name="android.intent.action.MAIN" /> -->
@@ -109,7 +118,8 @@
         <activity android:name=".view.WeatherActivity" />
         <activity
             android:name=".view.AddCamerActivity"
-            android:theme="@style/dialogstyle"></activity>
+            android:theme="@style/dialogstyle"
+            android:screenOrientation="portrait"></activity>
     </application>
 
 </manifest>

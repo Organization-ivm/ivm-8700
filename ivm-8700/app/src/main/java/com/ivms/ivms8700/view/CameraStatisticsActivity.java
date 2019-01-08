@@ -124,9 +124,14 @@ public class CameraStatisticsActivity extends Activity implements OkHttpClientMa
                 JSONObject obj = valuesList.get(i);
                 String num = obj.getString("rate");
                 num = num.split("%")[0];
-                e.add(new Entry(Float.valueOf(num), i, obj.getString("cameraName")));
+                String cameraName=obj.getString("cameraName");
+                if(cameraName.contains("号线")){
+                    cameraName=cameraName.split("号线")[1];
+                }
 
-                damaXList.add(obj.getString("cameraName"));
+                e.add(new Entry(Float.valueOf(num), i, cameraName));
+
+                damaXList.add(cameraName);
             }
             LineDataSet d1 = new LineDataSet(e, "");//所选择的病害类型
             d1.setLineWidth(2.5f);

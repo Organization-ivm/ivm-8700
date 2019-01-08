@@ -51,8 +51,6 @@ public class MessageFragment extends Fragment implements OkHttpClientManager.Jso
     LinearLayout llFace;
     @BindView(R.id.titlechoose)
     LinearLayout titlechoose;
-    @BindView(R.id.tvTitle)
-    TextView tvTitle;
     @BindView(R.id.RvMessage)
     RecyclerView RvMessage;
    @BindView(R.id.rlContent)

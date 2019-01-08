@@ -81,18 +81,9 @@
       android:visibility="gone"
       android:layout_below="@id/titlechoose"
       >
-      <TextView
-          android:id="@+id/tvTitle"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_marginTop="@dimen/dp4"
-          android:layout_marginLeft="@dimen/dp14"
-          android:textStyle="bold"
-          android:text="@string/sb_list"/>
       <android.support.v7.widget.RecyclerView
           android:id="@+id/RvMessage"
           android:layout_width="match_parent"
-          android:layout_below="@+id/tvTitle"
           android:layout_height="match_parent"
           android:layout_marginRight="@dimen/dp2"
           android:layout_marginLeft="@dimen/dp2"
