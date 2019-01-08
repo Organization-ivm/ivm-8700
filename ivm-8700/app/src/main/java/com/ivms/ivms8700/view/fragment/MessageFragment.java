@@ -131,7 +131,7 @@ public class MessageFragment extends Fragment implements OkHttpClientManager.Jso
         url += "&deviceID=" + deviceId;
         url += "&userName=" + userName;
 
-        Log.i("Alan", "安全帽识别url=-=" + url);
+        Log.i("Alan", "消息url=-=" + url);
 
         OkHttpClientManager.getInstance().asyncJsonObjectByUrl(url, this);
     }
@@ -161,13 +161,13 @@ public class MessageFragment extends Fragment implements OkHttpClientManager.Jso
     public void onResponse(JSONObject jsonObject) {
         UIUtil.cancelProgressDialog();
         try {
-            JSONObject jsonObject1 = new JSONObject(testStr);
-//            String result = jsonObject.getString("result");
-            String result = jsonObject1.getString("result");
+//            JSONObject jsonObject1 = new JSONObject(testStr);
+            String result = jsonObject.getString("result");
+//            String result = jsonObject1.getString("result");
             list.clear();
             if (result.equals("success")) {
                 rlContent.setVisibility(View.VISIBLE);
-                String str = jsonObject1.toString();
+                String str = jsonObject.toString();
                 Gson gson = new Gson();
                 MessageEntity enty = gson.fromJson(str, MessageEntity.class);
                 msgList = new ArrayList<>();
