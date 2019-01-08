@@ -4,10 +4,123 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".view.WeatherActivity">
+    android:orientation="vertical">
+    <include
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp50"
+        android:layout_gravity="center"
+        layout="@layout/head_layout" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="130dp"
+        android:layout_marginTop="@dimen/dp2"
+        android:orientation="vertical"
+        android:layout_marginLeft="@dimen/dp2"
+        android:layout_marginRight="@dimen/dp2"
+        android:gravity="center_vertical"
+        android:background="@drawable/select_bg">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp4"
+            android:layout_marginLeft="@dimen/dp14"
+            android:textStyle="bold"
+            android:text="@string/tj_select"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp50">
+            <LinearLayout
+                android:layout_width="@dimen/dp0"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_marginLeft="@dimen/dp10"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/xl_select"
+                    android:textColor="#292421"
+                    android:textSize="14sp" />
+                <TextView
+                    android:id="@+id/xl_btn"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2.5"
+                    android:gravity="center"
+                    android:hint="@string/palase_select"
+                    android:tag=""
+                    android:textColor="#292421"
+                    android:textSize="14sp" />
+
+                <ImageView
+                    android:layout_width="14dp"
+                    android:layout_height="14dp"
+                    android:layout_marginLeft="2dp"
+                    android:layout_marginRight="5dp"
+                    android:src="@drawable/arrow" />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="@dimen/dp0"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginLeft="@dimen/dp5"
+                    android:text="@string/zd_select"
+                    android:textColor="#292421"
+                    android:textSize="14sp" />
+                <TextView
+                    android:id="@+id/zd_btn"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2.5"
+                    android:gravity="center"
+                    android:hint="@string/palase_select"
+                    android:tag=""
+                    android:textColor="#292421"
+                    android:textSize="14sp" />
+
+                <ImageView
+                    android:layout_width="14dp"
+                    android:layout_height="14dp"
+                    android:layout_marginLeft="2dp"
+                    android:layout_marginRight="10dp"
+                    android:src="@drawable/arrow" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/sure_btn"
+            android:layout_width="160dp"
+            android:layout_height="@dimen/dp30"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/denglu"
+            android:layout_marginTop="@dimen/dp6"
+            android:textColor="#ffffff"
+            android:textSize="14sp"
+            android:text="@string/notarize_search"/>
+    </LinearLayout>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="正在建设中.."/>
+        android:layout_marginTop="@dimen/dp4"
+        android:layout_marginLeft="@dimen/dp14"
+        android:textStyle="bold"
+        android:text="@string/qx_list"/>
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/sb_list_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginRight="@dimen/dp2"
+        android:layout_marginLeft="@dimen/dp2"
+        android:layout_marginTop="@dimen/dp4">
+
+    </android.support.v7.widget.RecyclerView>
 </LinearLayout>
