@@ -44,7 +44,6 @@ public class ImageManagementFragment extends Fragment {
     private LocalVideoFragment localVideoFragment;
     private int selectWhat = 0;
     private FragmentManager fragmentManager;
-    private boolean showEd = false;
 
     @Nullable
     @Override
@@ -58,42 +57,50 @@ public class ImageManagementFragment extends Fragment {
         return view;
     }
 
-//    @Override
-//    public void onHiddenChanged(boolean hidden) {
-//        super.onHiddenChanged(hidden);
-//        if(!hidden){
-//            if(showEd){
-//                initFragment(0,true);
-//            }else{
-//                initFragment(0,false);
-//
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if(!hidden){
+            if(selectWhat == 0){
+                screenshotFragment.initDataList();
+
+            }else{
+                localVideoFragment.initDataList();
+
+            }
+//            if (screenshotFragment != null) {
+//                screenshotFragment.onDestroy();
+//                screenshotFragment = null;
 //            }
-//            showEd = true;
-////            if (screenshotFragment != null) {
-////                screenshotFragment.onDestroy();
-////                screenshotFragment = null;
-////            }
-////            if (localVideoFragment != null) {
-////                localVideoFragment.onDestroy();
-////                localVideoFragment = null;
-////            }
-//
-//        }
-//    }
+//            if (localVideoFragment != null) {
+//                localVideoFragment.onDestroy();
+//                localVideoFragment = null;
+//            }
+
+        }
+    }
 
     private void setListener() {
         llVideoScreenshot.setOnClickListener(new NoDoubleClickListener() {
             @Override
             protected void onNoDoubleClick(View v) {
-                selectWhat = 0;
-                initFragment(0, false);
+                if(selectWhat == 0){
+                    return ;
+                }else {
+                    selectWhat = 0;
+                    initFragment(0, false);
+                }
             }
         });
         llVideoVideo.setOnClickListener(new NoDoubleClickListener() {
             @Override
             protected void onNoDoubleClick(View v) {
-                selectWhat = 1;
-                initFragment(1, false);
+                if(selectWhat == 1){
+                    return ;
+                }else{
+                    selectWhat = 1;
+                    initFragment(1, false);
+                }
             }
         });
         ivScreen.setOnClickListener(new NoDoubleClickListener() {

@@ -203,7 +203,7 @@ class LocalVideoFragment : Fragment(), VideoAdapter.OnShowItemClickListener {
     }
 
 
-    private fun initDataList() {
+    public fun initDataList() {
         showLoadingProgress()
         Thread(Runnable {
             getAllFiles(path)

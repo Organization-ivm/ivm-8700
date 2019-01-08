@@ -19,17 +19,18 @@ import android.widget.GridView;
 import android.widget.ImageView;
 
 
+import com.bumptech.glide.Glide;
 import com.ivms.ivms8700.R;
 import com.ivms.ivms8700.utils.PhotoVideoManager.bean.Bean;
 import com.ivms.ivms8700.utils.PhotoVideoManager.utils.ImageDownloader;
 
 import java.util.List;
 
-public class ImageAdapter extends BaseAdapter implements OnScrollListener {
+public class ImageAdapter extends BaseAdapter  {
     private GridView gridView;
     private Context context;
 //    private List<String> imageThumUrls = new ArrayList<>();
-    private ImageDownloader mImageDownloader;
+//    private ImageDownloader mImageDownloader;
     private boolean isFirstEnter = true;
     private int mFirstVisibleItem;
     private int mVisibleItemCount;
@@ -58,8 +59,8 @@ public class ImageAdapter extends BaseAdapter implements OnScrollListener {
         this.context = context;
         this.gridView = gridView;
 //        this.imageThumUrls = paths;
-        this.mImageDownloader = new ImageDownloader(context);
-        gridView.setOnScrollListener(this);
+//        this.mImageDownloader = new ImageDownloader(context);
+//        gridView.setOnScrollListener(this);
     }
     public ImageAdapter(Context context,GridView gridView ){
 //        this.items = list;
@@ -68,8 +69,8 @@ public class ImageAdapter extends BaseAdapter implements OnScrollListener {
         this.context = context;
         this.gridView = gridView;
 //        this.imageThumUrls = paths;
-        this.mImageDownloader = new ImageDownloader(context);
-        gridView.setOnScrollListener(this);
+//        this.mImageDownloader = new ImageDownloader(context);
+//        gridView.setOnScrollListener(this);
     }
 
 
@@ -111,14 +112,14 @@ public class ImageAdapter extends BaseAdapter implements OnScrollListener {
         }
         String imageUrl = "" + bean.getFilePath();
         //只显示缓存图片，如果缓存中没有则设置一张默认的图片
-        Bitmap bitmap = mImageDownloader.showCacheBitmap(imageUrl.replaceAll("[^\\w]", ""));
-        if (bitmap != null) {
-//        Glide.with(context).load(imageUrl).into(holder.img);
-            holder.img.setImageBitmap(bitmap);
-        } else {
-            holder.img.setImageBitmap(bitmap);
+//        Bitmap bitmap = mImageDownloader.showCacheBitmap(imageUrl.replaceAll("[^\\w]", ""));
+//        if (bitmap != null) {
+        Glide.with(context).load(imageUrl).into(holder.img);
+//            holder.img.setImageBitmap(bitmap);
+//        } else {
+//            holder.img.setImageBitmap(bitmap);
 //            holder.img.setImageResource(R.mipmap.ic_launcher);
-        }
+//        }
 //        holder.cb.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View v) {
@@ -142,31 +143,31 @@ public class ImageAdapter extends BaseAdapter implements OnScrollListener {
         return convertView;
     }
 
-    @Override
-    public void onScrollStateChanged(AbsListView view, int scrollState) {
-        if (scrollState == OnScrollListener.SCROLL_STATE_IDLE)//滑动停止时启动下载图片
-        {
-            showImage(mFirstVisibleItem, mVisibleItemCount);
-        } else {
-            cancellTask();
-        }
-    }
+//    @Override
+//    public void onScrollStateChanged(AbsListView view, int scrollState) {
+//        if (scrollState == OnScrollListener.SCROLL_STATE_IDLE)//滑动停止时启动下载图片
+//        {
+//            showImage(mFirstVisibleItem, mVisibleItemCount);
+//        } else {
+//            cancellTask();
+//        }
+//    }
 
     /**
      * 滚动时执行此方法
      * 第一次进入会调用showImage显示图片
      */
-    @Override
-    public void onScroll(AbsListView view, int firstVisibleItem,
-                         int visibleItemCount, int totalItemCount) {
-        mFirstVisibleItem = firstVisibleItem;
-        mVisibleItemCount = visibleItemCount;
-
-        if (isFirstEnter && visibleItemCount > 0) {
-            showImage(firstVisibleItem, visibleItemCount);
-            isFirstEnter = false;
-        }
-    }
+//    @Override
+//    public void onScroll(AbsListView view, int firstVisibleItem,
+//                         int visibleItemCount, int totalItemCount) {
+//        mFirstVisibleItem = firstVisibleItem;
+//        mVisibleItemCount = visibleItemCount;
+//
+//        if (isFirstEnter && visibleItemCount > 0) {
+//            showImage(firstVisibleItem, visibleItemCount);
+//            isFirstEnter = false;
+//        }
+//    }
 
     /**
      * 显示图片，先从缓存中找，如果没找到就开启线程下载
@@ -174,20 +175,20 @@ public class ImageAdapter extends BaseAdapter implements OnScrollListener {
      * @param firstVisibleItem 第一个可见项的id
      * @param visibleItemCount 可见项的总数
      */
-    private void showImage(int firstVisibleItem, int visibleItemCount) {
-        for (int i = firstVisibleItem; i < firstVisibleItem + visibleItemCount; i++) {
-            String mImageUrl = "" + items.get(i).getFilePath();
-            final ImageView mImageView = (ImageView) gridView.findViewWithTag(mImageUrl);
-            mImageDownloader.downloadImage(mImageUrl, new ImageDownloader.OnImageDownloadListener() {
-                @Override
-                public void onImageDownload(String url, Bitmap bitmap) {
-                    if (mImageView != null && bitmap != null) {
-                        mImageView.setImageBitmap(bitmap);//下载后直接设置到view对象上
-                    }
-                }
-            });
-        }
-    }
+//    private void showImage(int firstVisibleItem, int visibleItemCount) {
+//        for (int i = firstVisibleItem; i < firstVisibleItem + visibleItemCount; i++) {
+//            String mImageUrl = "" + items.get(i).getFilePath();
+//            final ImageView mImageView = (ImageView) gridView.findViewWithTag(mImageUrl);
+//            mImageDownloader.downloadImage(mImageUrl, new ImageDownloader.OnImageDownloadListener() {
+//                @Override
+//                public void onImageDownload(String url, Bitmap bitmap) {
+//                    if (mImageView != null && bitmap != null) {
+//                        mImageView.setImageBitmap(bitmap);//下载后直接设置到view对象上
+//                    }
+//                }
+//            });
+//        }
+//    }
 
 //    public void clearData() {
 //        imageThumUrls.clear();
@@ -196,9 +197,9 @@ public class ImageAdapter extends BaseAdapter implements OnScrollListener {
     /**
      * 取消下载任务
      */
-    public void cancellTask() {
-        mImageDownloader.cancellTask();
-    }
+//    public void cancellTask() {
+//        mImageDownloader.cancellTask();
+//    }
 
     public interface OnShowItemClickListener {
         public void onShowItemClick(int position, Bean bean, boolean checked);

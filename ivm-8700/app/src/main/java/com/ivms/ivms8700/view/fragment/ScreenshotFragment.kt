@@ -270,7 +270,7 @@ class ScreenshotFragment : Fragment(), ImageAdapter.OnShowItemClickListener {
     }
 
 
-    private fun initDataList() {
+    public fun initDataList() {
         showLoadingProgress()
         Thread(Runnable {
             getAllFiles(path)
