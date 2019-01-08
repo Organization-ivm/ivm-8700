@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.ivms.ivms8700.R;
 import com.ivms.ivms8700.bean.FaceEntity;
+import com.ivms.ivms8700.utils.LocalDbUtil;
 import com.ivms.ivms8700.utils.UIUtil;
 
 import java.io.IOException;
@@ -42,6 +43,9 @@ public class FaceDetailActivity extends Activity implements View.OnClickListener
     private TextView bm_txt;
     private TextView phone_txt;
     private TextView rq_txt;
+    private LocalDbUtil localDbUtil;
+    private String local_url;
+    private String userName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +56,9 @@ public class FaceDetailActivity extends Activity implements View.OnClickListener
     }
     //初始化控件
     private void initView() {
+        localDbUtil = new LocalDbUtil(this);
+        local_url = localDbUtil.getString("local_url");
+        userName = localDbUtil.getString("userName");
         back_btn=(ImageView)findViewById(R.id.back_btn);
         back_btn.setOnClickListener(this);
         save_btn=(TextView)findViewById(R.id.right_btn);
@@ -78,7 +85,7 @@ public class FaceDetailActivity extends Activity implements View.OnClickListener
             bm_txt.setText(faceEntity.getDepartment());
             phone_txt.setText(faceEntity.getPhone());
             rq_txt.setText(faceEntity.getDate());
-            imageUrl ="http://222.66.82.4:80/shm/"+faceEntity.getFaceCapture();
+            imageUrl =local_url+"/shm/"+faceEntity.getFaceCapture();
             Log.i("Alan","imageUrl="+imageUrl);
 
             Glide.with(this).load(imageUrl).into(user_img);

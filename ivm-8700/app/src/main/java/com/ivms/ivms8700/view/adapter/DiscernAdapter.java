@@ -8,12 +8,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.ivms.ivms8700.R;
 import com.ivms.ivms8700.bean.DiscernEntity;
+import com.ivms.ivms8700.utils.LocalDbUtil;
+import com.ivms.ivms8700.utils.UIUtil;
 import com.polites.android.GestureImageView;
 
 import java.util.List;
@@ -29,6 +32,10 @@ public class DiscernAdapter extends RecyclerView.Adapter<DiscernAdapter.ViewHold
     private List<DiscernEntity> discernList;
     private Context mContext;
     private Dialog dia;
+    private LocalDbUtil localDbUtil;
+    private String local_url;
+    private String userName;
+
     public DiscernAdapter(List<DiscernEntity> mDiscernList, Context mContext) {
         this.discernList = mDiscernList;
         this.mContext=mContext;
@@ -37,11 +44,14 @@ public class DiscernAdapter extends RecyclerView.Adapter<DiscernAdapter.ViewHold
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.discern_item_layout,parent,false);
         ViewHolder holder = new ViewHolder(view);
+        localDbUtil = new LocalDbUtil(mContext);
+        local_url = localDbUtil.getString("local_url");
+        userName = localDbUtil.getString("userName");
         return holder;
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(ViewHolder holder, final int position) {
         final DiscernEntity discernEntity = discernList.get(position);
         holder.count.setText((position+1)+"、");
         holder.staion.setText(discernEntity.getStationName());
@@ -51,7 +61,7 @@ public class DiscernAdapter extends RecyclerView.Adapter<DiscernAdapter.ViewHold
             @Override
             public void onClick(View v) {
 
-                showDialog(discernEntity.getSafeCapCapture());
+                showDialog(discernEntity.getSafeCapCapture(),position);
             }
         });
 
@@ -71,17 +81,21 @@ public class DiscernAdapter extends RecyclerView.Adapter<DiscernAdapter.ViewHold
         public ViewHolder(View view) {
             super(view);
             item_view=(LinearLayout) view.findViewById(R.id.item_view);
+
             count = (TextView) view.findViewById(R.id.count);
             staion = (TextView) view.findViewById(R.id.staion);
             date_txt=(TextView)view.findViewById(R.id.date_txt);
         }
     }
 
-    private void showDialog(String url) {
+    private void showDialog(String url, final int position) {
         dia =new Dialog(mContext, R.style.edit_AlertDialog_style);
         dia.setContentView(R.layout.activity_start_dialog);
         GestureImageView imageView =(GestureImageView) dia.findViewById(R.id.start_img);
-        Glide.with(mContext).load("http://222.66.82.4:80/shm/"+url).into(imageView);
+        ImageView last_btn=(ImageView)dia.findViewById(R.id.last_btn) ;
+        ImageView next_btn=(ImageView)dia.findViewById(R.id.next_btn) ;
+
+        Glide.with(mContext).load(local_url+"/shm/"+url).into(imageView);
         dia.show();
         dia.setCanceledOnTouchOutside(true);
         Window w = dia.getWindow();
@@ -91,6 +105,33 @@ public class DiscernAdapter extends RecyclerView.Adapter<DiscernAdapter.ViewHold
             @Override
             public void onClick(View view) {
                 dia.dismiss();
+            }
+        });
+        last_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //上一条
+                if(position==0){
+                    UIUtil.showToast(mContext,"已经是第一条");
+                    return;
+                }
+                dia.dismiss();
+                final DiscernEntity discernEntity = discernList.get(position-1);
+                showDialog(discernEntity.getSafeCapCapture(),position-1);
+
+            }
+        });
+        next_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //下一条
+                if(position==discernList.size()-1){
+                    UIUtil.showToast(mContext,"已经是最后一条");
+                    return;
+                }
+                dia.dismiss();
+                final DiscernEntity discernEntity = discernList.get(position+1);
+                showDialog(discernEntity.getSafeCapCapture(),position+1);
             }
         });
     }

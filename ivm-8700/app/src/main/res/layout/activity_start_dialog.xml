@@ -1,11 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="@dimen/dp300"
-    android:layout_height="@dimen/dp300">
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/dp300"
+    android:gravity="center"
+    android:orientation="horizontal"
+    >
+    <ImageView
+        android:id="@+id/last_btn"
+        android:layout_width="@dimen/dp40"
+        android:layout_height="@dimen/dp50"
+        android:layout_marginLeft="@dimen/dp10"
+        android:layout_marginRight="@dimen/dp10"
+        android:background="@mipmap/left_jt"/>
     <com.polites.android.GestureImageView
         android:id="@+id/start_img"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
+        android:layout_weight="1"
         android:layout_height="match_parent">
 
     </com.polites.android.GestureImageView>
+    <ImageView
+        android:id="@+id/next_btn"
+        android:layout_width="@dimen/dp40"
+        android:layout_height="@dimen/dp50"
+        android:layout_marginLeft="@dimen/dp10"
+        android:layout_marginRight="@dimen/dp10"
+        android:background="@mipmap/right_jt"/>
+
 </LinearLayout>

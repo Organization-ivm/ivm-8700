@@ -74,6 +74,9 @@ public class CameraStatisticsActivity extends Activity implements OkHttpClientMa
     private String userName;
     private TextView type_btn;
     private ChartDataAdapter cda;
+    private int year_text;
+    private int month_text;
+    private int day_text;
 
 
     @Override
@@ -272,6 +275,11 @@ public class CameraStatisticsActivity extends Activity implements OkHttpClientMa
                 break;
             case R.id.time_btn:
                 calendar = Calendar.getInstance();
+                if(time_btn.getText().toString().isEmpty()){
+                    year_text=calendar.get(Calendar.YEAR);
+                    month_text=calendar.get(Calendar.MONTH);
+                    day_text=calendar.get(Calendar.DAY_OF_MONTH);
+                }
                 dialog = new DatePickerDialog(CameraStatisticsActivity.this, AlertDialog.THEME_HOLO_LIGHT,
                         new DatePickerDialog.OnDateSetListener() {
                             @Override
@@ -285,12 +293,13 @@ public class CameraStatisticsActivity extends Activity implements OkHttpClientMa
                                 if (dayOfMonth < 10) {
                                     day = "0" + day;
                                 }
+                                year_text=year;
+                                month_text=monthOfYear;
+                                day_text=dayOfMonth;
                                 time_btn.setText(year + "-" + month + "-"
                                         + day);
                             }
-                        }, calendar.get(Calendar.YEAR), calendar
-                        .get(Calendar.MONTH), calendar
-                        .get(Calendar.DAY_OF_MONTH));
+                        },year_text,month_text , day_text);
                 dialog.show();
                 break;
         }
