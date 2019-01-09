@@ -26,13 +26,10 @@ import java.util.List;
 
 public class MessageAdapter extends BaseAdapter<MessageEntity.Msg,MessageAdapter.ViewHolder> {
 
-    private List<DiscernEntity> discernList;
-    private Context mContext;
-    private Dialog dia;
+
     public MessageAdapter(Context mContext) {
         super(mContext);
-//        this.discernList = mDiscernList;
-//        this.mContext=mContext;
+
     }
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -49,43 +46,24 @@ public class MessageAdapter extends BaseAdapter<MessageEntity.Msg,MessageAdapter
 
     @Override
     protected void bindViewHolderData(ViewHolder holder, MessageEntity.Msg data, int position) {
-//        holder.staion.setText(data.getStationName());
-//        holder.date_txt.setText("日期："+data.getCaptureTime());
-        holder.tvName.setText(data.getStationCode());
-        holder.tvTime.setText(data.getRecognizeTime());
-        holder.tvMessage.setText(data.getType());
-
+        holder.tvName.setText("站点："+data.getStationName());
+        holder.tvName.setTag(data.getStationCode());
+        holder.tvTime.setText("日期："+data.getRecognizeTime());
+        holder.count.setText((position+1)+"、");
 
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         TextView tvName;
-        TextView tvMessage;
+        TextView count;
         TextView tvTime;
 
         public ViewHolder(View view) {
             super(view);
+            count = (TextView) view.findViewById(R.id.count);
             tvName = (TextView) view.findViewById(R.id.tvName);
-            tvMessage = (TextView) view.findViewById(R.id.tvMessage);
             tvTime=(TextView)view.findViewById(R.id.tvTime);
         }
     }
 
-//    private void showDialog(String url) {
-//        dia =new Dialog(mContext, R.style.edit_AlertDialog_style);
-//        dia.setContentView(R.layout.activity_start_dialog);
-//        GestureImageView imageView =(GestureImageView) dia.findViewById(R.id.start_img);
-//        Glide.with(mContext).load("http://222.66.82.4:80/shm/"+url).into(imageView);
-//        dia.show();
-//        dia.setCanceledOnTouchOutside(true);
-//        Window w = dia.getWindow();
-//        WindowManager.LayoutParams lp = w.getAttributes();
-//        lp.x = 0; lp.y = 40; dia.onWindowAttributesChanged(lp);
-//        imageView.setOnClickListener( new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                dia.dismiss();
-//            }
-//        });
-//    }
 }

@@ -68,8 +68,17 @@ public class MessageEntity {
 
     public static class Msg {
         private String type;
+        private String stationName;
         private String stationCode;
         private String recognizeTime;
+
+        public String getStationName() {
+            return stationName;
+        }
+
+        public void setStationName(String stationName) {
+            this.stationName = stationName;
+        }
 
         public String getType() {
             return type;
