@@ -135,7 +135,11 @@ public class ImageManagementFragment extends Fragment {
 
     }
 
-
+    /**
+     * 初始化里面fragment
+     * @param index
+     * @param needReStart
+     */
     private void initFragment(int index, boolean needReStart) {
         // 由于是引用了V4包下的Fragment，所以这里的管理器要用getSupportFragmentManager获取
         if (fragmentManager == null) {
@@ -184,10 +188,8 @@ public class ImageManagementFragment extends Fragment {
             default:
                 break;
         }
-
         // 提交事务
         transaction.commit();
-
     }
 
     //隐藏Fragment

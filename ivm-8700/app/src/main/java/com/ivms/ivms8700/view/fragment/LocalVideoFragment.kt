@@ -9,7 +9,6 @@ import android.provider.MediaStore
 import android.support.annotation.RequiresApi
 import android.support.v4.app.Fragment
 import android.support.v4.content.FileProvider
-import android.util.Log
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
@@ -28,42 +27,56 @@ import java.util.ArrayList
 
 
 @RequiresApi(Build.VERSION_CODES.HONEYCOMB)
-class LocalVideoFragment : Fragment(), VideoAdapter.OnShowItemClickListener {
+class LocalVideoFragment : Fragment() {
 
 
     lateinit var v: View
 
 
     lateinit var gridView: GridView
-//    lateinit var iv_background: ImageView
-        private val path = Environment.getExternalStorageDirectory().toString() + "/HIKVISION/"
-//    private val path = Environment.getExternalStoragePublicDirectory("").toString() + "/HIKVISION/"
+    private val path = Environment.getExternalStorageDirectory().toString() + "/HIKVISION/"
+    //    private val path = Environment.getExternalStoragePublicDirectory("").toString() + "/HIKVISION/"
     lateinit var tvShare: TextView
     lateinit var tvDelete: TextView
     var dataList: MutableList<VideoInfo>? = null
     var selectedList: MutableList<VideoInfo>? = null
-    //    private List<String> paths = new ArrayList<String>();
-    //    private List<String> items = new ArrayList<String>();
     private val videoList = ArrayList<VideoInfo>()
-    //    private val paths = ArrayList<String>()
-//    private val items = ArrayList<String>()
     private var myAdapter: VideoAdapter? = null
-    public var isShow: Boolean = false
+    var isShow: Boolean = false
     private var isSel = true
-
-
     private var file: File? = null
-
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
 
         v = inflater.inflate(R.layout.fragment_video, container, false)
-
-        // Inflate the layout for this fragment
         initView(v)
         setListener()
         return v
+    }
+
+    /**
+     * fragment显示出来时刷新数据
+     */
+    override fun onHiddenChanged(hidden: Boolean) {
+        super.onHiddenChanged(hidden)
+        if (!hidden) {
+            initDataList()
+        }
+    }
+
+    /**
+     * 初始化
+     */
+    private fun initView(v: View) {
+        gridView = v.findViewById(R.id.gridview) as GridView
+        tvShare = v.findViewById(R.id.tvshare) as TextView
+        tvDelete = v.findViewById(R.id.tvdelete) as TextView
+        selectedList = ArrayList()
+        dataList = ArrayList()
+
+        initDataList()
+        myAdapter = VideoAdapter(context, dataList)
+        gridView.adapter = myAdapter
     }
 
 
@@ -74,136 +87,23 @@ class LocalVideoFragment : Fragment(), VideoAdapter.OnShowItemClickListener {
             true
         }
         gridView.setOnItemClickListener { parent: AdapterView<*>?, view: View?, position: Int, id: Long ->
-
             //判断CheckBox是否显示，如果显示说明在选择状态，否则是浏览状态用图片浏览器打开
-            if (isShow) {
-                val item = dataList!![position]
-                val isChecked = item.isChecked
-                Log.i("tag", "===isChecked===$isChecked")
-                if (isChecked) {
-
-
-                    item.isChecked = false
-                    selectedList!!.remove(item)
-                } else {
-
-                    if (selectedList != null && selectedList!!.size > 0) {
-                        Toast.makeText(context, getString(R.string.toast_choose_one), Toast.LENGTH_SHORT).show()
-
-                        return@setOnItemClickListener
-
-                    }
-
-                    item.isChecked = true
-                    selectedList!!.add(item)
-                }
-                Log.i("tag", "===isChecked=after==$isChecked")
-                myAdapter!!.notifyDataSetChanged()
-            } else {
-                file = File(videoList[position].path)
-                val intent = Intent(Intent.ACTION_VIEW)
-                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-                var uri = FileProvider.getUriForFile(context!!, "com.ivms.ivms8700.fileprovider", file!!)
-                intent.setDataAndType(uri, "video/mp4")
-                try {
-                    startActivity(intent)
-                } catch (e: Exception) {
-
-                }
-
-            }
-
+            selectChoose(position)
         }
         tvDelete.setOnClickListener {
-            if (selectedList != null && selectedList!!.size > 0) {
-                for (i in selectedList!!.indices) {
-                    file = File(selectedList!![i].path)
-                    if (file!!.exists()) {
-                        if (file!!.delete()) {
-                            delete(selectedList!![i].path)
-                        }
-                    } else {
-                        Toast.makeText(context, "文件已删除", Toast.LENGTH_SHORT).show()
-                    }
-                }
-                dataList!!.removeAll(selectedList!!)
-                selectedList!!.clear()
-                changeShow()
-                choose()
-                myAdapter!!.setItems(dataList!!)
-//                gridView.adapter = myAdapter
-                myAdapter!!.notifyDataSetChanged()
-            } else {
-                Toast.makeText(context, "请选择条目", Toast.LENGTH_SHORT).show()
-            }
+            deleteItem()
+
 //            isshowImage()
         }
         tvShare.setOnClickListener {
-
-            if (selectedList != null && selectedList!!.size > 0) {
-                file = File(selectedList!![0].path)
-                if (file!!.exists()) {
-                    var uri = FileProvider.getUriForFile(context!!, "com.ivms.ivms8700.fileprovider", file!!)
-                    ShareUtils.shareVideo(context, "分享", "qwe", "视频", uri)
-                } else {
-
-                    Toast.makeText(context, "文件不存在", Toast.LENGTH_SHORT).show()
-                }
-
-            } else {
-                Toast.makeText(context, "请选择条目", Toast.LENGTH_SHORT).show()
-            }
+            shareItem()
         }
     }
 
-    fun changeShow() {
-        isShow = !isShow
-
-    }
-
-
-    fun delete(filePath: String) {
-        var where = ""
-        var uri: Uri
-        if (MediaFile.isVideoFileType(filePath)) {
-            uri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
-            where = MediaStore.Video.Media.DATA;
-        } else {
-            uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
-            where = MediaStore.Images.Media.DATA;
-        }
-        where += "='" + filePath + "'";
-        var mContentResolver = activity!!.contentResolver;
-        mContentResolver.delete(uri, where, null);
-    }
-
-
-    //是否显示背景
-//    private fun isshowImage() {
-//        if (videoList.size == 0 || dataList!!.size == 0) {
-//            iv_background.setVisibility(View.VISIBLE)
-//        } else {
-//            iv_background.setVisibility(View.GONE)
-//        }
-//    }
-
-    private fun initView(v: View) {
-        gridView = v.findViewById(R.id.gridview) as GridView
-        tvShare = v.findViewById(R.id.tvshare) as TextView
-        tvDelete = v.findViewById(R.id.tvdelete) as TextView
-        selectedList = ArrayList<VideoInfo>()
-//        iv_background = v.findViewById(R.id.background3) as ImageView
-        dataList = ArrayList<VideoInfo>()
-
-        initDataList()
-        myAdapter = VideoAdapter(context, videoList, gridView, dataList)
-        myAdapter!!.setOnShowItemClickListener(this)
-        gridView.setAdapter(myAdapter)
-    }
-
-
-    public fun initDataList() {
+    /**
+     * 初始化视屏列表资源
+     */
+    fun initDataList() {
         showLoadingProgress()
         Thread(Runnable {
             getAllFiles(path)
@@ -219,7 +119,7 @@ class LocalVideoFragment : Fragment(), VideoAdapter.OnShowItemClickListener {
                 bean.isShow = isShow
                 dataList!!.add(bean)
             }
-            if(null!=activity) {
+            if (null != activity) {
                 parentFragment!!.activity!!.runOnUiThread {
                     cancelLoadingProgress()
                     myAdapter!!.setItems(dataList)
@@ -231,22 +131,23 @@ class LocalVideoFragment : Fragment(), VideoAdapter.OnShowItemClickListener {
 
     }
 
-    override fun onHiddenChanged(hidden: Boolean) {
-        super.onHiddenChanged(hidden)
-        if (!hidden) {
-            initDataList()
-        }
+
+    /**
+     * 改变是否选择状态
+     */
+
+    fun changeShow() {
+        isShow = !isShow
     }
 
-
+    /**
+     * 编辑按钮点击事件
+     */
     fun choose() {
         isSel = isShow
         if (isSel) {
             rlbottom.visibility = View.VISIBLE
-
-//            tv_sel.setText("取消")
         } else {
-//            tv_sel.setText("选择")
             rlbottom.visibility = View.GONE
             for (item in dataList!!) {
                 isShow = false
@@ -269,7 +170,7 @@ class LocalVideoFragment : Fragment(), VideoAdapter.OnShowItemClickListener {
      */
     private fun showLoadingProgress() {
 
-            UIUtil.showProgressDialog(activity, R.string.loading_process_tip)
+        UIUtil.showProgressDialog(activity, R.string.loading_process_tip)
 
     }
 
@@ -280,7 +181,9 @@ class LocalVideoFragment : Fragment(), VideoAdapter.OnShowItemClickListener {
         UIUtil.cancelProgressDialog()
     }
 
-
+    /**
+    获取文件夹下的所有视频生成对象装进list里
+     */
     private fun getAllFiles(path: String) {
 
         val file = File(path)
@@ -305,21 +208,103 @@ class LocalVideoFragment : Fragment(), VideoAdapter.OnShowItemClickListener {
                 }
             }
         }
-
-
     }
 
-    //没啥用可删掉，暂且留着
-    override fun onShowItemClick(bean: VideoInfo?) {
-        if (bean!!.path.equals(videoList[0].path)) {
-            selectedList!!.add(bean)
-        }
-        if (bean.isChecked()) {
-            selectedList!!.add(bean)
+    /**
+     * 点击item事件
+     */
+    fun selectChoose(position: Int) {
+        if (isShow) {
+            val item = dataList!![position]
+            val isChecked = item.isChecked
+            if (isChecked) {
+                item.isChecked = false
+                selectedList!!.remove(item)
+            } else {
+                if (selectedList != null && selectedList!!.size > 0) {
+                    Toast.makeText(context, getString(R.string.toast_choose_one), Toast.LENGTH_SHORT).show()
+                    return
+                }
+                item.isChecked = true
+                selectedList!!.add(item)
+            }
+            myAdapter!!.notifyDataSetChanged()
         } else {
-            selectedList!!.remove(bean)
+            file = File(videoList[position].path)
+            val intent = Intent(Intent.ACTION_VIEW)
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+            var uri = FileProvider.getUriForFile(context!!, "com.ivms.ivms8700.fileprovider", file!!)
+            intent.setDataAndType(uri, "video/mp4")
+            try {
+                startActivity(intent)
+            } catch (e: Exception) {
+
+            }
         }
     }
+
+    /**
+     * 删除按钮点击事件
+     */
+    fun deleteItem() {
+        if (selectedList != null && selectedList!!.size > 0) {
+            for (i in selectedList!!.indices) {
+                file = File(selectedList!![i].path)
+                if (file!!.exists()) {
+                    if (file!!.delete()) {
+                        delete(selectedList!![i].path)
+                    }
+                } else {
+                    Toast.makeText(context, "文件已删除", Toast.LENGTH_SHORT).show()
+                }
+            }
+            dataList!!.removeAll(selectedList!!)
+            selectedList!!.clear()
+            changeShow()
+            choose()
+            myAdapter!!.setItems(dataList!!)
+//                gridView.adapter = myAdapter
+            myAdapter!!.notifyDataSetChanged()
+        } else {
+            Toast.makeText(context, "请选择条目", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    /**
+     * 分享按钮
+     */
+    fun shareItem() {
+        if (selectedList != null && selectedList!!.size > 0) {
+            file = File(selectedList!![0].path)
+            if (file!!.exists()) {
+                var uri = FileProvider.getUriForFile(context!!, "com.ivms.ivms8700.fileprovider", file!!)
+                ShareUtils.shareVideo(context, "分享", "qwe", "视频", uri)
+            } else {
+                Toast.makeText(context, "文件不存在", Toast.LENGTH_SHORT).show()
+            }
+        } else {
+            Toast.makeText(context, "请选择条目", Toast.LENGTH_SHORT).show()
+        }
+    }
+    /**
+     * 防止删除视频时删除不干净，二次删除确保删掉
+     */
+    fun delete(filePath: String) {
+        var where = ""
+        var uri: Uri
+        if (MediaFile.isVideoFileType(filePath)) {
+            uri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
+            where = MediaStore.Video.Media.DATA;
+        } else {
+            uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+            where = MediaStore.Images.Media.DATA;
+        }
+        where += "='" + filePath + "'";
+        var mContentResolver = activity!!.contentResolver;
+        mContentResolver.delete(uri, where, null);
+    }
+
 
     //监听返回键
     fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
