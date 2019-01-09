@@ -53,7 +53,11 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.ViewHold
         holder.date_txt.setText(mWeatherEntity.getReceiveTime());
 
         holder.windAngle.setText(mWeatherEntity.getWindAngle()+"度");
-        holder.windSpeed.setText(mWeatherEntity.getWindSpeed()+"m/s");
+        String windSpeed =mWeatherEntity.getWindSpeed();
+        if(windSpeed.indexOf(".")==0){
+            windSpeed="0"+windSpeed;
+        }
+        holder.windSpeed.setText(windSpeed+"m/s");
         holder.humidity.setText(mWeatherEntity.getHumidity());
         holder.dayRainFall.setText(mWeatherEntity.getDayRainFall()+"mm");
 
