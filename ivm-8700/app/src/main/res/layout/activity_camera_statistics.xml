@@ -141,7 +141,7 @@
 
             <TextView
                 android:layout_width="0dp"
-                android:layout_marginLeft="@dimen/dp10"
+                android:layout_marginLeft="@dimen/dp2"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/type_txt"
@@ -162,7 +162,7 @@
                 android:layout_width="14dp"
                 android:layout_height="14dp"
                 android:layout_marginLeft="2dp"
-                android:layout_marginRight="5dp"
+                android:layout_marginRight="10dp"
                 android:src="@drawable/arrow" />
         </LinearLayout>
     </LinearLayout>
@@ -186,6 +186,15 @@
       android:layout_marginBottom="@dimen/dp6"
       android:layout_weight="1">
   </ListView>
+  <android.support.v7.widget.RecyclerView
+      android:id="@+id/table_listView"
+      android:layout_marginTop="@dimen/dp4"
+      android:layout_width="match_parent"
+      android:layout_height="@dimen/dp0"
+      android:layout_marginBottom="@dimen/dp6"
+      android:visibility="gone"
+      android:layout_weight="1">
+  </android.support.v7.widget.RecyclerView>
   <!--<com.ivms.ivms8700.view.customui.MyLineChartView-->
   <!--android:id="@+id/linechartview"-->
   <!--android:layout_width="match_parent"-->

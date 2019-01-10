@@ -147,13 +147,15 @@ public class HelmetIdentActivity extends Activity implements View.OnClickListene
                 JSONObject lineObj = loginJsonArray.getJSONObject(i);
                 if (lineCode.equals(lineObj.getString("lineCode"))) {
                     JSONArray stationsArray = lineObj.getJSONArray("stations");
-                    stationNameList = new String[stationsArray.length()];
-                    stationCodeList = new String[stationsArray.length()];
+                    stationNameList = new String[stationsArray.length()+1];
+                    stationCodeList = new String[stationsArray.length()+1];
                     for (int j = 0; j < stationsArray.length(); j++) {
                         JSONObject stationObj = stationsArray.getJSONObject(j);
-                        stationNameList[j] = stationObj.getString("stationName");
-                        stationCodeList[j] = stationObj.getString("stationCode");
+                        stationNameList[j+1] = stationObj.getString("stationName");
+                        stationCodeList[j+1] = stationObj.getString("stationCode");
                     }
+                    stationNameList[0] = "全部";
+                    stationCodeList[0] = "";
                 }
             } catch (JSONException e) {
                 e.printStackTrace();

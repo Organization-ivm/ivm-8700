@@ -7,7 +7,10 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -27,6 +30,8 @@ import com.ivms.ivms8700.control.MyApplication;
 import com.ivms.ivms8700.utils.LocalDbUtil;
 import com.ivms.ivms8700.utils.UIUtil;
 import com.ivms.ivms8700.utils.okmanager.OkHttpClientManager;
+import com.ivms.ivms8700.view.adapter.CameraStatisticsAdapter;
+import com.ivms.ivms8700.view.adapter.FaceAdapter;
 import com.ivms.ivms8700.view.chart.ChartItem;
 import com.ivms.ivms8700.view.chart.LineChartItem;
 import com.ivms.ivms8700.view.customui.MyLineChartView;
@@ -77,6 +82,8 @@ public class CameraStatisticsActivity extends Activity implements OkHttpClientMa
     private int year_text;
     private int month_text;
     private int day_text;
+    private CameraStatisticsAdapter adapter;
+    private RecyclerView table_listView;
 
 
     @Override
@@ -87,7 +94,21 @@ public class CameraStatisticsActivity extends Activity implements OkHttpClientMa
         initView();
         initLineData();
         initData();
+        initRecyclerView();
 //            refreshData();
+    }
+
+    private void initRecyclerView() {
+        //初始化RecyclerView
+        table_listView = (RecyclerView) findViewById(R.id.table_listView);
+        //创建LinearLayoutManager 对象 这里使用 LinearLayoutManager 是线性布局的意思
+        LinearLayoutManager layoutmanager = new LinearLayoutManager(this);
+        //设置RecyclerView 布局
+        layoutmanager.setOrientation(LinearLayoutManager.VERTICAL);
+        table_listView.setLayoutManager(layoutmanager);
+        //设置Adapter
+        adapter = new CameraStatisticsAdapter(valuesList, this);
+        table_listView.setAdapter(adapter);
     }
 
     private void initView() {
@@ -97,7 +118,8 @@ public class CameraStatisticsActivity extends Activity implements OkHttpClientMa
         back_btn = (ImageView) findViewById(R.id.back_btn);
         back_btn.setOnClickListener(this);
         save_btn = (TextView) findViewById(R.id.right_btn);
-        save_btn.setVisibility(View.INVISIBLE);
+        save_btn.setGravity(View.TEXT_ALIGNMENT_CENTER);
+        save_btn.setText(getString(R.string.table));
         save_btn.setOnClickListener(this);
         title_txt = (TextView) findViewById(R.id.title_txt);
         title_txt.setText(getString(R.string.shexiangji_tongji));
@@ -176,13 +198,15 @@ public class CameraStatisticsActivity extends Activity implements OkHttpClientMa
                 JSONObject lineObj = loginJsonArray.getJSONObject(i);
                 if (lineCode.equals(lineObj.getString("lineCode"))) {
                     JSONArray stationsArray = lineObj.getJSONArray("stations");
-                    stationNameList = new String[stationsArray.length()];
-                    stationCodeList = new String[stationsArray.length()];
+                    stationNameList = new String[stationsArray.length()+1];
+                    stationCodeList = new String[stationsArray.length()+1];
                     for (int j = 0; j < stationsArray.length(); j++) {
                         JSONObject stationObj = stationsArray.getJSONObject(j);
-                        stationNameList[j] = stationObj.getString("stationName");
-                        stationCodeList[j] = stationObj.getString("stationCode");
+                        stationNameList[j+1] = stationObj.getString("stationName");
+                        stationCodeList[j+1] = stationObj.getString("stationCode");
                     }
+                    stationNameList[0] = "全部";
+                    stationCodeList[0] = "";
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -234,6 +258,7 @@ public class CameraStatisticsActivity extends Activity implements OkHttpClientMa
             } else {
                 UIUtil.showToast(this, jsonObject.getString("msg"));
             }
+            adapter.notifyDataSetChanged();
             initData();
         } catch (JSONException e) {
             e.printStackTrace();
@@ -247,6 +272,20 @@ public class CameraStatisticsActivity extends Activity implements OkHttpClientMa
             case R.id.back_btn:
                 finish();
                 break;
+            case R.id.right_btn:
+                if(save_btn.getText().toString().equals(getString(R.string.table))){
+                    save_btn.setText(getString(R.string.line));
+                    //折线图---》表格
+                    lv.setVisibility(View.GONE);
+                    table_listView.setVisibility(View.VISIBLE);
+                }else{
+                    save_btn.setText(getString(R.string.table));
+                    //表格---》折线图
+                    lv.setVisibility(View.VISIBLE);
+                    table_listView.setVisibility(View.GONE);
+                }
+                break;
+
             case R.id.xl_btn:
                 selectLine();
                 zd_btn.setText("");

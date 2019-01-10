@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">ivms-8700</string>
+    <string name="app_name">智能监管平台</string>
     <string name="login_name_hint">请输入用户名</string>
     <string name="login_pwd_hint">请输入密码</string>
     <string name="login_btn">登录</string>
@@ -129,6 +129,8 @@
 
     <string name="type_toast">类型不能为空</string>
     <string name="video_ing">正在录像..</string>
+    <string name="table">表  格</string>
+    <string name="line">折线图</string>
 </resources>
 
 
