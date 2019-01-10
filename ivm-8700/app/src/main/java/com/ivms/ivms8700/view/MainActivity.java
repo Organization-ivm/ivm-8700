@@ -3,7 +3,10 @@ package com.ivms.ivms8700.view;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.ActivityManager;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -17,7 +20,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ivms.ivms8700.R;
+import com.ivms.ivms8700.bean.EventEntity;
 import com.ivms.ivms8700.control.Constants;
+import com.ivms.ivms8700.service.MsgService;
 import com.ivms.ivms8700.utils.LocalDbUtil;
 import com.ivms.ivms8700.utils.UIUtil;
 import com.ivms.ivms8700.utils.okmanager.OkHttpClientManager;
@@ -25,6 +30,13 @@ import com.ivms.ivms8700.view.fragment.ImageManagementFragment;
 import com.ivms.ivms8700.view.fragment.MessageFragment;
 import com.ivms.ivms8700.view.fragment.MyFragment;
 import com.ivms.ivms8700.view.fragment.VideoFragment;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.List;
 
@@ -45,6 +57,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     private ImageView message_img;
     private TextView my_txt;
     private TextView message_txt;
+    private TextView msg_num;
     private ImageView my_img;
     private ImageView video_img;
     private TextView video_txt;
@@ -57,9 +70,11 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        EventBus.getDefault().register(this);
         initView();
         initFragment(0);
+        Intent ServiceIntent = new Intent(MainActivity.this, MsgService.class);
+        startService(ServiceIntent);
     }
 
     private void initView() {
@@ -81,12 +96,31 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         image_management_img =(ImageView)findViewById(R.id.image_management_img);
         image_management_txt=(TextView)findViewById(R.id.image_management_txt);
         message_img =(ImageView)findViewById(R.id.message_img);
+        msg_num=(TextView) findViewById(R.id.msg_num);
         message_txt=(TextView)findViewById(R.id.message_txt);
         my_img =(ImageView)findViewById(R.id.my_img);
         my_txt=(TextView)findViewById(R.id.my_txt);
 
 
     }
+  @Subscribe(threadMode = ThreadMode.MAIN)
+   public void getEvent(EventEntity eventEntity){
+        int msgType=eventEntity.getType();
+        if(msgType==Constants.Event.getMsg){//有新消息
+            try {
+                JSONObject msgObj=eventEntity.getJsonObject();
+                JSONObject data = null;
+                data = msgObj.getJSONObject("data");
+                JSONArray list = data.getJSONArray("list");
+                if(list.length()>0){
+                    msg_num.setVisibility(View.VISIBLE);
+                    msg_num.setText(list.length()+"");
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+   }
 
     @Override
     protected void onDestroy() {
@@ -109,6 +143,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 initFragment(1);
                 break;
             case R.id.message_lay:
+                msg_num.setVisibility(View.GONE);
                 select = 2;
                 updateUI(2);
                 initFragment(2);

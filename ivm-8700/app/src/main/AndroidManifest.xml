@@ -54,72 +54,31 @@
             android:theme="@style/dialogstyle"
             android:screenOrientation="portrait"/>
 
-        <!--<service-->
-            <!--android:name=".service.CheckService"-->
-            <!--android:priority="1000" />-->
-        <!--<service-->
-            <!--android:name=".service.CheckExitService"-->
-             <!--/>-->
-        <!-- <receiver android:name="com.ivms.ivms8700.service.BootBroadcastReceiver"> -->
-        <!-- <intent-filter> -->
-        <!-- <action android:name="android.intent.action.BOOT_COMPLETED"></action> -->
-        <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
-        <!-- </intent-filter> -->
-        <!-- </receiver> -->
-
-
-        <!-- <intent-filter> -->
-        <!-- <action android:name="android.intent.action.MAIN" /> -->
-
-
-        <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
-        <!-- </intent-filter> -->
         <activity android:name=".view.FaceClockActivity"
             android:screenOrientation="portrait"/>
-        <!-- <intent-filter> -->
-        <!-- <action android:name="android.intent.action.MAIN" /> -->
 
-
-        <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
-        <!-- </intent-filter> -->
         <activity android:name=".view.FaceDetailActivity"
             android:screenOrientation="portrait"/>
         <activity android:name=".view.HelmetIdentActivity"
             android:screenOrientation="portrait">
-
-            <!-- <intent-filter> -->
-            <!-- <action android:name="android.intent.action.MAIN" /> -->
-
-
-            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
-            <!-- </intent-filter> -->
         </activity>
         <activity android:name=".view.CameraStatisticsActivity"
             android:screenOrientation="portrait">
 
-            <!-- <intent-filter> -->
-            <!-- <action android:name="android.intent.action.MAIN" /> -->
-
-
-            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
-            <!-- </intent-filter> -->
         </activity>
         <activity android:name=".view.OnlineSummaryActivity"
             android:screenOrientation="portrait">
-
-            <!-- <intent-filter> -->
-            <!-- <action android:name="android.intent.action.MAIN" /> -->
-
-
-            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
-            <!-- </intent-filter> -->
-
         </activity>
-        <activity android:name=".view.WeatherActivity" />
+        <activity android:name=".view.WeatherActivity"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".view.AddCamerActivity"
             android:theme="@style/dialogstyle"
           ></activity>
+        <service android:name=".service.MsgService"></service>
+        <receiver
+            android:name=".service.AlarmReceiver"
+            android:process=":remote" />
     </application>
 
 </manifest>

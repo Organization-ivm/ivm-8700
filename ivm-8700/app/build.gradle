@@ -61,7 +61,8 @@ dependencies {
     implementation files('libs/universal-image-loader-1.9.2-SNAPSHOT-with-sources.jar')
     implementation files('libs/gestureimageview.jar')
     implementation files('libs/mpandroidchartlibrary-2-1-6.jar')
-//    implementation files('libs/ivms_8700_sdk_library.jar')
+    //    implementation files('libs/ivms_8700_sdk_library.jar')
+    implementation files('libs/eventbus-3.0.0.jar')
 }
 
 apply plugin: 'kotlin-android'

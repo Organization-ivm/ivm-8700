@@ -194,4 +194,14 @@ public final class Constants {
          */
         int queryRecordSegment_failure = 10009;
     }
+
+
+    /**
+     * EventBus相关常量
+     */
+    public interface Event {
+        //获取消息
+        int getMsg=1;
+
+    }
 }

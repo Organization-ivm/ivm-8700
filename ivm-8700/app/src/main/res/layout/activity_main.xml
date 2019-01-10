@@ -67,12 +67,14 @@
                 android:text="@string/image_management"
                 android:textColor="@color/text_noselect_color" />
         </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/message_lay"
+        <FrameLayout
             android:layout_width="@dimen/dp0"
             android:layout_height="match_parent"
-            android:layout_weight="1"
+            android:layout_weight="1">
+        <LinearLayout
+            android:id="@+id/message_lay"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:gravity="center"
             android:orientation="vertical">
 
@@ -90,7 +92,20 @@
                 android:text="@string/message"
                 android:textColor="@color/text_noselect_color" />
         </LinearLayout>
-
+        <TextView
+            android:id="@+id/msg_num"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@mipmap/bg_red"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginLeft="@dimen/dp10"
+            android:layout_marginTop="@dimen/dp2"
+            android:gravity="center"
+            android:text="99"
+            android:visibility="gone"
+            android:textSize="12sp"
+            android:textColor="#ffffff"/>
+    </FrameLayout>
         <LinearLayout
             android:id="@+id/my_lay"
             android:layout_width="@dimen/dp0"
