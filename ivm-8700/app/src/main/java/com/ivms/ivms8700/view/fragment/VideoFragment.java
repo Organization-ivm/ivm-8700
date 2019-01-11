@@ -254,6 +254,7 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Sur
      * 语音对讲是否开启
      */
     private boolean mIsTalkOpen;
+    private SeekBar mProgressSeekbar;//回放进度条
 
     @Nullable
     @Override
@@ -264,7 +265,7 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Sur
             huifang_lay = (LinearLayout) view.findViewById(R.id.huifang_lay);
             live_view = (View) view.findViewById(R.id.live_view);
             huifang_view = (View) view.findViewById(R.id.huifang_view);
-            voice_intercom = (LinearLayout) view.findViewById(R.id.contrl_lay); //语音控制
+            voice_intercom = (LinearLayout) view.findViewById(R.id.voice_intercom); //对讲
             contrl_lay = (LinearLayout) view.findViewById(R.id.contrl_lay); //云台控制
             playBackRecord = (LinearLayout) view.findViewById(R.id.playBackRecord); //本地录像
             playBackRecord_img = (ImageView) view.findViewById(R.id.playBackRecord_img);
@@ -289,6 +290,45 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Sur
 
             video_recyclerview = (RecyclerView) view.findViewById(R.id.video_recyclerview);
             setGrilView(VIDEO_VIEW_COUNT, 1);
+            mProgressSeekbar = (SeekBar) view.findViewById(R.id.progress_seekbar);
+            mProgressSeekbar.setVisibility(View.GONE);
+            mProgressSeekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                /**
+                 * 拖动条停止拖动的时候调用
+                 */
+                @Override
+                public void onStopTrackingTouch(SeekBar arg0) {
+                    stopBtnOnClick();
+                    int progress = arg0.getProgress();
+                    if (progress == PROGRESS_MAX_VALUE) {
+                        stopBtnOnClick();
+                        return;
+                    }
+                    long begin = mStartTime.getTimeInMillis();
+                    long end = mEndTime.getTimeInMillis();
+                    long avg = (end - begin) / PROGRESS_MAX_VALUE;
+                    long trackTime = begin + (progress * avg);
+                    Calendar track = Calendar.getInstance();
+                    track.setTimeInMillis(trackTime);
+                    mParamsObj.startTime = SDKUtil.calendarToABS(track);
+                    startBtnOnClick();
+                }
+
+                /**
+                 * 拖动条开始拖动的时候调用
+                 */
+                @Override
+                public void onStartTrackingTouch(SeekBar arg0) {
+                }
+
+                /**
+                 * 拖动条进度改变的时候调用
+                 */
+                @Override
+                public void onProgressChanged(SeekBar arg0, int arg1, boolean arg2) {
+
+                }
+            });
 
         }
         return view;
@@ -389,6 +429,7 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Sur
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.live_lay:
+                mProgressSeekbar.setVisibility(View.GONE);
                 if (mIsRecord) {
                     //停止录像
                     recordBtnOnClick_live();
@@ -403,6 +444,7 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Sur
                 huifang_view.setVisibility(View.INVISIBLE);
                 break;
             case R.id.huifang_lay:
+                mProgressSeekbar.setVisibility(View.VISIBLE);
                 if (mIsRecord) {
                     recordBtnOnClick_live();
                 }
@@ -821,7 +863,19 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Sur
             mPlayBackControl.startPlayBack(mParamsObj);
         }
     }
-
+    /**
+     * 停止播放
+     * @author lvlingdi 2016-4-19 下午5:11:56
+     */
+    private void stopBtnOnClick() {
+        if (null != progressBar) {
+            progressBar.setVisibility(View.GONE);
+        }
+        if (null != mPlayBackControl) {
+            mPlayBackControl.stopPlayBack();
+        }
+        stopUpdateTimer();
+    }
     /**
      * 设置回放参数
      *

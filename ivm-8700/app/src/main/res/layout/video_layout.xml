@@ -84,7 +84,17 @@
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 />
-
+            <SeekBar
+                android:id="@+id/progress_seekbar"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:maxHeight="2dp"
+                android:minHeight="2dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:progressDrawable="@drawable/remote_seekbar_style"
+                android:thumb="@drawable/remote_seekbar_thumb" />
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp48"
