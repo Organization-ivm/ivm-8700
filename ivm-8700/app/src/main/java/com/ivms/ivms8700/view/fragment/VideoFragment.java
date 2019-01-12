@@ -18,6 +18,7 @@ import android.view.SurfaceHolder;
 import android.view.View;
 import android.view.ViewGroup;
 
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.GridLayout;
 import android.widget.ImageView;
@@ -298,20 +299,22 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Sur
                  */
                 @Override
                 public void onStopTrackingTouch(SeekBar arg0) {
-                    stopBtnOnClick();
-                    int progress = arg0.getProgress();
-                    if (progress == PROGRESS_MAX_VALUE) {
+                    if (null != mParamsObj && null != mStartTime && null != mEndTime) {
                         stopBtnOnClick();
-                        return;
+                        int progress = arg0.getProgress();
+                        if (progress == PROGRESS_MAX_VALUE) {
+                            stopBtnOnClick();
+                            return;
+                        }
+                        long begin = mStartTime.getTimeInMillis();
+                        long end = mEndTime.getTimeInMillis();
+                        long avg = (end - begin) / PROGRESS_MAX_VALUE;
+                        long trackTime = begin + (progress * avg);
+                        Calendar track = Calendar.getInstance();
+                        track.setTimeInMillis(trackTime);
+                        mParamsObj.startTime = SDKUtil.calendarToABS(track);
+                        startBtnOnClick();
                     }
-                    long begin = mStartTime.getTimeInMillis();
-                    long end = mEndTime.getTimeInMillis();
-                    long avg = (end - begin) / PROGRESS_MAX_VALUE;
-                    long trackTime = begin + (progress * avg);
-                    Calendar track = Calendar.getInstance();
-                    track.setTimeInMillis(trackTime);
-                    mParamsObj.startTime = SDKUtil.calendarToABS(track);
-                    startBtnOnClick();
                 }
 
                 /**
@@ -337,10 +340,10 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Sur
     @Override
     public void onHiddenChanged(boolean hidden) {
         if (hidden) { //相当于Fragment的onPause
-            if(liveHandler!=null){
+            if (liveHandler != null) {
                 liveHandler.removeCallbacksAndMessages(null);
             }
-            if(mMessageHandler!=null){
+            if (mMessageHandler != null) {
                 mMessageHandler.removeCallbacksAndMessages(null);
             }
 
@@ -544,7 +547,7 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Sur
                 break;
 
             case R.id.voice_intercom:
-                UIUtil.showToast(getActivity(),"正在建设中..");
+                UIUtil.showToast(getActivity(), "正在建设中..");
                 break;
         }
     }
@@ -863,8 +866,10 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Sur
             mPlayBackControl.startPlayBack(mParamsObj);
         }
     }
+
     /**
      * 停止播放
+     *
      * @author lvlingdi 2016-4-19 下午5:11:56
      */
     private void stopBtnOnClick() {
@@ -876,6 +881,7 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Sur
         }
         stopUpdateTimer();
     }
+
     /**
      * 设置回放参数
      *

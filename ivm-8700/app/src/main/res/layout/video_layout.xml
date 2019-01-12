@@ -3,47 +3,52 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#F6F6F6"
-    android:orientation="vertical"
-    >
-<RelativeLayout
-    android:layout_width="match_parent"
-    android:layout_height="@dimen/dp40"
-    android:gravity="center"
-    android:background="#0093FD">
+    android:orientation="vertical">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="#FFFFFF"
-        android:textSize="@dimen/dp20"
-        android:text="@string/app_name" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp40"
+        android:background="#0093FD"
+        android:gravity="center">
 
-</RelativeLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/app_name"
+            android:textColor="#FFFFFF"
+            android:textSize="@dimen/dp20" />
+
+    </RelativeLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp40"
         android:background="#0093FD"
         android:orientation="horizontal">
-       <LinearLayout
-           android:id="@+id/live_lay"
-           android:layout_width="@dimen/dp0"
-           android:layout_height="match_parent"
-           android:layout_weight="1"
-           android:gravity="center"
-           android:orientation="vertical">
-          <TextView
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:textSize="@dimen/dp18"
-              android:textColor="#FFFFFF"
-              android:text="@string/realtime_preview" />
-           <View
-               android:id="@+id/live_view"
-               android:layout_width="@dimen/dp28"
-               android:layout_height="2dp"
-               android:layout_marginTop="@dimen/dp2"
-               android:background="#FFFFFF"/>
-       </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/live_lay"
+            android:layout_width="@dimen/dp0"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/realtime_preview"
+                android:textColor="#FFFFFF"
+                android:textSize="@dimen/dp18" />
+
+            <View
+                android:id="@+id/live_view"
+                android:layout_width="@dimen/dp28"
+                android:layout_height="2dp"
+                android:layout_marginTop="@dimen/dp2"
+                android:background="#FFFFFF" />
+        </LinearLayout>
+
         <LinearLayout
             android:id="@+id/huifang_lay"
             android:layout_width="@dimen/dp0"
@@ -51,50 +56,54 @@
             android:layout_weight="1"
             android:gravity="center"
             android:orientation="vertical">
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="@dimen/dp18"
+                android:text="@string/remote_playback"
                 android:textColor="#FFFFFF"
-                android:text="@string/remote_playback" />
+                android:textSize="@dimen/dp18" />
+
             <View
                 android:id="@+id/huifang_view"
                 android:layout_width="@dimen/dp28"
                 android:layout_height="2dp"
-                android:visibility="invisible"
                 android:layout_marginTop="@dimen/dp2"
-                android:background="#FFFFFF"/>
+                android:background="#FFFFFF"
+                android:visibility="invisible" />
         </LinearLayout>
     </LinearLayout>
+
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        >
+        android:layout_height="match_parent">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center_horizontal"
             android:orientation="vertical">
+
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/video_recyclerview"
                 android:layout_width="match_parent"
-                android:background="#ffffff"
-                android:layout_marginTop="@dimen/dp4"
                 android:layout_height="0dp"
+                android:layout_marginTop="@dimen/dp4"
                 android:layout_weight="1"
-                />
-            <SeekBar
-                android:id="@+id/progress_seekbar"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:maxHeight="2dp"
-                android:minHeight="2dp"
-                android:paddingLeft="10dp"
-                android:paddingRight="10dp"
-                android:progressDrawable="@drawable/remote_seekbar_style"
-                android:thumb="@drawable/remote_seekbar_thumb" />
+                android:background="#ffffff" />
+
+                <SeekBar
+                    android:id="@+id/progress_seekbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:maxHeight="2dp"
+                    android:minHeight="2dp"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:progressDrawable="@drawable/remote_seekbar_style"
+                    android:thumb="@drawable/remote_seekbar_thumb" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp48"
@@ -108,6 +117,7 @@
                     android:layout_width="@dimen/dp30"
                     android:layout_height="@dimen/dp30"
                     android:background="@drawable/one_2" />
+
 
                 <ImageView
                     android:layout_width="@dimen/dp4"
@@ -140,8 +150,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp60"
-                android:layout_marginTop="@dimen/dp10"
                 android:layout_marginBottom="@dimen/dp10"
+                android:layout_marginTop="@dimen/dp10"
                 android:background="#ffffff"
                 android:orientation="horizontal">
 
