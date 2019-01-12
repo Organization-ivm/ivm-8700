@@ -11,6 +11,7 @@ import android.util.Log;
 import com.ivms.ivms8700.R;
 import com.ivms.ivms8700.bean.EventEntity;
 import com.ivms.ivms8700.control.Constants;
+import com.ivms.ivms8700.control.MyApplication;
 import com.ivms.ivms8700.utils.LocalDbUtil;
 import com.ivms.ivms8700.utils.UIUtil;
 import com.ivms.ivms8700.utils.okmanager.OkHttpClientManager;
@@ -48,7 +49,7 @@ public class MsgService extends Service implements OkHttpClientManager.JsonObjec
         getMsg();
         /** 下面是定时器 */
         AlarmManager manager = (AlarmManager) getSystemService(ALARM_SERVICE);
-        int anHour = 10000; //定时器时间
+        int anHour = 300000; //定时器时间 5分钟
         long triggerAtTime = SystemClock.elapsedRealtime() + anHour;
         Intent i = new Intent(this, AlarmReceiver.class);
         PendingIntent pi = PendingIntent.getBroadcast(this, 0, i, 0);
@@ -84,6 +85,7 @@ public class MsgService extends Service implements OkHttpClientManager.JsonObjec
             if (result.equals("success")) {
                 EventBus.getDefault().post(new EventEntity(Constants.Event.getMsg,jsonObject));
             }else{
+                MyApplication.getIns().setMsgJSONObject(null);//将全局消息设置为null
                 Log.i(TAG+"_MsgService",jsonObject.getString("msg"));
             }
         } catch (JSONException e) {

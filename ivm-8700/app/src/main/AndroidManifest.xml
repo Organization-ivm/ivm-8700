@@ -17,12 +17,16 @@
     <application
         android:name=".control.MyApplication"
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/logo2"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".view.LoginActivity"
+        <activity
+            android:name=".view.LoginActivity"
+            android:screenOrientation="portrait">
+
+        </activity>
+        <activity android:name=".view.WelcomeActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -33,11 +37,11 @@
         <activity
             android:name=".view.MainActivity"
             android:label="@string/title_activity_main"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".view.SetingActivity"
             android:label="@string/title_activity_seting"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
 
         <provider
             android:name="android.support.v4.content.FileProvider"
@@ -51,34 +55,38 @@
 
         <activity
             android:name=".view.AddMonitoryActivity"
-            android:theme="@style/dialogstyle"
-            android:screenOrientation="portrait"/>
-
-        <activity android:name=".view.FaceClockActivity"
-            android:screenOrientation="portrait"/>
-
-        <activity android:name=".view.FaceDetailActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".view.HelmetIdentActivity"
-            android:screenOrientation="portrait">
-        </activity>
-        <activity android:name=".view.CameraStatisticsActivity"
-            android:screenOrientation="portrait">
-
-        </activity>
-        <activity android:name=".view.OnlineSummaryActivity"
-            android:screenOrientation="portrait">
-        </activity>
-        <activity android:name=".view.WeatherActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait"
+            android:theme="@style/dialogstyle" />
+        <activity
+            android:name=".view.FaceClockActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".view.FaceDetailActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".view.HelmetIdentActivity"
+            android:screenOrientation="portrait"></activity>
+        <activity
+            android:name=".view.CameraStatisticsActivity"
+            android:screenOrientation="portrait"></activity>
+        <activity
+            android:name=".view.OnlineSummaryActivity"
+            android:screenOrientation="portrait"></activity>
+        <activity
+            android:name=".view.WeatherActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".view.AddCamerActivity"
-            android:theme="@style/dialogstyle"
-          ></activity>
-        <service android:name=".service.MsgService"></service>
+            android:theme="@style/dialogstyle" />
+
+        <service android:name=".service.MsgService" />
+
         <receiver
             android:name=".service.AlarmReceiver"
             android:process=":remote" />
+
+
+
     </application>
 
 </manifest>

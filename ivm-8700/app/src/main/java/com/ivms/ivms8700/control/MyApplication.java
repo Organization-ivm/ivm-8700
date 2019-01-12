@@ -12,11 +12,13 @@ import com.ivms.ivms8700.mysdk.MyVMSNetSDK;
 import com.ivms.ivms8700.service.CheckExitService;
 
 import org.json.JSONArray;
+import org.json.JSONObject;
 
 public class MyApplication extends Application implements AppForegroundStateManager.OnAppForegroundStateChangeListener {
     private static MyApplication ins;
     private LoginData loginData;
     private JSONArray videoList=null;
+    private JSONObject msgJSONObject=null;
     @Override
     public void onCreate() {
         super.onCreate();
@@ -62,5 +64,13 @@ public class MyApplication extends Application implements AppForegroundStateMana
 
     public void setVideoList(JSONArray videoList) {
         this.videoList = videoList;
+    }
+
+    public JSONObject getMsgJSONObject() {
+        return msgJSONObject;
+    }
+
+    public void setMsgJSONObject(JSONObject msgJSONObject) {
+        this.msgJSONObject = msgJSONObject;
     }
 }

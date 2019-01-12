@@ -94,20 +94,20 @@ public class LoginActivity extends Activity implements ILoginView, View.OnClickL
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.login_btn:
-//               local_url=localDbUtil.getString("local_url");
-//               local_port=localDbUtil.getString("local_port");
+                local_url = localDbUtil.getString("local_url");
+                local_port = localDbUtil.getString("local_port");
                 local_video_url = localDbUtil.getString("local_video_url");
-                userName = "mobile";
-//               local_video_ip=localDbUtil.getString("local_video_ip");
-//               local_video_port=localDbUtil.getString("local_video_port");
-//               userName=username.getText().toString().trim();
-//               password=pwd.getText().toString().trim();
-//               if(checkLoginData(local_url,local_port,local_video_ip,local_video_port,userName,password)){
-//                   String getUrl=local_url+"/shm/login?userName="+userName+"&passWord="+password+"&videoIP="+local_video_ip+"&token="+Constants.APP_TOKEN;
-//                   Log.i("Alan","getUrl=-="+getUrl);
-//                   okHttpClientManager.asyncJsonObjectByUrl(getUrl,this);
-                okHttpClientManager.asyncJsonObjectByUrl("http://222.66.82.4:80/shm/login?userName=mobile&passWord=123456&videoIP=222.66.82.2&token=" + Constants.APP_TOKEN, this);
-//               }
+//                userName = "mobile";
+                local_video_ip = localDbUtil.getString("local_video_ip");
+                local_video_port = localDbUtil.getString("local_video_port");
+                userName = username.getText().toString().trim();
+                password = pwd.getText().toString().trim();
+                if (checkLoginData(local_url, local_port, local_video_ip, local_video_port, userName, password)) {
+                    String getUrl = local_url + "/shm/login?userName=" + userName + "&passWord=" + password + "&videoIP=" + local_video_ip + "&token=" + Constants.APP_TOKEN;
+                    Log.i("Alan", "getUrl=-=" + getUrl);
+                    okHttpClientManager.asyncJsonObjectByUrl(getUrl, this);
+//                  okHttpClientManager.asyncJsonObjectByUrl("http://222.66.82.4:80/shm/login?userName=mobile&passWord=123456&videoIP=222.66.82.2&token=" + Constants.APP_TOKEN, this);
+                }
                 break;
             case R.id.set_btn:
                 Intent intent = new Intent(this, SetingActivity.class);
@@ -204,7 +204,7 @@ public class LoginActivity extends Activity implements ILoginView, View.OnClickL
                     UIUtil.showToast(this, msg);
                 }
 
-            }else{
+            } else {
                 UIUtil.cancelProgressDialog();
                 UIUtil.showToast(this, R.string.login_failed);
             }

@@ -5,13 +5,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="#ffffff"
     android:gravity="center_horizontal"
     tools:context=".view.LoginActivity">
        <ImageView
            android:layout_width="@dimen/dp103"
            android:layout_height="@dimen/dp104"
            android:layout_marginTop="@dimen/dp120"
-           android:background="@drawable/logo" />
+           android:background="@drawable/logo2" />
         <EditText
             android:id="@+id/username"
             android:layout_width="@dimen/dp328"

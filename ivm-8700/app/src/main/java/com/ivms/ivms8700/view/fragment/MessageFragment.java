@@ -15,6 +15,7 @@ import android.widget.RelativeLayout;
 import com.ivms.ivms8700.R;
 import com.ivms.ivms8700.bean.MessageEntity;
 import com.ivms.ivms8700.control.Constants;
+import com.ivms.ivms8700.control.MyApplication;
 import com.ivms.ivms8700.utils.LocalDbUtil;
 import com.ivms.ivms8700.utils.NoDoubleClickListener;
 import com.ivms.ivms8700.utils.UIUtil;
@@ -150,6 +151,9 @@ public class MessageFragment extends Fragment implements OkHttpClientManager.Jso
     @Override
     public void onResponse(JSONObject jsonObject) {
         UIUtil.cancelProgressDialog();
+        if(null!= MyApplication.getIns().getMsgJSONObject()){
+            jsonObject=MyApplication.getIns().getMsgJSONObject();
+        }
         try {
             String result = jsonObject.getString("result");
             msgList.clear();
