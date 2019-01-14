@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageView;
@@ -23,6 +24,7 @@ import com.ivms.ivms8700.R;
 import com.ivms.ivms8700.bean.EventEntity;
 import com.ivms.ivms8700.control.Constants;
 import com.ivms.ivms8700.control.MyApplication;
+import com.ivms.ivms8700.service.CheckService;
 import com.ivms.ivms8700.service.MsgService;
 import com.ivms.ivms8700.utils.LocalDbUtil;
 import com.ivms.ivms8700.utils.UIUtil;
@@ -74,6 +76,8 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         EventBus.getDefault().register(this);
         initView();
         initFragment(0);
+        Intent  appServiceIntent = new Intent(MainActivity.this, CheckService.class);
+        startService(appServiceIntent);
         Intent ServiceIntent = new Intent(MainActivity.this, MsgService.class);
         startService(ServiceIntent);
     }
@@ -130,6 +134,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        Log.i("Alan","logout...");
         UIUtil.cancelProgressDialog();
     }
 
@@ -322,4 +327,5 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         // appTaskList.get(0).finishAndRemoveTask();
         System.exit(0);
     }
+
 }
