@@ -121,14 +121,19 @@ public class AdapterVideoRecyView extends RecyclerView.Adapter<AdapterVideoRecyV
     } //自定义MyViewHolder类用于复用
 
     public class ViewHolder extends RecyclerView.ViewHolder { //声明imageview对象
+        private  View myItemView;
         private final ImageView image;
         private final CustomSurfaceView videoView;
         //构造方法中初始化imageview对象
         public ViewHolder(View itemView) {
             super(itemView);
+            myItemView=itemView;
             image = (ImageView) itemView.findViewById(R.id.add_monitory);
             videoView=(CustomSurfaceView)itemView.findViewById(R.id.surfaceView);
 
+        }
+        public void autoClick(){
+            myItemView.performClick();
         }
     }
 }

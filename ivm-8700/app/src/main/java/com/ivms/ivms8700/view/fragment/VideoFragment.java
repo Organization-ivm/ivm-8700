@@ -378,12 +378,14 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Sur
             videoEntity.setSelect(false);
             videList.add(videoEntity);
         }
+
         //适配器
         video_adapter = new AdapterVideoRecyView(getActivity(), videList);
         video_recyclerview.setAdapter(video_adapter);
         GridLayoutManager manager = new GridLayoutManager(getActivity(), rowCount);
         //布局管理器
         video_recyclerview.setLayoutManager(manager);
+
         //条目点击监听
         video_adapter.setOnItemClickListener(new AdapterVideoRecyView.OnItemClickListener() {
             @Override
@@ -509,6 +511,7 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Sur
                     one_view_img.setBackgroundResource(R.drawable.one_2);
                     four_view_img.setBackgroundResource(R.drawable.four_2);
                     nine_view_img.setBackgroundResource(R.drawable.nine_1);
+                    showFirstVideo();
                 }
 
                 break;
@@ -526,6 +529,9 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Sur
                     one_view_img.setBackgroundResource(R.drawable.one_1);
                     four_view_img.setBackgroundResource(R.drawable.four_1);
                     nine_view_img.setBackgroundResource(R.drawable.nine_1);
+                    showFirstVideo();
+
+
                 }
                 break;
             case R.id.nine_view_img://九屏
@@ -542,7 +548,7 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Sur
                     one_view_img.setBackgroundResource(R.drawable.one_1);
                     four_view_img.setBackgroundResource(R.drawable.four_2);
                     nine_view_img.setBackgroundResource(R.drawable.nine_2);
-
+                    showFirstVideo();
                 }
                 break;
 
@@ -551,6 +557,44 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Sur
                 break;
         }
     }
+    //若有视频在播放则带到带到多屏界面
+    private void showFirstVideo() {
+        TimerTask task = new TimerTask() {
+            @Override
+            public void run() {
+                RecyclerView.LayoutManager layoutManager=video_recyclerview.getLayoutManager();
+                final View itemView1 =layoutManager.findViewByPosition(0);
+                if(curCamer!=null&&itemView1!=null){
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            //            AdapterVideoRecyView.ViewHolder myViewHolder = (AdapterVideoRecyView.ViewHolder) video_recyclerview.getChildViewHolder(itemView);
+//            myViewHolder.autoClick();
+                            curSurfaceView = itemView1.findViewById(R.id.surfaceView);
+                            progressBar = (ProgressBar) itemView1.findViewById(R.id.live_progress_bar);
+                            add_video = (ImageView) itemView1.findViewById(R.id.add_monitory);
+                            mCurIndex = 0;
+                            tmPlayBackControl = videList.get(0).getmPlayBackControl();
+                            tmLiveControl = videList.get(0).getmLiveControl();
+                            mPlayBackControl = tmPlayBackControl;
+                            mLiveControl = tmLiveControl;
+                            gotoLive(curCamer);
+                            if (null != progressBar) {
+                                progressBar.setVisibility(View.GONE);
+                            }
+                            if (null != add_video) {
+                                add_video.setVisibility(View.GONE);
+                            }
+                        }
+                    });
+
+                }
+            }
+        };
+        Timer timer = new Timer();
+        timer.schedule(task, 1000);
+    }
+
 
     /**
      * @author lvlingdi 2016-5-6 上午10:31:05
