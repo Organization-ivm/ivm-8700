@@ -76,6 +76,10 @@
             android:name=".view.WeatherActivity"
             android:screenOrientation="portrait" />
         <activity
+            android:name=".view.ViewPagerActivity"
+            android:theme="@style/PhotoTheme"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".view.AddCamerActivity"
             android:theme="@style/dialogstyle" />
 

@@ -131,6 +131,7 @@
     <string name="video_ing">正在录像..</string>
     <string name="table">表  格</string>
     <string name="line">折线图</string>
+    <string name="viewpager_indicator">第几</string>
 </resources>
 
 

@@ -14,4 +14,9 @@
     <color name="main_text_a0a0a0">#A0A0A0</color>
     <color name="text_gray_lv4">#ff999999</color>
 
+
+    <color name="green">#AACE30</color>
+    <color name="blue">#142D3E</color>
+    <color name="blue_dark">#001425</color>
+
 </resources>

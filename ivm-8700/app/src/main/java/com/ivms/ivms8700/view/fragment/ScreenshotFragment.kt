@@ -16,6 +16,7 @@ import com.ivms.ivms8700.utils.PhotoVideoManager.adapter.ImageAdapter
 import com.ivms.ivms8700.utils.PhotoVideoManager.bean.Bean
 import com.ivms.ivms8700.utils.ShareUtils
 import com.ivms.ivms8700.utils.UIUtil
+import com.ivms.ivms8700.view.ViewPagerActivity
 import kotlinx.android.synthetic.main.fragment_screenshot.*
 import java.io.File
 import java.util.ArrayList
@@ -29,10 +30,10 @@ class ScreenshotFragment : Fragment() {
     lateinit var v: View
     lateinit var tvShare: TextView
     lateinit var tvDelete: TextView
-    var dataList: MutableList<Bean>? = null
+    var dataList: ArrayList<Bean>? = null
     var selectedList: MutableList<Bean>? = null
     private var myAdapter: ImageAdapter? = null
-     var isShow: Boolean = false
+    var isShow: Boolean = false
     private var isSel = true
     private var file: File? = null
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -214,14 +215,9 @@ class ScreenshotFragment : Fragment() {
             Log.i("tag", "===isChecked=after==$isChecked")
             myAdapter!!.notifyDataSetChanged()
         } else {
-            file = File(dataList!![position].filePath)
-            val intent = Intent(Intent.ACTION_VIEW)
-            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-            intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
-            var uri = FileProvider.getUriForFile(context!!, "com.ivms.ivms8700.fileprovider", file!!)
-            intent.setDataAndType(uri, "image/*")
-            Log.i("URI", "uriPath" + uri.path.toString())
-            Log.i("URI", "filePath" + file!!.path.toString())
+            val intent = Intent(context, ViewPagerActivity::class.java)
+            intent.putParcelableArrayListExtra("list", dataList!!)
+            intent.putExtra("position", position)
             startActivity(intent)
         }
     }
@@ -272,6 +268,7 @@ class ScreenshotFragment : Fragment() {
             Toast.makeText(context, "请选择条目", Toast.LENGTH_SHORT).show()
         }
     }
+
     //监听返回键
     fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
