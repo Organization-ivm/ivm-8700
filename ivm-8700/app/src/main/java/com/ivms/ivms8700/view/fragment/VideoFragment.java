@@ -578,7 +578,12 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Sur
                             tmLiveControl = videList.get(0).getmLiveControl();
                             mPlayBackControl = tmPlayBackControl;
                             mLiveControl = tmLiveControl;
-                            gotoLive(curCamer);
+                            if(palyType==1){//预览
+                                gotoLive(curCamer);
+                            }else if(palyType==2){//回放
+                                gotoPlayBack(curCamer);
+                            }
+
                             if (null != progressBar) {
                                 progressBar.setVisibility(View.GONE);
                             }
