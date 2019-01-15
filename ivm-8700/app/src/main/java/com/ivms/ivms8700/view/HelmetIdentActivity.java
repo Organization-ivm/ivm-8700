@@ -168,7 +168,7 @@ public class HelmetIdentActivity extends Activity implements View.OnClickListene
     private void selectStation() {
         new AlertDialog.Builder(HelmetIdentActivity.this, AlertDialog.THEME_HOLO_LIGHT).setTitle("选择站点").setItems(stationNameList, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
-                Toast.makeText(HelmetIdentActivity.this, getString(R.string.your_select) + lineNameList[which], Toast.LENGTH_LONG).show();
+                Toast.makeText(HelmetIdentActivity.this, getString(R.string.your_select) + stationNameList[which], Toast.LENGTH_LONG).show();
                 zd_btn.setText(stationNameList[which]);
                 zd_btn.setTag(stationCodeList[which]);
                 dialog.dismiss();
