@@ -346,8 +346,6 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Sur
             if (mMessageHandler != null) {
                 mMessageHandler.removeCallbacksAndMessages(null);
             }
-
-        } else { // 相当于Fragment的onResume
             if (mIsRecord) {
                 //停止录像
                 recordBtnOnClick_live();
@@ -369,6 +367,8 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Sur
             one_view_img.setBackgroundResource(R.drawable.one_2);
             four_view_img.setBackgroundResource(R.drawable.four_2);
             nine_view_img.setBackgroundResource(R.drawable.nine_1);
+        } else { // 相当于Fragment的onResume
+
         }
     }
 
