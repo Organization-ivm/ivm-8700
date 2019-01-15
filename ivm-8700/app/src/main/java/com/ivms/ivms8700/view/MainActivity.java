@@ -27,6 +27,7 @@ import com.ivms.ivms8700.control.MyApplication;
 import com.ivms.ivms8700.service.CheckService;
 import com.ivms.ivms8700.service.MsgService;
 import com.ivms.ivms8700.utils.LocalDbUtil;
+import com.ivms.ivms8700.utils.NoDoubleClickListener;
 import com.ivms.ivms8700.utils.UIUtil;
 import com.ivms.ivms8700.utils.okmanager.OkHttpClientManager;
 import com.ivms.ivms8700.view.fragment.ImageManagementFragment;
@@ -43,7 +44,7 @@ import org.json.JSONObject;
 
 import java.util.List;
 
-public class MainActivity extends FragmentActivity implements View.OnClickListener, OkHttpClientManager.JsonStringCallback {
+public class MainActivity extends FragmentActivity implements  OkHttpClientManager.JsonStringCallback {
     // 底部菜单4个Linearlayout
     private LinearLayout ll_video;
     private LinearLayout ll_image_management;
@@ -91,10 +92,39 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         ll_message = (LinearLayout) findViewById(R.id.message_lay);
         ll_my = (LinearLayout) findViewById(R.id.my_lay);
 
-        ll_video.setOnClickListener(this);
-        ll_image_management.setOnClickListener(this);
-        ll_message.setOnClickListener(this);
-        ll_my.setOnClickListener(this);
+        ll_video.setOnClickListener(new NoDoubleClickListener() {
+            @Override
+            protected void onNoDoubleClick(View v) {
+                select = 0;
+                updateUI(0);
+                initFragment(0);
+            }
+        });
+        ll_image_management.setOnClickListener(new NoDoubleClickListener() {
+            @Override
+            protected void onNoDoubleClick(View v) {
+                select = 1;
+                updateUI(1);
+                initFragment(1);
+            }
+        });
+        ll_message.setOnClickListener(new NoDoubleClickListener() {
+            @Override
+            protected void onNoDoubleClick(View v) {
+                msg_num.setVisibility(View.GONE);
+                select = 2;
+                updateUI(2);
+                initFragment(2);
+            }
+        });
+        ll_my.setOnClickListener(new NoDoubleClickListener() {
+            @Override
+            protected void onNoDoubleClick(View v) {
+                select = 3;
+                updateUI(3);
+                initFragment(3);
+            }
+        });
 
         video_img = (ImageView) findViewById(R.id.video_img);
         video_txt = (TextView) findViewById(R.id.video_txt);
@@ -134,37 +164,10 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Log.i("Alan","logout...");
+        Log.i("Alan", "logout...");
         UIUtil.cancelProgressDialog();
     }
 
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.video_lay:
-                select = 0;
-
-                updateUI(0);
-                initFragment(0);
-                break;
-            case R.id.image_management_lay:
-                select = 1;
-                updateUI(1);
-                initFragment(1);
-                break;
-            case R.id.message_lay:
-                msg_num.setVisibility(View.GONE);
-                select = 2;
-                updateUI(2);
-                initFragment(2);
-                break;
-            case R.id.my_lay:
-                select = 3;
-                updateUI(3);
-                initFragment(3);
-                break;
-        }
-    }
 
 
     private void initFragment(int index) {

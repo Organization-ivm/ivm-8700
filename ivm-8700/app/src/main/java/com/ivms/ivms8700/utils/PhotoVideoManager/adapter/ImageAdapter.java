@@ -75,15 +75,22 @@ public class ImageAdapter extends BaseAdapter {
         }
         holder.cb.setClickable(false);
         holder.cb.setEnabled(false);
-        bean = items.get(position);
-        if (bean.isShow()) {
-            holder.cb.setVisibility(View.VISIBLE);
-        } else {
-            holder.cb.setVisibility(View.GONE);
+        try {
+            if (null != items && items.size() > 0) {
+                bean = items.get(position);
+                if (bean.isShow()) {
+                    holder.cb.setVisibility(View.VISIBLE);
+                } else {
+                    holder.cb.setVisibility(View.GONE);
+                }
+                String imageUrl = "" + bean.getFilePath();
+                Glide.with(MyApplication.getIns()).load(imageUrl).into(holder.img);
+                holder.cb.setChecked(bean.isChecked());
+            }
+        } catch (Exception e){
+            Log.e("Anladapter",e.getMessage());
+
         }
-        String imageUrl = "" + bean.getFilePath();
-        Glide.with(MyApplication.getIns()).load(imageUrl).into(holder.img);
-        holder.cb.setChecked(bean.isChecked());
         return convertView;
     }
 
