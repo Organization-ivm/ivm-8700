@@ -1,8 +1,11 @@
 package com.ivms.ivms8700.service;
 
+import android.app.ActivityManager;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
 import android.os.SystemClock;
@@ -19,6 +22,8 @@ import com.ivms.ivms8700.utils.okmanager.OkHttpClientManager;
 import org.greenrobot.eventbus.EventBus;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.List;
 
 public class MsgService extends Service implements OkHttpClientManager.JsonObjectCallback {
     private static final String TAG = "Alan" ;
@@ -48,12 +53,14 @@ public class MsgService extends Service implements OkHttpClientManager.JsonObjec
     public int onStartCommand(Intent intent, int flags, int startId) {
         getMsg();
         /** 下面是定时器 */
+
         AlarmManager manager = (AlarmManager) getSystemService(ALARM_SERVICE);
         int anHour = 300000; //定时器时间 5分钟
         long triggerAtTime = SystemClock.elapsedRealtime() + anHour;
         Intent i = new Intent(this, AlarmReceiver.class);
         PendingIntent pi = PendingIntent.getBroadcast(this, 0, i, 0);
         manager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP ,triggerAtTime,pi);
+
         return super.onStartCommand(intent, flags, startId);
     }
     private void getMsg() {
@@ -70,10 +77,9 @@ public class MsgService extends Service implements OkHttpClientManager.JsonObjec
     public void onDestroy() {
         // TODO Auto-generated method stub
         Log.v(TAG, "MsgService onDestroy");
-        System.out.println("=-==onDestroy======服务挂掉了，，，，");
-        Intent localIntent = new Intent();
-        localIntent.setClass(MsgService.this, MsgService.class); //销毁时重新启动Service
-        MsgService.this.startService(localIntent);
+//        Intent localIntent = new Intent();
+//        localIntent.setClass(MsgService.this, MsgService.class); //销毁时重新启动Service
+//        MsgService.this.startService(localIntent);
         super.onDestroy();
     }
 
@@ -93,4 +99,7 @@ public class MsgService extends Service implements OkHttpClientManager.JsonObjec
         }
 
     }
+
+
+
 }

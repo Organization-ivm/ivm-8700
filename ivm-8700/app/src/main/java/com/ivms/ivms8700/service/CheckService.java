@@ -35,7 +35,7 @@ public class CheckService extends Service {
         timerMail.schedule(new TimerTask() {
             @Override
             public void run() {
-                Log.e("Alan","   发送消息");
+//                Log.e("Alan","   发送消息");
                 Message message = new Message();
                 message.what = 1;
                 mHandler.sendMessage(message);
