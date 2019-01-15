@@ -352,14 +352,23 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Sur
                 //停止录像
                 recordBtnOnClick_live();
             }
+            mProgressSeekbar.setVisibility(View.GONE);
+            if (mIsRecord) {
+                //停止录像
+                recordBtnOnClick_live();
+            }
             isZoom = false;
             fangda_img.setBackgroundResource(R.drawable.fangda);
             initControl();
             VIDEO_VIEW_COUNT = 1;
             setGrilView(VIDEO_VIEW_COUNT, 1);
             palyType = 1;
+            curCamer=null;
             live_view.setVisibility(View.VISIBLE);
             huifang_view.setVisibility(View.INVISIBLE);
+            one_view_img.setBackgroundResource(R.drawable.one_2);
+            four_view_img.setBackgroundResource(R.drawable.four_2);
+            nine_view_img.setBackgroundResource(R.drawable.nine_1);
         }
     }
 
@@ -625,6 +634,8 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Sur
                     mLiveControl.setDisplayRegion(false, null, null);
                 }
             } else {
+                isZoom = false;
+                fangda_img.setBackgroundResource(R.drawable.fangda);
                 UIUtil.showToast(getActivity(), "未开始播放");
             }
         }
