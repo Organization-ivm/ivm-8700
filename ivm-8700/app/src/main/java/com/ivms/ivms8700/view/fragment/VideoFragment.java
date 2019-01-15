@@ -456,6 +456,10 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Sur
                 palyType = 1;
                 live_view.setVisibility(View.VISIBLE);
                 huifang_view.setVisibility(View.INVISIBLE);
+                one_view_img.setBackgroundResource(R.drawable.one_2);
+                four_view_img.setBackgroundResource(R.drawable.four_2);
+                nine_view_img.setBackgroundResource(R.drawable.nine_1);
+                curCamer=null;
                 break;
             case R.id.huifang_lay:
                 mProgressSeekbar.setVisibility(View.VISIBLE);
@@ -470,6 +474,10 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Sur
                 palyType = 2;
                 live_view.setVisibility(View.INVISIBLE);
                 huifang_view.setVisibility(View.VISIBLE);
+                one_view_img.setBackgroundResource(R.drawable.one_2);
+                four_view_img.setBackgroundResource(R.drawable.four_2);
+                nine_view_img.setBackgroundResource(R.drawable.nine_1);
+                curCamer=null;
                 break;
             case R.id.playBackRecord://本地录像
                 if (palyType == 1) {

@@ -219,7 +219,7 @@ public class CameraStatisticsActivity extends Activity implements OkHttpClientMa
     private void selectStation() {
         new AlertDialog.Builder(CameraStatisticsActivity.this, AlertDialog.THEME_HOLO_LIGHT).setTitle("选择站点").setItems(stationNameList, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
-                Toast.makeText(CameraStatisticsActivity.this, getString(R.string.your_select) + lineNameList[which], Toast.LENGTH_LONG).show();
+                Toast.makeText(CameraStatisticsActivity.this, getString(R.string.your_select) + stationNameList[which], Toast.LENGTH_LONG).show();
                 zd_btn.setText(stationNameList[which]);
                 zd_btn.setTag(stationCodeList[which]);
                 dialog.dismiss();
