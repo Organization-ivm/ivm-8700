@@ -61,8 +61,8 @@ class ScreenshotFragment : Fragment() {
         tvDelete = v.findViewById(R.id.tvdelete) as TextView
         selectedList = ArrayList()
         dataList = ArrayList()
-        initDataList()
         myAdapter = ImageAdapter(context, dataList)
+        initDataList()
         gridView.setAdapter(myAdapter)
     }
 
