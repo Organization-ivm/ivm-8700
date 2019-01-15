@@ -76,8 +76,8 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         EventBus.getDefault().register(this);
         initView();
         initFragment(0);
-        Intent  appServiceIntent = new Intent(MainActivity.this, CheckService.class);
-        startService(appServiceIntent);
+//        Intent  appServiceIntent = new Intent(MainActivity.this, CheckService.class);
+//        startService(appServiceIntent);
         Intent ServiceIntent = new Intent(MainActivity.this, MsgService.class);
         startService(ServiceIntent);
     }

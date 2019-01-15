@@ -55,7 +55,7 @@ public class MsgService extends Service implements OkHttpClientManager.JsonObjec
         /** 下面是定时器 */
 
         AlarmManager manager = (AlarmManager) getSystemService(ALARM_SERVICE);
-        int anHour = 2000; //定时器时间 5分钟
+        int anHour = 300000; //定时器时间 5分钟
         long triggerAtTime = SystemClock.elapsedRealtime() + anHour;
         Intent i = new Intent(this, AlarmReceiver.class);
         PendingIntent pi = PendingIntent.getBroadcast(this, 0, i, 0);
