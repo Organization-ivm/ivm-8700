@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.JsonObject;
 import com.ivms.ivms8700.R;
@@ -54,6 +55,7 @@ public class LoginActivity extends Activity implements ILoginView, View.OnClickL
     private String local_video_port = "";
     private String password = "";
     private static final int REQUEST_READ_PHONE_STATE = 1001;
+    private static final int REQUEST_WRITE_EXTERNAL_STORAGE = 1002;
 
     //初始化控件
     @Override
@@ -63,9 +65,9 @@ public class LoginActivity extends Activity implements ILoginView, View.OnClickL
         initView();
         registerPression();
         // 一次请求多个权限, 如果其他有权限是已经授予的将会自动忽略掉
-        ActivityCompat.requestPermissions(this, new String[]{
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE}
-                , MY_PERMISSION_REQUEST_CODE);
+//        ActivityCompat.requestPermissions(this, new String[]{
+//                        Manifest.permission.WRITE_EXTERNAL_STORAGE}
+//                , MY_PERMISSION_REQUEST_CODE);
         okHttpClientManager = OkHttpClientManager.getInstance();
         //初始化
         if (localDbUtil.getString("local_url").isEmpty()) {
@@ -214,12 +216,14 @@ public class LoginActivity extends Activity implements ILoginView, View.OnClickL
     }
 
     private void registerPression() {
+        int permissionWriteFile = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
         int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE);
-        if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
+        if (permissionCheck != PackageManager.PERMISSION_GRANTED ||  permissionWriteFile != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{
-                    Manifest.permission.READ_PHONE_STATE
+                    Manifest.permission.READ_PHONE_STATE,Manifest.permission.WRITE_EXTERNAL_STORAGE
             }, REQUEST_READ_PHONE_STATE);
         }
+
     }
 
     @Override
@@ -229,6 +233,9 @@ public class LoginActivity extends Activity implements ILoginView, View.OnClickL
                 if ((grantResults.length > 0) && (grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
 
                     localDbUtil.setString("local_deviceId", UIUtil.getDeviceId(MyApplication.getIns()));
+                }
+                if((grantResults.length > 1)  && (grantResults[1] == PackageManager.PERMISSION_GRANTED)){
+
                 }
                 break;
             default:
