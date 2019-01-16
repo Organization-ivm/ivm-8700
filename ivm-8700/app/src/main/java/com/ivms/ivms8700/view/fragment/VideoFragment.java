@@ -71,6 +71,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import static android.app.Activity.RESULT_OK;
+import static com.hik.mcrsdk.MCRSDK.init;
 
 public class VideoFragment extends Fragment implements View.OnClickListener, SurfaceHolder.Callback, LiveControl.LiveCallBack, PlayBackCallBack {
 
@@ -346,27 +347,13 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Sur
             if (mMessageHandler != null) {
                 mMessageHandler.removeCallbacksAndMessages(null);
             }
-            if (mIsRecord) {
-                //停止录像
-                recordBtnOnClick_live();
-            }
+
             mProgressSeekbar.setVisibility(View.GONE);
-            if (mIsRecord) {
-                //停止录像
-                recordBtnOnClick_live();
-            }
-            isZoom = false;
-            fangda_img.setBackgroundResource(R.drawable.fangda);
-            initControl();
-            VIDEO_VIEW_COUNT = 1;
-            setGrilView(VIDEO_VIEW_COUNT, 1);
+
             palyType = 1;
-            curCamer=null;
             live_view.setVisibility(View.VISIBLE);
             huifang_view.setVisibility(View.INVISIBLE);
-            one_view_img.setBackgroundResource(R.drawable.one_2);
-            four_view_img.setBackgroundResource(R.drawable.four_2);
-            nine_view_img.setBackgroundResource(R.drawable.nine_1);
+            myInit();
         } else { // 相当于Fragment的onResume
 
         }
@@ -444,40 +431,17 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Sur
         switch (v.getId()) {
             case R.id.live_lay:
                 mProgressSeekbar.setVisibility(View.GONE);
-                if (mIsRecord) {
-                    //停止录像
-                    recordBtnOnClick_live();
-                }
-                isZoom = false;
-                fangda_img.setBackgroundResource(R.drawable.fangda);
-                initControl();
-                VIDEO_VIEW_COUNT = 1;
-                setGrilView(VIDEO_VIEW_COUNT, 1);
                 palyType = 1;
                 live_view.setVisibility(View.VISIBLE);
                 huifang_view.setVisibility(View.INVISIBLE);
-                one_view_img.setBackgroundResource(R.drawable.one_2);
-                four_view_img.setBackgroundResource(R.drawable.four_2);
-                nine_view_img.setBackgroundResource(R.drawable.nine_1);
-                curCamer=null;
+                myInit();
                 break;
             case R.id.huifang_lay:
                 mProgressSeekbar.setVisibility(View.VISIBLE);
-                if (mIsRecord) {
-                    recordBtnOnClick_live();
-                }
-                isZoom = false;
-                fangda_img.setBackgroundResource(R.drawable.fangda);
-                initControl();
-                VIDEO_VIEW_COUNT = 1;
-                setGrilView(VIDEO_VIEW_COUNT, 1);
                 palyType = 2;
                 live_view.setVisibility(View.INVISIBLE);
                 huifang_view.setVisibility(View.VISIBLE);
-                one_view_img.setBackgroundResource(R.drawable.one_2);
-                four_view_img.setBackgroundResource(R.drawable.four_2);
-                nine_view_img.setBackgroundResource(R.drawable.nine_1);
-                curCamer=null;
+                myInit();
                 break;
             case R.id.playBackRecord://本地录像
                 if (palyType == 1) {
@@ -574,14 +538,32 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Sur
                 break;
         }
     }
+
+    private void myInit() {
+        if (mIsRecord) {
+            //停止录像
+            recordBtnOnClick_live();
+        }
+        isZoom = false;
+        fangda_img.setBackgroundResource(R.drawable.fangda);
+        initControl();
+        VIDEO_VIEW_COUNT = 1;
+        setGrilView(VIDEO_VIEW_COUNT, 1);
+
+        one_view_img.setBackgroundResource(R.drawable.one_2);
+        four_view_img.setBackgroundResource(R.drawable.four_2);
+        nine_view_img.setBackgroundResource(R.drawable.nine_1);
+        curCamer = null;
+    }
+
     //若有视频在播放则带到带到多屏界面
     private void showFirstVideo() {
         TimerTask task = new TimerTask() {
             @Override
             public void run() {
-                RecyclerView.LayoutManager layoutManager=video_recyclerview.getLayoutManager();
-                final View itemView1 =layoutManager.findViewByPosition(0);
-                if(curCamer!=null&&itemView1!=null){
+                RecyclerView.LayoutManager layoutManager = video_recyclerview.getLayoutManager();
+                final View itemView1 = layoutManager.findViewByPosition(0);
+                if (curCamer != null && itemView1 != null) {
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -595,9 +577,9 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Sur
                             tmLiveControl = videList.get(0).getmLiveControl();
                             mPlayBackControl = tmPlayBackControl;
                             mLiveControl = tmLiveControl;
-                            if(palyType==1){//预览
+                            if (palyType == 1) {//预览
                                 gotoLive(curCamer);
-                            }else if(palyType==2){//回放
+                            } else if (palyType == 2) {//回放
                                 gotoPlayBack(curCamer);
                             }
 
