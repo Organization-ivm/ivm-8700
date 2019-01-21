@@ -1,5 +1,6 @@
 package com.ivms.ivms8700.bean;
 
+import com.hikvision.sdk.net.bean.Camera;
 import com.hikvision.sdk.net.bean.CameraInfo;
 import com.hikvision.sdk.net.bean.DeviceInfo;
 import com.ivms.ivms8700.live.LiveControl;
@@ -11,6 +12,8 @@ public class VideoEntity {
     private LiveControl mLiveControl = null;
     private PlayBackControl mPlayBackControl= null;
     private boolean isSelect= false;
+
+    private  Camera camera=null;
 
     /**
      * 监控点详细信息
@@ -69,5 +72,13 @@ public class VideoEntity {
 
     public void setSelect(boolean select) {
         isSelect = select;
+    }
+
+    public Camera getCamera() {
+        return camera;
+    }
+
+    public void setCamera(Camera camera) {
+        this.camera = camera;
     }
 }

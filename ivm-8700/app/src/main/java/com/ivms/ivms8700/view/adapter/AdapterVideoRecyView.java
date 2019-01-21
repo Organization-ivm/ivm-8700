@@ -3,6 +3,7 @@ package com.ivms.ivms8700.view.adapter;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -52,10 +53,7 @@ public class AdapterVideoRecyView extends RecyclerView.Adapter<AdapterVideoRecyV
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         //返回ViewHolder对象，通过构造方法传入加载布局文件得到的view对象
-        View view = View.inflate(context, R.layout.video_item_layout, null);
-        ViewHolder holder = new ViewHolder(view);
-
-        return holder;
+        return new AdapterVideoRecyView.ViewHolder( LayoutInflater.from(parent.getContext()).inflate(R.layout.video_item_layout,parent,false));
     }
     //删除数据
     public void removeItem(int pos) {
@@ -64,7 +62,7 @@ public class AdapterVideoRecyView extends RecyclerView.Adapter<AdapterVideoRecyV
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, final int position) {
+    public void onBindViewHolder(final AdapterVideoRecyView.ViewHolder holder, final int position) {
         //通过Resources获取屏幕高度
         DisplayMetrics dm = context.getResources().getDisplayMetrics();
         window_heigth = dm.heightPixels;
@@ -74,21 +72,21 @@ public class AdapterVideoRecyView extends RecyclerView.Adapter<AdapterVideoRecyV
                 window_width/rowCount,
                 window_width/rowCount
         );
-        holder.itemView.setLayoutParams(linearParams);
+        holder.myItemView.setLayoutParams(linearParams);
             //更换背景
             if(list.get(position).isSelect()){
-                holder.itemView.setBackgroundResource(R.drawable.item_select_style);
+                holder.myItemView.setBackgroundResource(R.drawable.item_select_style);
             }else{
-                holder.itemView.setBackground(null);
+                holder.myItemView.setBackground(null);
             }
         //判断是否设置了监听器
         if (mOnItemClickListener != null) { //为ItemView设置监听器
-            holder.itemView.setOnClickListener(new View.OnClickListener() {
+            holder.myItemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     int position = holder.getLayoutPosition();
 
-                    mOnItemClickListener.onItemClick(holder.itemView, position);
+                    mOnItemClickListener.onItemClick(holder.myItemView, position);
                 }
             });
         }
@@ -97,24 +95,27 @@ public class AdapterVideoRecyView extends RecyclerView.Adapter<AdapterVideoRecyV
                 @Override
                 public void onClick(View v) {
                     int position = holder.getLayoutPosition();
-                    mOnImgClickListener.onItemImgClick(holder.itemView, position);
+                    mOnImgClickListener.onItemImgClick(holder.myItemView, position);
                 }
             });
         }
 
         if (mOnItemLongClickListener != null) {
-            holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+            holder.myItemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
                     int position = holder.getLayoutPosition();
-                    mOnItemLongClickListener.onItemLongClick(holder.itemView, position);
+                    mOnItemLongClickListener.onItemLongClick(holder.myItemView, position);
                     //返回true 表示消耗了事件 事件不会继续传递
                     return true;
                 }
             });
         }
     }
-
+    @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
     @Override//返回数据源大小
     public int getItemCount() {
         return list.size();
@@ -136,4 +137,5 @@ public class AdapterVideoRecyView extends RecyclerView.Adapter<AdapterVideoRecyV
             myItemView.performClick();
         }
     }
+
 }

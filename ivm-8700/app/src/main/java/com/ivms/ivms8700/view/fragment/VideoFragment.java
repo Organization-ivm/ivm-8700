@@ -10,6 +10,7 @@ import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -257,6 +258,7 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Sur
      */
     private boolean mIsTalkOpen;
     private SeekBar mProgressSeekbar;//回放进度条
+    private GridLayoutManager manager;
 
     @Nullable
     @Override
@@ -289,8 +291,14 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Sur
             playBackCapture.setOnClickListener(this);
             contrl_lay.setOnClickListener(this);
             fangda_lay.setOnClickListener(this);
+            DisplayMetrics dm = getActivity().getResources().getDisplayMetrics();
+            LinearLayout.LayoutParams linearParams = new LinearLayout.LayoutParams(
+                    dm.widthPixels,
+                    dm.widthPixels
+            );
 
             video_recyclerview = (RecyclerView) view.findViewById(R.id.video_recyclerview);
+            video_recyclerview.setLayoutParams(linearParams);
             setGrilView(VIDEO_VIEW_COUNT, 1);
             mProgressSeekbar = (SeekBar) view.findViewById(R.id.progress_seekbar);
             mProgressSeekbar.setVisibility(View.GONE);
@@ -362,7 +370,7 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Sur
     //生成对应video_view
     private void setGrilView(int viewCount, int rowCount) {
         videList = new ArrayList<>();
-        for (int i = 0; i < viewCount; i++) {
+        for (int i = 0; i < 9; i++) {
             VideoEntity videoEntity = new VideoEntity();
             videoEntity.setRowCout(rowCount);
             LiveControl liveControl = new LiveControl();
@@ -378,7 +386,7 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Sur
         //适配器
         video_adapter = new AdapterVideoRecyView(getActivity(), videList);
         video_recyclerview.setAdapter(video_adapter);
-        GridLayoutManager manager = new GridLayoutManager(getActivity(), rowCount);
+        manager = new GridLayoutManager(getActivity(), rowCount);
         //布局管理器
         video_recyclerview.setLayoutManager(manager);
 
@@ -390,13 +398,25 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Sur
                 //设置SurfaceView为选中状态
 //            if(videList.get(position).isSelect()){//之前已被选中
                 LinearLayout itemView = (LinearLayout) view;
+                for (int i=0;i<videList.size();i++){
+                    if(i==position){
+                        itemView.setBackgroundResource(R.drawable.item_select_style);
+                    }else{
+                        // positions是RecyclerView中每个item的位置
+                        RecyclerView.LayoutManager layoutManager = video_recyclerview.getLayoutManager();
+                        View view1 = layoutManager.findViewByPosition(i);
+                        view1.setBackground(null);
+                    }
+                }
+
+
                 curSurfaceView = itemView.findViewById(R.id.surfaceView);
                 progressBar = (ProgressBar) itemView.findViewById(R.id.live_progress_bar);
                 add_video = (ImageView) itemView.findViewById(R.id.add_monitory);
                 mCurIndex = position;
                 tmPlayBackControl = videList.get(position).getmPlayBackControl();
                 tmLiveControl = videList.get(position).getmLiveControl();
-                intentAddM();
+//                intentAddM();
 //            }else{
 //                for (int i=0;i<videList.size();i++){
 //                    if(i==position){
@@ -410,20 +430,8 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Sur
 
             }
         });
-        //添加监控点
-        video_adapter.setOnItemImgClickListener(new AdapterVideoRecyView.OnItemImgClickListener() {
-            @Override
-            public void onItemImgClick(View view, int position) {
-                LinearLayout itemView = (LinearLayout) view;
-                curSurfaceView = itemView.findViewById(R.id.surfaceView);
-                progressBar = (ProgressBar) itemView.findViewById(R.id.live_progress_bar);
-                add_video = (ImageView) itemView.findViewById(R.id.add_monitory);
-                mCurIndex = position;
-                tmPlayBackControl = videList.get(position).getmPlayBackControl();
-                tmLiveControl = videList.get(position).getmLiveControl();
-                intentAddM();
-            }
-        });
+
+
     }
 
     @Override
@@ -488,7 +496,12 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Sur
                     fangda_img.setBackgroundResource(R.drawable.fangda);
                     initControl();
                     VIDEO_VIEW_COUNT = 1;
-                    setGrilView(VIDEO_VIEW_COUNT, 1);
+//                    setGrilView(VIDEO_VIEW_COUNT, 1);
+                    for(int i=0;i<videList.size();i++){
+                        videList.get(i).setRowCout(1);
+                    }
+                    manager.setSpanCount(1);
+                    video_adapter.notifyDataSetChanged();
                     one_view_img.setBackgroundResource(R.drawable.one_2);
                     four_view_img.setBackgroundResource(R.drawable.four_2);
                     nine_view_img.setBackgroundResource(R.drawable.nine_1);
@@ -506,7 +519,12 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Sur
                     fangda_img.setBackgroundResource(R.drawable.fangda);
                     initControl();
                     VIDEO_VIEW_COUNT = 4;
-                    setGrilView(VIDEO_VIEW_COUNT, 2);
+//                    setGrilView(VIDEO_VIEW_COUNT, 2);
+                    for(int i=0;i<videList.size();i++){
+                        videList.get(i).setRowCout(2);
+                    }
+                    manager.setSpanCount(2);
+                    video_adapter.notifyDataSetChanged();
                     one_view_img.setBackgroundResource(R.drawable.one_1);
                     four_view_img.setBackgroundResource(R.drawable.four_1);
                     nine_view_img.setBackgroundResource(R.drawable.nine_1);
@@ -525,7 +543,12 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Sur
                     fangda_img.setBackgroundResource(R.drawable.fangda);
                     initControl();
                     VIDEO_VIEW_COUNT = 9;
-                    setGrilView(VIDEO_VIEW_COUNT, 3);
+//                    setGrilView(VIDEO_VIEW_COUNT, 3);
+                    for(int i=0;i<videList.size();i++){
+                        videList.get(i).setRowCout(3);
+                    }
+                    manager.setSpanCount(3);
+                    video_adapter.notifyDataSetChanged();
                     one_view_img.setBackgroundResource(R.drawable.one_1);
                     four_view_img.setBackgroundResource(R.drawable.four_2);
                     nine_view_img.setBackgroundResource(R.drawable.nine_2);
