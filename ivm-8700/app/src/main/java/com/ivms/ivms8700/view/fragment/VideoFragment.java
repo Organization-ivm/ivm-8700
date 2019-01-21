@@ -379,7 +379,12 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Sur
             PlayBackControl playBackControl = new PlayBackControl();
             playBackControl.setPlayBackCallBack(this);
             videoEntity.setmPlayBackControl(playBackControl);
-            videoEntity.setSelect(false);
+            if(i==0){
+                videoEntity.setSelect(true);
+            }else{
+                videoEntity.setSelect(false);
+            }
+
             videList.add(videoEntity);
         }
 
@@ -396,37 +401,33 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Sur
             public void onItemClick(View view, int position) {
                 mCurIndex = position;
                 //设置SurfaceView为选中状态
-//            if(videList.get(position).isSelect()){//之前已被选中
                 LinearLayout itemView = (LinearLayout) view;
-                for (int i=0;i<videList.size();i++){
-                    if(i==position){
-                        itemView.setBackgroundResource(R.drawable.item_select_style);
-                    }else{
-                        // positions是RecyclerView中每个item的位置
-                        RecyclerView.LayoutManager layoutManager = video_recyclerview.getLayoutManager();
-                        View view1 = layoutManager.findViewByPosition(i);
-                        view1.setBackground(null);
-                    }
-                }
-
-
                 curSurfaceView = itemView.findViewById(R.id.surfaceView);
                 progressBar = (ProgressBar) itemView.findViewById(R.id.live_progress_bar);
                 add_video = (ImageView) itemView.findViewById(R.id.add_monitory);
                 mCurIndex = position;
                 tmPlayBackControl = videList.get(position).getmPlayBackControl();
                 tmLiveControl = videList.get(position).getmLiveControl();
-//                intentAddM();
-//            }else{
-//                for (int i=0;i<videList.size();i++){
-//                    if(i==position){
-//                        videList.get(i).setSelect(true);
-//                    }else{
-//                        videList.get(i).setSelect(false);
-//                    }
-//                }
+            if(videList.get(position).isSelect()){//之前已被选中
+                intentAddM();
+            }else{
+                for (int i=0;i<videList.size();i++){
+                    if(i==position){
+                        videList.get(i).setSelect(true);
+                        itemView.setBackgroundResource(R.drawable.item_select_style);
+                    }else{
+                        videList.get(i).setSelect(false);
+                        // positions是RecyclerView中每个item的位置
+                        RecyclerView.LayoutManager layoutManager = video_recyclerview.getLayoutManager();
+                        View view1 = layoutManager.findViewByPosition(i);
+                        if(view1!=null){
+                            view1.setBackground(null);
+                        }
+
+                    }
+                }
 //                video_adapter.notifyDataSetChanged();
-//            }
+            }
 
             }
         });
