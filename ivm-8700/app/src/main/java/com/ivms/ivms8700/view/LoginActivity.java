@@ -89,6 +89,10 @@ public class LoginActivity extends Activity implements ILoginView, View.OnClickL
         set_btn = (TextView) findViewById(R.id.set_btn);
         set_btn.setOnClickListener(this);
         username = (EditText) findViewById(R.id.username);
+        String dbUser= localDbUtil.getString("userName");
+        if(!dbUser.isEmpty()){
+            username.setText(dbUser);
+        }
         pwd = (EditText) findViewById(R.id.pwd);
     }
 

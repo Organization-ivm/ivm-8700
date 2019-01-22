@@ -407,7 +407,9 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Sur
                 add_video = (ImageView) itemView.findViewById(R.id.add_monitory);
                 mCurIndex = position;
                 tmPlayBackControl = videList.get(position).getmPlayBackControl();
+                mPlayBackControl=tmPlayBackControl;
                 tmLiveControl = videList.get(position).getmLiveControl();
+                mLiveControl=tmLiveControl;
             if(videList.get(position).isSelect()){//之前已被选中
                 intentAddM();
             }else{
@@ -1358,6 +1360,7 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Sur
      * capture picture from playing video
      */
     private void clickCaptureBtn_live() {
+
         if (null != mLiveControl) {
             // 随机生成一个1到10000的数字，用于抓拍图片名称的一部分，区分图片，开发者可以根据实际情况修改
             // 区分图片名称的方法

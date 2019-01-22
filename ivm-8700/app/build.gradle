@@ -6,8 +6,8 @@ android {
         applicationId "com.ivms.ivms8700"
         minSdkVersion 21
         targetSdkVersion 27
-        versionCode 104
-        versionName "1.0.4"
+        versionCode 110
+        versionName "1.1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
