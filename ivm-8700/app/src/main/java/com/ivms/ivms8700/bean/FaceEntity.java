@@ -9,6 +9,8 @@ public class FaceEntity  implements Serializable {
     private String employeeNumber;
     private String date;
     private String faceCapture;
+    private String afternoondate;
+    private String afternoonfaceCapture;
     private String sex;
     private String officeName;
     private String department;
@@ -139,5 +141,21 @@ public class FaceEntity  implements Serializable {
 
     public void setModelPhoto(String modelPhoto) {
         this.modelPhoto = modelPhoto;
+    }
+
+    public String getAfternoondate() {
+        return afternoondate;
+    }
+
+    public void setAfternoondate(String afternoondate) {
+        this.afternoondate = afternoondate;
+    }
+
+    public String getAfternoonfaceCapture() {
+        return afternoonfaceCapture;
+    }
+
+    public void setAfternoonfaceCapture(String afternoonfaceCapture) {
+        this.afternoonfaceCapture = afternoonfaceCapture;
     }
 }

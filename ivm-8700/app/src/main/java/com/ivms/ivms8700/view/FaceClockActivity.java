@@ -285,8 +285,10 @@ public class FaceClockActivity extends Activity implements View.OnClickListener,
                             JSONObject obj2 = photos.getJSONObject(k);
                             String name = obj2.getString("name");
                             String employeeNumber = obj2.getString("employeeNumber");
-                            String captureTime = obj2.getString("captureTime");
-                            String faceCapture = obj2.getString("faceCapture");
+                            String captureTime = obj2.getString("morningCaptureTime");
+                            String faceCapture = obj2.getString("morningFaceCapture");
+                            String afternoonCaptureTime = obj2.getString("afternoonCaptureTime");
+                            String afternoonFaceCapture = obj2.getString("afternoonFaceCapture");
                             String sex = obj2.getString("sex");
                             String officeName = obj2.getString("officeName");
                             String department = obj2.getString("department");
@@ -298,11 +300,13 @@ public class FaceClockActivity extends Activity implements View.OnClickListener,
                             faceEntity.setName(name);
                             faceEntity.setEmployeeNumber(employeeNumber);
                             faceEntity.setDate(captureTime);
+                            faceEntity.setAfternoondate(afternoonCaptureTime);
                             faceEntity.setLineCode(lineCode);
                             faceEntity.setLineName(lineName);
                             faceEntity.setStationCode(stationCode);
                             faceEntity.setStationName(stationName);
                             faceEntity.setFaceCapture(faceCapture);
+                            faceEntity.setAfternoonfaceCapture(afternoonFaceCapture);
                             faceEntity.setSex(sex);
                             faceEntity.setOfficeName(officeName);
                             faceEntity.setDepartment(department);

@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.ivms.ivms8700.R;
 import com.ivms.ivms8700.bean.FaceEntity;
+import com.ivms.ivms8700.utils.LocalDbUtil;
 import com.ivms.ivms8700.view.FaceDetailActivity;
 
 import java.util.List;
@@ -27,6 +28,9 @@ public class FaceAdapter  extends RecyclerView.Adapter<FaceAdapter.ViewHolder> {
 
     private List<FaceEntity> faceList;
     private Context mContext;
+    private LocalDbUtil localDbUtil;
+    private String local_url;
+
     public FaceAdapter(List<FaceEntity> mFaceList, Context mContext) {
         this.faceList = mFaceList;
         this.mContext=mContext;
@@ -35,6 +39,8 @@ public class FaceAdapter  extends RecyclerView.Adapter<FaceAdapter.ViewHolder> {
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.face_item_layout,parent,false);
         ViewHolder holder = new ViewHolder(view);
+        localDbUtil = new LocalDbUtil(mContext);
+        local_url = localDbUtil.getString("local_url");
         return holder;
     }
 
@@ -54,7 +60,7 @@ public class FaceAdapter  extends RecyclerView.Adapter<FaceAdapter.ViewHolder> {
                 mContext.startActivity(detailIntent);
             }
         });
-        Glide.with(mContext).load("http://222.66.82.4:80/shm/"+faceEntity.getModelPhoto()).into(holder.user_img);
+        Glide.with(mContext).load(local_url+"/shm/"+faceEntity.getModelPhoto()).into(holder.user_img);
 
     }
 

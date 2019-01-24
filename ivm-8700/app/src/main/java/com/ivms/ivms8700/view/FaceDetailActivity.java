@@ -10,6 +10,7 @@ import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -46,6 +47,11 @@ public class FaceDetailActivity extends Activity implements View.OnClickListener
     private LocalDbUtil localDbUtil;
     private String local_url;
     private String userName;
+    private RelativeLayout mon_date_txt;
+    private RelativeLayout after_date_txt;
+    private ImageView after_user_img;
+    private TextView after_rq_txt;
+    private String after_imageUrl;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,13 +73,18 @@ public class FaceDetailActivity extends Activity implements View.OnClickListener
         title_txt.setText(getString(R.string.renlianshibie_kaoqin_detail));
         num_txt=(TextView)findViewById(R.id.num_txt);
         name_txt=(TextView)findViewById(R.id.name_txt);
+        mon_date_txt=(RelativeLayout)findViewById(R.id.mon_date_txt);
         user_img=(ImageView)findViewById(R.id.user_img);
         Glide.with(this).load(R.drawable._loading).into(user_img);//图片占位图
+        after_date_txt=(RelativeLayout)findViewById(R.id.after_date_txt);
+        after_user_img=(ImageView)findViewById(R.id.after_user_img);
+        Glide.with(this).load(R.drawable._loading).into(after_user_img);//图片占位图
         sex_txt=(TextView)findViewById(R.id.sex_txt);
         dw_txt=(TextView)findViewById(R.id.dw_txt);
         bm_txt=(TextView)findViewById(R.id.bm_txt);
         phone_txt=(TextView)findViewById(R.id.phone_txt);
         rq_txt=(TextView)findViewById(R.id.rq_txt);
+        after_rq_txt=(TextView)findViewById(R.id.after_rq_txt);
     }
     //初始化数据
     private void initData() {
@@ -84,11 +95,30 @@ public class FaceDetailActivity extends Activity implements View.OnClickListener
             dw_txt.setText(faceEntity.getOfficeName());
             bm_txt.setText(faceEntity.getDepartment());
             phone_txt.setText(faceEntity.getPhone());
-            rq_txt.setText(faceEntity.getDate());
-            imageUrl =local_url+"/shm/"+faceEntity.getFaceCapture();
-            Log.i("Alan","imageUrl="+imageUrl);
 
-            Glide.with(this).load(imageUrl).into(user_img);
+            if(!faceEntity.getFaceCapture().isEmpty()){
+                rq_txt.setText(faceEntity.getDate());
+                imageUrl =local_url+"/shm/"+faceEntity.getFaceCapture();
+                Log.i("Alan","imageUrl="+imageUrl);
+                Glide.with(this).load(imageUrl).into(user_img);
+                mon_date_txt.setVisibility(View.VISIBLE);
+                user_img.setVisibility(View.VISIBLE);
+            }else{
+                mon_date_txt.setVisibility(View.GONE);
+                user_img.setVisibility(View.GONE);
+            }
+
+            if(!faceEntity.getAfternoonfaceCapture().isEmpty()){
+                after_rq_txt.setText(faceEntity.getAfternoondate());
+                after_imageUrl =local_url+"/shm/"+faceEntity.getAfternoonfaceCapture();
+                Log.i("Alan","after_imageUrl="+after_imageUrl);
+                Glide.with(this).load(after_imageUrl).into(after_user_img);
+                after_date_txt.setVisibility(View.VISIBLE);
+                after_user_img.setVisibility(View.VISIBLE);
+            }else{
+                after_date_txt.setVisibility(View.GONE);
+                after_user_img.setVisibility(View.GONE);
+            }
     }
 
     //控件监听
