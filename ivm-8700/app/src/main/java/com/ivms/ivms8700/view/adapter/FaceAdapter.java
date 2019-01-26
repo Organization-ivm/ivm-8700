@@ -2,6 +2,7 @@ package com.ivms.ivms8700.view.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -48,9 +49,27 @@ public class FaceAdapter  extends RecyclerView.Adapter<FaceAdapter.ViewHolder> {
     public void onBindViewHolder(ViewHolder holder, int position) {
         final FaceEntity faceEntity = faceList.get(position);
         holder.count.setText((position+1)+"、");
-        holder.num.setText("工号："+faceEntity.getEmployeeNumber());
-        holder.name.setText("姓名："+faceEntity.getName());
-        holder.date_txt.setText("日期："+faceEntity.getDate());
+        holder.num.setText("姓名："+faceEntity.getName());
+        if(!faceEntity.getAfternoonfaceCapture().isEmpty()||!faceEntity.getFaceCapture().isEmpty()){
+            if(!faceEntity.getFaceCapture().isEmpty()){
+                holder.date_txt.setText("上午："+faceEntity.getDate());
+                holder.date_txt.setTextColor(Color.GREEN);
+            }else{
+                holder.date_txt.setVisibility(View.GONE);
+            }
+            if(!faceEntity.getAfternoonfaceCapture().isEmpty()){
+                holder.after_date.setText("下午："+faceEntity.getAfternoondate());
+                holder.after_date.setTextColor(Color.GREEN);
+            }else{
+                holder.after_date.setVisibility(View.GONE);
+            }
+
+        }else{
+            holder.date_txt.setText("状态："+"无记录");
+            holder.date_txt.setTextColor(Color.RED);
+        }
+
+        holder.name.setText("单位："+faceEntity.getOfficeName());
 
         holder.item_view.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -75,6 +94,7 @@ public class FaceAdapter  extends RecyclerView.Adapter<FaceAdapter.ViewHolder> {
         TextView name;
         TextView num;
         TextView date_txt;
+        TextView after_date;
         ImageView user_img;
 
         public ViewHolder(View view) {
@@ -84,6 +104,7 @@ public class FaceAdapter  extends RecyclerView.Adapter<FaceAdapter.ViewHolder> {
             name = (TextView) view.findViewById(R.id.name);
             num=(TextView)view.findViewById(R.id.num);
             date_txt=(TextView)view.findViewById(R.id.date_txt);
+            after_date=(TextView)view.findViewById(R.id.after_date);
             user_img=(ImageView)view.findViewById(R.id.user_img);
         }
     }

@@ -273,38 +273,38 @@ public class FaceClockActivity extends Activity implements View.OnClickListener,
                 JSONArray list = data.getJSONArray("list");
                 for (int i = 0; i < list.length(); i++) {
                     JSONObject obj = list.getJSONObject(i);
-                    String lineCode = obj.getString("lineCode");
-                    String lineName = obj.getString("lineName");
-                    JSONArray stations = obj.getJSONArray("stations");
-                    for (int j = 0; j < stations.length(); j++) {
-                        JSONObject obj1 = stations.getJSONObject(j);
-                        String stationCode = obj1.getString("stationCode");
-                        String stationName = obj1.getString("stationName");
-                        JSONArray photos = obj1.getJSONArray("photos");
-                        for (int k = 0; k < photos.length(); k++) {
-                            JSONObject obj2 = photos.getJSONObject(k);
-                            String name = obj2.getString("name");
-                            String employeeNumber = obj2.getString("employeeNumber");
-                            String captureTime = obj2.getString("morningCaptureTime");
-                            String faceCapture = obj2.getString("morningFaceCapture");
-                            String afternoonCaptureTime = obj2.getString("afternoonCaptureTime");
-                            String afternoonFaceCapture = obj2.getString("afternoonFaceCapture");
-                            String sex = obj2.getString("sex");
-                            String officeName = obj2.getString("officeName");
-                            String department = obj2.getString("department");
-                            String position = obj2.getString("position");
-                            String phone = obj2.getString("phone");
-                            String modelPhoto = obj2.getString("modelPhoto");
+//                    String lineCode = obj.getString("lineCode");
+//                    String lineName = obj.getString("lineName");
+//                    JSONArray stations = obj.getJSONArray("stations");
+//                    for (int j = 0; j < stations.length(); j++) {
+//                        JSONObject obj1 = stations.getJSONObject(j);
+//                        String stationCode = obj1.getString("stationCode");
+//                        String stationName = obj1.getString("stationName");
+//                        JSONArray photos = obj1.getJSONArray("photos");
+//                        for (int k = 0; k < photos.length(); k++) {
+//                            JSONObject obj2 = photos.getJSONObject(k);
+                            String name = obj.getString("name");
+                            String employeeNumber = obj.getString("employeeNumber");
+                            String captureTime = obj.getString("morningCaptureTime");
+                            String faceCapture = obj.getString("morningFaceCapture");
+                            String afternoonCaptureTime = obj.getString("afternoonCaptureTime");
+                            String afternoonFaceCapture = obj.getString("afternoonFaceCapture");
+                            String sex = obj.getString("sex");
+                            String officeName = obj.getString("officeName");
+                            String department = obj.getString("department");
+                            String position = obj.getString("position");
+                            String phone = obj.getString("phone");
+                            String modelPhoto = obj.getString("modelPhoto");
 
                             FaceEntity faceEntity = new FaceEntity();
                             faceEntity.setName(name);
                             faceEntity.setEmployeeNumber(employeeNumber);
                             faceEntity.setDate(captureTime);
                             faceEntity.setAfternoondate(afternoonCaptureTime);
-                            faceEntity.setLineCode(lineCode);
-                            faceEntity.setLineName(lineName);
-                            faceEntity.setStationCode(stationCode);
-                            faceEntity.setStationName(stationName);
+//                            faceEntity.setLineCode(lineCode);
+//                            faceEntity.setLineName(lineName);
+//                            faceEntity.setStationCode(stationCode);
+//                            faceEntity.setStationName(stationName);
                             faceEntity.setFaceCapture(faceCapture);
                             faceEntity.setAfternoonfaceCapture(afternoonFaceCapture);
                             faceEntity.setSex(sex);
@@ -314,8 +314,8 @@ public class FaceClockActivity extends Activity implements View.OnClickListener,
                             faceEntity.setPhone(phone);
                             faceEntity.setModelPhoto(modelPhoto);
                             mFaceList.add(faceEntity);
-                        }
-                    }
+//                        }
+//                    }
                 }
             } else {
                 UIUtil.showToast(this, jsonObject.getString("msg"));

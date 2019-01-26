@@ -93,7 +93,7 @@ public class FaceDetailActivity extends Activity implements View.OnClickListener
             name_txt.setText(faceEntity.getName());
             sex_txt.setText(faceEntity.getSex());
             dw_txt.setText(faceEntity.getOfficeName());
-            bm_txt.setText(faceEntity.getDepartment());
+            bm_txt.setText(faceEntity.getPosition());
             phone_txt.setText(faceEntity.getPhone());
 
             if(!faceEntity.getFaceCapture().isEmpty()){

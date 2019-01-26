@@ -110,7 +110,7 @@
     <string name="name_txt">姓名：</string>
     <string name="sex_txt">性别：</string>
     <string name="dw_txt">单位：</string>
-    <string name="bm_txt">部门：</string>
+    <string name="bm_txt">职务：</string>
     <string name="phone_txt">电话：</string>
     <string name="rq_txt">上午识别时间：</string>
     <string name="after_rq_txt">下午识别时间：</string>
