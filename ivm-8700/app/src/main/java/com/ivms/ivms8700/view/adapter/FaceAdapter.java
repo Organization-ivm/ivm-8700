@@ -53,13 +53,13 @@ public class FaceAdapter  extends RecyclerView.Adapter<FaceAdapter.ViewHolder> {
         if(!faceEntity.getAfternoonfaceCapture().isEmpty()||!faceEntity.getFaceCapture().isEmpty()){
             if(!faceEntity.getFaceCapture().isEmpty()){
                 holder.date_txt.setText("上午："+faceEntity.getDate());
-                holder.date_txt.setTextColor(Color.GREEN);
+                holder.date_txt.setTextColor(mContext.getResources().getColor(R.color.green_txt));
             }else{
                 holder.date_txt.setVisibility(View.GONE);
             }
             if(!faceEntity.getAfternoonfaceCapture().isEmpty()){
                 holder.after_date.setText("下午："+faceEntity.getAfternoondate());
-                holder.after_date.setTextColor(Color.GREEN);
+                holder.after_date.setTextColor(mContext.getResources().getColor(R.color.green_txt));
             }else{
                 holder.after_date.setVisibility(View.GONE);
             }
