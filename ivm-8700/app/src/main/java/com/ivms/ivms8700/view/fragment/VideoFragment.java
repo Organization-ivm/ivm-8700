@@ -52,6 +52,7 @@ import com.ivms.ivms8700.playback.ConstantPlayBack;
 import com.ivms.ivms8700.playback.PlayBackCallBack;
 import com.ivms.ivms8700.playback.PlayBackControl;
 import com.ivms.ivms8700.playback.PlayBackParams;
+import com.ivms.ivms8700.presenter.LoginPresenter;
 import com.ivms.ivms8700.utils.UIUtil;
 import com.ivms.ivms8700.view.AddCamerActivity;
 import com.ivms.ivms8700.view.AddMonitoryActivity;
@@ -59,6 +60,7 @@ import com.ivms.ivms8700.view.adapter.AdapterVideoRecyView;
 import com.ivms.ivms8700.view.customui.CustomRect;
 import com.ivms.ivms8700.view.customui.CustomSurfaceView;
 import com.ivms.ivms8700.view.customui.CustomSurfaceView.OnZoomListener;
+import com.ivms.ivms8700.view.iview.ILoginView;
 
 import org.MediaPlayer.PlayM4.Player;
 
@@ -72,9 +74,10 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import static android.app.Activity.RESULT_OK;
+import static android.view.View.*;
 import static com.hik.mcrsdk.MCRSDK.init;
 
-public class VideoFragment extends Fragment implements View.OnClickListener, SurfaceHolder.Callback, LiveControl.LiveCallBack, PlayBackCallBack {
+public class VideoFragment extends Fragment implements ILoginView,OnClickListener, SurfaceHolder.Callback, LiveControl.LiveCallBack, PlayBackCallBack {
 
     private final String TAG = "Alan";
     private final int RECULET_CODE = 1;//选择完监控点回调
@@ -259,12 +262,14 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Sur
     private boolean mIsTalkOpen;
     private SeekBar mProgressSeekbar;//回放进度条
     private GridLayoutManager manager;
+    private LoginPresenter presenter;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         if (view == null) {
             view = inflater.inflate(R.layout.video_layout, container, false);
+            presenter = new LoginPresenter(this);
             live_lay = (LinearLayout) view.findViewById(R.id.live_lay);
             huifang_lay = (LinearLayout) view.findViewById(R.id.huifang_lay);
             live_view = (View) view.findViewById(R.id.live_view);
@@ -301,7 +306,7 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Sur
             video_recyclerview.setLayoutParams(linearParams);
             setGrilView(VIDEO_VIEW_COUNT, 1);
             mProgressSeekbar = (SeekBar) view.findViewById(R.id.progress_seekbar);
-            mProgressSeekbar.setVisibility(View.GONE);
+            mProgressSeekbar.setVisibility(GONE);
             mProgressSeekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
                 /**
                  * 拖动条停止拖动的时候调用
@@ -356,11 +361,11 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Sur
                 mMessageHandler.removeCallbacksAndMessages(null);
             }
 
-            mProgressSeekbar.setVisibility(View.GONE);
+            mProgressSeekbar.setVisibility(GONE);
 
             palyType = 1;
-            live_view.setVisibility(View.VISIBLE);
-            huifang_view.setVisibility(View.INVISIBLE);
+            live_view.setVisibility(VISIBLE);
+            huifang_view.setVisibility(INVISIBLE);
             myInit();
         } else { // 相当于Fragment的onResume
 
@@ -441,17 +446,17 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Sur
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.live_lay:
-                mProgressSeekbar.setVisibility(View.GONE);
+                mProgressSeekbar.setVisibility(GONE);
                 palyType = 1;
-                live_view.setVisibility(View.VISIBLE);
-                huifang_view.setVisibility(View.INVISIBLE);
+                live_view.setVisibility(VISIBLE);
+                huifang_view.setVisibility(INVISIBLE);
                 myInit();
                 break;
             case R.id.huifang_lay:
-                mProgressSeekbar.setVisibility(View.VISIBLE);
+                mProgressSeekbar.setVisibility(VISIBLE);
                 palyType = 2;
-                live_view.setVisibility(View.INVISIBLE);
-                huifang_view.setVisibility(View.VISIBLE);
+                live_view.setVisibility(INVISIBLE);
+                huifang_view.setVisibility(VISIBLE);
                 myInit();
                 break;
             case R.id.playBackRecord://本地录像
@@ -610,10 +615,10 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Sur
                             }
 
                             if (null != progressBar) {
-                                progressBar.setVisibility(View.GONE);
+                                progressBar.setVisibility(GONE);
                             }
                             if (null != add_video) {
-                                add_video.setVisibility(View.GONE);
+                                add_video.setVisibility(GONE);
                             }
                         }
                     });
@@ -687,10 +692,10 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Sur
             case RECULET_CODE://监控列表回调
                 if (resultCode == RESULT_OK) {
                     if (null != progressBar) {
-                        progressBar.setVisibility(View.GONE);
+                        progressBar.setVisibility(GONE);
                     }
                     if (null != add_video) {
-                        add_video.setVisibility(View.GONE);
+                        add_video.setVisibility(GONE);
                     }
                     mPlayBackControl = tmPlayBackControl;
                     mLiveControl = tmLiveControl;
@@ -722,6 +727,7 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Sur
                 break;
         }
     }
+
 
     /**
      * 视图更新处理器
@@ -762,7 +768,7 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Sur
                 case ConstantLiveSDK.RTSP_FAIL:
                     UIUtil.showToast(getActivity(), R.string.rtsp_fail);
                     if (null != progressBar) {
-                        progressBar.setVisibility(View.GONE);
+                        progressBar.setVisibility(GONE);
                     }
                     if (null != mLiveControl) {
                         mLiveControl.stop();
@@ -780,7 +786,7 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Sur
                 case ConstantLiveSDK.PLAY_DISPLAY_SUCCESS:
                     UIUtil.showToast(getActivity(), R.string.play_display_success);
                     if (null != progressBar) {
-                        progressBar.setVisibility(View.GONE);
+                        progressBar.setVisibility(GONE);
                     }
                     break;
                 default:
@@ -844,7 +850,7 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Sur
                 case Constants.PlayBack.queryRecordSegment_failure:
                     UIUtil.cancelProgressDialog();
                     if (null != progressBar) {
-                        progressBar.setVisibility(View.GONE);
+                        progressBar.setVisibility(GONE);
                     }
                     UIUtil.showToast(getActivity(), "录像文件查询失败");
                     break;
@@ -857,7 +863,7 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Sur
 
                     UIUtil.showToast(getActivity(), "启动取流库失败");
                     if (null != progressBar) {
-                        progressBar.setVisibility(View.GONE);
+                        progressBar.setVisibility(GONE);
                     }
                     break;
 
@@ -883,13 +889,13 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Sur
 
                 case ConstantPlayBack.START_OPEN_FAILED:
                     if (null != progressBar) {
-                        progressBar.setVisibility(View.GONE);
+                        progressBar.setVisibility(GONE);
                     }
                     break;
 
                 case ConstantPlayBack.PLAY_DISPLAY_SUCCESS:
                     if (null != progressBar) {
-                        progressBar.setVisibility(View.GONE);
+                        progressBar.setVisibility(GONE);
                     }
                     break;
                 case ConstantPlayBack.CAPTURE_FAILED_NPLAY_STATE:
@@ -904,7 +910,7 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Sur
 
                 case RtspClient.RTSPCLIENT_MSG_CONNECTION_EXCEPTION:
                     if (null != progressBar) {
-                        progressBar.setVisibility(View.GONE);
+                        progressBar.setVisibility(GONE);
                     }
                     UIUtil.showToast(getActivity(), "RTSP链接异常");
                     break;
@@ -936,7 +942,7 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Sur
      */
     private void startBtnOnClick() {
         if (null != progressBar) {
-            progressBar.setVisibility(View.VISIBLE);
+            progressBar.setVisibility(VISIBLE);
         }
         if (null != mPlayBackControl) {
             mPlayBackControl.startPlayBack(mParamsObj);
@@ -950,7 +956,7 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Sur
      */
     private void stopBtnOnClick() {
         if (null != progressBar) {
-            progressBar.setVisibility(View.GONE);
+            progressBar.setVisibility(GONE);
         }
         if (null != mPlayBackControl) {
             mPlayBackControl.stopPlayBack();
@@ -1058,7 +1064,7 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Sur
             return;
         }
         if (null != progressBar) {
-            progressBar.setVisibility(View.VISIBLE);
+            progressBar.setVisibility(VISIBLE);
         }
         mVMSNetSDK.setOnVMSNetSDKBusiness(new OnVMSNetSDKBusiness() {
 
@@ -1283,7 +1289,7 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Sur
     private void clickStartBtn() {
 
         if (null != progressBar) {
-            progressBar.setVisibility(View.VISIBLE);
+            progressBar.setVisibility(VISIBLE);
         }
         String liveUrl = VMSNetSDK.getInstance().getPlayUrl(cameraInfo, mStreamType);
         mLiveControl.setLiveParams(liveUrl, null == username ? "" : username, null == password ? "" : password);
@@ -1293,7 +1299,7 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Sur
 
         if (LiveControl.LIVE_INIT == mLiveControl.getLiveState()) {
             if (null != progressBar) {
-                progressBar.setVisibility(View.GONE);
+                progressBar.setVisibility(GONE);
             }
             mLiveControl.startLive(curSurfaceView);
         }
@@ -1476,6 +1482,42 @@ public class VideoFragment extends Fragment implements View.OnClickListener, Sur
     @Override
     public void onMessageCallback(int message) {
         sendMessageCase(message);
+    }
+
+
+    @Override
+    public void showLoginProgress() {
+
+    }
+
+    @Override
+    public void showLogoutProgress() {
+
+    }
+
+    @Override
+    public void cancelProgress() {
+
+    }
+
+    @Override
+    public void onLoginFailed() {
+
+    }
+
+    @Override
+    public void onLoginSuccess() {
+
+    }
+
+    @Override
+    public void onLogoutSuccess() {
+
+    }
+
+    @Override
+    public void onLogoutFailed() {
+
     }
 
 }

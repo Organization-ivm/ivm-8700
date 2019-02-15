@@ -89,8 +89,8 @@ public class LoginActivity extends Activity implements ILoginView, View.OnClickL
         set_btn = (TextView) findViewById(R.id.set_btn);
         set_btn.setOnClickListener(this);
         username = (EditText) findViewById(R.id.username);
-        String dbUser= localDbUtil.getString("userName");
-        if(!dbUser.isEmpty()){
+        String dbUser = localDbUtil.getString("userName");
+        if (!dbUser.isEmpty()) {
             username.setText(dbUser);
         }
         pwd = (EditText) findViewById(R.id.pwd);
@@ -110,7 +110,7 @@ public class LoginActivity extends Activity implements ILoginView, View.OnClickL
                 password = pwd.getText().toString().trim();
                 if (checkLoginData(local_url, local_port, local_video_ip, local_video_port, userName, password)) {
                     String getUrl = local_url + "/shm/login?userName=" + userName + "&passWord=" + password + "&videoIP=" + local_video_ip + "&token=" + Constants.APP_TOKEN;
-                    Log.i("Alan", "getUrl=-=" + getUrl);
+                    Log.i("Alan", "loginUrl=-=" + getUrl);
                     okHttpClientManager.asyncJsonObjectByUrl(getUrl, this);
 //                  okHttpClientManager.asyncJsonObjectByUrl("http://222.66.82.4:80/shm/login?userName=mobile&passWord=123456&videoIP=222.66.82.2&token=" + Constants.APP_TOKEN, this);
                 }
@@ -197,15 +197,21 @@ public class LoginActivity extends Activity implements ILoginView, View.OnClickL
                 String result = jsonObject.getString("result");
                 if (result.equals("success")) {//解析登录返回数据
                     JSONObject obj = new JSONObject(data);
-                    videoUser = obj.getString("videoUser");
-                    videoPassword = obj.getString("videoPassword");
+//                    videoUser = obj.getString("videoUser");
+//                    videoPassword = obj.getString("videoPassword");
                     JSONArray videoList = obj.getJSONArray("list");//当前用户能查看的监控点列表
                     Log.i(TAG, "videoList=-=" + videoList);
                     MyApplication.getIns().setVideoList(videoList);
                     Log.i("Alan", "后台登录成功，开始登录ivms后台..");
-                    String macAddress = getMacAddress();
-                    String passwordLevel = "2";
-                    presenter.login(local_video_url, videoUser, videoPassword, macAddress, passwordLevel);
+                    //更改第二次登录到播放视频前 2019-2-15 14:29:35
+//                    String macAddress = getMacAddress();
+//                    String passwordLevel = "2";
+//                    presenter.login(local_video_url, videoUser, videoPassword, macAddress, passwordLevel);
+
+                    UIUtil.showToast(this, R.string.login_success);
+                    localDbUtil.setString("userName", userName);
+                    Intent intent = new Intent(this, MainActivity.class);
+                    startActivity(intent);
                 } else {
                     UIUtil.showToast(this, msg);
                 }
@@ -222,9 +228,9 @@ public class LoginActivity extends Activity implements ILoginView, View.OnClickL
     private void registerPression() {
         int permissionWriteFile = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
         int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE);
-        if (permissionCheck != PackageManager.PERMISSION_GRANTED ||  permissionWriteFile != PackageManager.PERMISSION_GRANTED) {
+        if (permissionCheck != PackageManager.PERMISSION_GRANTED || permissionWriteFile != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{
-                    Manifest.permission.READ_PHONE_STATE,Manifest.permission.WRITE_EXTERNAL_STORAGE
+                    Manifest.permission.READ_PHONE_STATE, Manifest.permission.WRITE_EXTERNAL_STORAGE
             }, REQUEST_READ_PHONE_STATE);
         }
 
@@ -238,7 +244,7 @@ public class LoginActivity extends Activity implements ILoginView, View.OnClickL
 
                     localDbUtil.setString("local_deviceId", UIUtil.getDeviceId(MyApplication.getIns()));
                 }
-                if((grantResults.length > 1)  && (grantResults[1] == PackageManager.PERMISSION_GRANTED)){
+                if ((grantResults.length > 1) && (grantResults[1] == PackageManager.PERMISSION_GRANTED)) {
 
                 }
                 break;
