@@ -1,9 +1,12 @@
 package com.ivms.ivms8700.view.fragment;
 
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -43,10 +46,12 @@ import com.hikvision.sdk.utils.SDKUtil;
 import com.hikvision.sdk.utils.UtilAudioPlay;
 import com.hikvision.sdk.utils.Utils;
 import com.ivms.ivms8700.R;
+import com.ivms.ivms8700.bean.MenuTree;
 import com.ivms.ivms8700.bean.VideoEntity;
 import com.ivms.ivms8700.control.Constants;
 import com.ivms.ivms8700.live.LiveControl;
 import com.ivms.ivms8700.live.PCRect;
+import com.ivms.ivms8700.model.TempDatas;
 import com.ivms.ivms8700.mysdk.MyVMSNetSDK;
 import com.ivms.ivms8700.playback.ConstantPlayBack;
 import com.ivms.ivms8700.playback.PlayBackCallBack;
@@ -687,7 +692,6 @@ public class VideoFragment extends Fragment implements ILoginView,OnClickListene
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-
         switch (requestCode) {
             case RECULET_CODE://监控列表回调
                 if (resultCode == RESULT_OK) {
@@ -702,33 +706,72 @@ public class VideoFragment extends Fragment implements ILoginView,OnClickListene
                     Bundle extras = data.getExtras();
                     Camera camera = (Camera) extras.get("camera");
                     curCamer = camera;
-                    switch (palyType) {
-                        case 1:
-                            //  预览
+                    String loginUrl=  TempDatas.getIns().getLoginAddr();
+                    //模拟登录
+                    MenuTree menuTree=(MenuTree)extras.get("item");
+                    String macAddress = getMacAddress();
+                    String passwordLevel = "2";
+                    String  videoip=menuTree.getVideoip();
+
+                    if(loginUrl==null){//从没登录过
+                        String videoport = menuTree.getVideoport();
+                        String videoUser = menuTree.getVideouser();
+                        String videoPassword = menuTree.getVideopassword();
+                        presenter.login(getString(R.string.https_et) + videoip + ":443", videoUser, videoPassword, macAddress, passwordLevel);
+                        return;
+                    }
+                    Log.e("Alan",loginUrl+"=-="+videoip);
+                    if(loginUrl.contains(videoip)){//上次登录过
+                        switch (palyType) {
+                            case 1:
+                                //  预览
 //                            if (MyVMSNetSDK.getInstance().isHasLivePermission(camera)) {
 //
-                            gotoLive(camera);
+                                gotoLive(curCamer);
 //                            } else {
 //                                UIUtil.showToast(getActivity(), R.string.no_permission);
 //                            }
-                            break;
-                        case 2:
-                            // 回放
+                                break;
+                            case 2:
+                                // 回放
 //                            if (MyVMSNetSDK.getInstance().isHasPlayBackPermission(camera)) {
-                            gotoPlayBack(camera);
+                                gotoPlayBack(curCamer);
 //                            } else {
 //                                UIUtil.showToast(getActivity(), R.string.no_permission);
 //                            }
-                            break;
-                        default:
-                            break;
+                                break;
+                            default:
+                                break;
+                        }
+                    }else{//更换服务器登录
+                        if(VIDEO_VIEW_COUNT==1) {
+
+                            String videoport = menuTree.getVideoport();
+                            String videoUser = menuTree.getVideouser();
+                            String videoPassword = menuTree.getVideopassword();
+                            presenter.login(getString(R.string.https_et) + videoip + ":443", videoUser, videoPassword, macAddress, passwordLevel);
+                        }else{
+                            UIUtil.showToast(getActivity(),"多屏状态下不支持更换服务器！");
+                        }
                     }
+
+
                 }
                 break;
         }
     }
 
-
+    /**
+     * 获取登录设备mac地址
+     *
+     * @return
+     */
+    public String getMacAddress() {
+        @SuppressLint("WifiManagerLeak")
+        WifiManager wm = (WifiManager) getActivity().getSystemService(Context.WIFI_SERVICE);
+        String mac = wm.getConnectionInfo().getMacAddress();
+        return mac == null ? "" : mac;
+    }
     /**
      * 视图更新处理器
      */
@@ -788,6 +831,7 @@ public class VideoFragment extends Fragment implements ILoginView,OnClickListene
                     if (null != progressBar) {
                         progressBar.setVisibility(GONE);
                     }
+
                     break;
                 default:
                     break;
@@ -1158,6 +1202,7 @@ public class VideoFragment extends Fragment implements ILoginView,OnClickListene
                 } else {
                     mMessageHandler.sendEmptyMessage(Constants.Login.SHOW_LOGIN_PROGRESS);
                 }
+
             }
 
             @Override
@@ -1508,6 +1553,28 @@ public class VideoFragment extends Fragment implements ILoginView,OnClickListene
     @Override
     public void onLoginSuccess() {
 
+
+        switch (palyType) {
+            case 1:
+                //  预览
+//                            if (MyVMSNetSDK.getInstance().isHasLivePermission(camera)) {
+//
+                gotoLive(curCamer);
+//                            } else {
+//                                UIUtil.showToast(getActivity(), R.string.no_permission);
+//                            }
+                break;
+            case 2:
+                // 回放
+//                            if (MyVMSNetSDK.getInstance().isHasPlayBackPermission(camera)) {
+                gotoPlayBack(curCamer);
+//                            } else {
+//                                UIUtil.showToast(getActivity(), R.string.no_permission);
+//                            }
+                break;
+            default:
+                break;
+        }
     }
 
     @Override

@@ -86,6 +86,7 @@ public class AddCamerActivity extends Activity implements View.OnClickListener {
                     Intent intent = new Intent();
                     // 把Persion数据放入到bundle中
                     bundle.putSerializable("camera",camera);
+                    bundle.putSerializable("item",(MenuTree)menuTreeShowList.get(position));
                     intent.putExtras(bundle);
                     // 返回intent
                     setResult(RESULT_OK, intent);

@@ -36,6 +36,12 @@ public class GetData {
             JSONObject item = jsonArray.getJSONObject(j);
             String id="";
             String text="";
+            String sysCode="";
+            String videoIP="";
+            String videoPort="";
+            String videoUser="";
+            String videoPassword="";
+
             JSONArray children=null;
             if(level==0) {
                 id = item.optString("lineCode");
@@ -48,6 +54,11 @@ public class GetData {
             }else if (level==2){
                 id = item.optString("cameraCode");
                 text = item.optString("cameraName");
+                sysCode = item.optString("sysCode");
+                videoIP = item.optString("videoIP");
+                videoPort = item.optString("videoPort");
+                videoUser = item.optString("videoUser");
+                videoPassword = item.optString("videoPassword");
                 children  = null;
             }
             if (children != null && children.length() > 0) {
@@ -57,7 +68,19 @@ public class GetData {
                 list.addAll(childList);
 
             } else {
-                MenuTree tree = new MenuTree(id, text, parentId, false, level);
+//                MenuTree tree = new MenuTree(id, text, parentId, false, level);
+                MenuTree tree = new MenuTree();
+                tree.setId(id);
+                tree.setText(text);
+                tree.setParentId(parentId);
+                tree.setHasChild(false);
+                tree.setLevel(level);
+                tree.setSyscode(sysCode);
+                tree.setVideoip(videoIP);
+                tree.setVideoport(videoPort);
+                tree.setVideouser(videoUser);
+                tree.setVideopassword(videoPassword);
+
                 list.add(tree);
             }
         }

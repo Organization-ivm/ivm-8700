@@ -1,12 +1,14 @@
 package com.ivms.ivms8700.bean;
 
-    /**
+import java.io.Serializable;
+
+/**
      * 菜单树的各级菜单实体类
      *
      * @author tjs
      *
      */
-    public class MenuTree {
+    public class MenuTree implements Serializable {
         /** 菜单编号 */
         private String id;
         /** 菜单内容 */
@@ -20,6 +22,19 @@ package com.ivms.ivms8700.bean;
         /** 是否展开 */
         private boolean expanded;
 
+        /** sysCode */
+        private String syscode;
+        /** videoIP */
+        private String videoip;
+        /** videoPort */
+        private String videoport;
+        /** videoUser */
+        private String videouser;
+        /** videoPassword */
+        private String videopassword;
+        public MenuTree() {
+
+        }
         /***
          *
          * @param id
@@ -114,6 +129,46 @@ package com.ivms.ivms8700.bean;
 
         public void setExpanded(boolean expanded) {
             this.expanded = expanded;
+        }
+
+        public String getSyscode() {
+            return syscode;
+        }
+
+        public void setSyscode(String syscode) {
+            this.syscode = syscode;
+        }
+
+        public String getVideoip() {
+            return videoip;
+        }
+
+        public void setVideoip(String videoip) {
+            this.videoip = videoip;
+        }
+
+        public String getVideoport() {
+            return videoport;
+        }
+
+        public void setVideoport(String videoport) {
+            this.videoport = videoport;
+        }
+
+        public String getVideouser() {
+            return videouser;
+        }
+
+        public void setVideouser(String videouser) {
+            this.videouser = videouser;
+        }
+
+        public String getVideopassword() {
+            return videopassword;
+        }
+
+        public void setVideopassword(String videopassword) {
+            this.videopassword = videopassword;
         }
 
         @Override
