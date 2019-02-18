@@ -744,15 +744,15 @@ public class VideoFragment extends Fragment implements ILoginView,OnClickListene
                                 break;
                         }
                     }else{//更换服务器登录
-                        if(VIDEO_VIEW_COUNT==1) {
+//                        if(VIDEO_VIEW_COUNT==1) {
 
                             String videoport = menuTree.getVideoport();
                             String videoUser = menuTree.getVideouser();
                             String videoPassword = menuTree.getVideopassword();
                             presenter.login(getString(R.string.https_et) + videoip + ":443", videoUser, videoPassword, macAddress, passwordLevel);
-                        }else{
-                            UIUtil.showToast(getActivity(),"多屏状态下不支持更换服务器！");
-                        }
+//                        }else{
+//                            UIUtil.showToast(getActivity(),"多屏状态下不支持更换服务器！");
+//                        }
                     }
 
 
