@@ -12,9 +12,9 @@ public class LoginPresenter implements ILoginPresenter{
 
      private static ILoginView  iLoginView;
     @Override
-    public void login(String loginAddress, String username, String password, String macAddress, String passwordLevel) {
+    public void login(String loginAddress, String username, String password, String macAddress) {
         iLoginView.showLoginProgress();
-        LoginModel.login(loginAddress, username, password, macAddress,passwordLevel);
+        LoginModel.login(loginAddress, username, password, macAddress);
 
     }
     public LoginPresenter(ILoginView iLoginView) {
@@ -29,12 +29,6 @@ public class LoginPresenter implements ILoginPresenter{
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             switch (msg.what) {
-                case Constants.Login.SHOW_LOGIN_PROGRESS:
-                    iLoginView.showLoginProgress();
-                    break;
-                case Constants.Login.CANCEL_PROGRESS:
-                    iLoginView.cancelProgress();
-                    break;
                 case Constants.Login.LOGIN_SUCCESS:
                     // 登录成功
                     iLoginView.cancelProgress();
@@ -46,22 +40,6 @@ public class LoginPresenter implements ILoginPresenter{
                     iLoginView.onLoginFailed();
                     break;
 
-                case Constants.Logout.SHOW_LOGOUT_PROGRESS:
-                    iLoginView.showLogoutProgress();
-                    break;
-                case Constants.Logout.CANCEL_PROGRESS:
-                    iLoginView.cancelProgress();
-                    break;
-                case Constants.Logout.LOGOUT_SUCCESS:
-                    // 退出成功
-                    iLoginView.cancelProgress();
-                    iLoginView.onLogoutSuccess();
-                    break;
-                case Constants.Logout.LOGOUT_FAILED:
-                    // 登录失败
-                    iLoginView.cancelProgress();
-                    iLoginView.onLogoutFailed();
-                    break;
                 default:
                     break;
             }

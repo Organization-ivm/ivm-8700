@@ -88,15 +88,15 @@ public class TreeAdapter extends BaseAdapter {
         } else {
             holder.icon.setImageResource(R.drawable.manu_2);
         }
-        if (null != pointList.get(position).getSubResourceNodeBean()) {
-            if (pointList.get(position).getSubResourceNodeBean().isHasPermissionLive()) {
-                holder.text.setTextColor(mcontext.getResources().getColor(R.color.text_noselect_color));
-            } else {
-                holder.text.setTextColor(mcontext.getResources().getColor(R.color.main_text_57576B));
-            }
-
-
-        }
+//        if (null != pointList.get(position).getSubResourceNodeBean()) {
+//            if (pointList.get(position).getSubResourceNodeBean().isHasPermissionLive()) {
+//                holder.text.setTextColor(mcontext.getResources().getColor(R.color.text_noselect_color));
+//            } else {
+//                holder.text.setTextColor(mcontext.getResources().getColor(R.color.main_text_57576B));
+//            }
+//
+//
+//        }
 
 
         holder.icon.setPadding(25 * level, holder.icon.getPaddingTop(), 0, holder.icon.getPaddingBottom());

@@ -3,9 +3,7 @@ package com.ivms.ivms8700.view;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.ActivityManager;
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -24,7 +22,6 @@ import com.ivms.ivms8700.R;
 import com.ivms.ivms8700.bean.EventEntity;
 import com.ivms.ivms8700.control.Constants;
 import com.ivms.ivms8700.control.MyApplication;
-import com.ivms.ivms8700.service.CheckService;
 import com.ivms.ivms8700.service.MsgService;
 import com.ivms.ivms8700.utils.LocalDbUtil;
 import com.ivms.ivms8700.utils.NoDoubleClickListener;
@@ -33,7 +30,7 @@ import com.ivms.ivms8700.utils.okmanager.OkHttpClientManager;
 import com.ivms.ivms8700.view.fragment.ImageManagementFragment;
 import com.ivms.ivms8700.view.fragment.MessageFragment;
 import com.ivms.ivms8700.view.fragment.MyFragment;
-import com.ivms.ivms8700.view.fragment.VideoFragment;
+import com.ivms.ivms8700.view.fragment.NewVideoFragment;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -52,7 +49,7 @@ public class MainActivity extends FragmentActivity implements  OkHttpClientManag
     private LinearLayout ll_my;
 
     // 4个Fragment
-    private VideoFragment videoFragment;
+    private NewVideoFragment videoFragment;
     private ImageManagementFragment imFragment;
     private MessageFragment messageFragment;
     private MyFragment myFragment;
@@ -180,7 +177,7 @@ public class MainActivity extends FragmentActivity implements  OkHttpClientManag
         switch (index) {
             case 0:
                 if (videoFragment == null) {
-                    videoFragment = new VideoFragment();
+                    videoFragment = new NewVideoFragment();
                     transaction.add(R.id.frag_cont, videoFragment);
                 } else {
                     transaction.show(videoFragment);

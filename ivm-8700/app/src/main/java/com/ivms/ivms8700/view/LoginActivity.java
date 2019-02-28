@@ -128,10 +128,6 @@ public class LoginActivity extends Activity implements ILoginView, View.OnClickL
         UIUtil.showProgressDialog(this, R.string.login_process_tip);
     }
 
-    @Override
-    public void showLogoutProgress() {
-        UIUtil.showProgressDialog(this, R.string.logout_process_tip);
-    }
 
     @Override
     public void cancelProgress() {
@@ -150,16 +146,6 @@ public class LoginActivity extends Activity implements ILoginView, View.OnClickL
         Intent intent = new Intent(this, MainActivity.class);
 //        intent.putExtra(Constants.IntentKey.GET_ROOT_NODE, true);
         startActivity(intent);
-    }
-
-    @Override
-    public void onLogoutSuccess() {
-        UIUtil.showToast(this, R.string.logout_success);
-    }
-
-    @Override
-    public void onLogoutFailed() {
-        UIUtil.showToast(this, R.string.logout_failed);
     }
 
     /**

@@ -1,8 +1,5 @@
 package com.ivms.ivms8700.multilevellist;
 
-import com.hikvision.sdk.net.bean.RootCtrlCenter;
-import com.hikvision.sdk.net.bean.SubResourceNodeBean;
-
 /**
  * Created by xulc on 2018/7/27.
  */
@@ -15,27 +12,9 @@ public class TreePoint {
     private boolean isExpand = false;  //是否展开了
     private int layer = 1;//层级
     private boolean hasSubDatas = false;
-    private SubResourceNodeBean subResourceNodeBean;
 
-    public RootCtrlCenter getRootCtrlCenter() {
-        return rootCtrlCenter;
-    }
 
-    public void setRootCtrlCenter(RootCtrlCenter rootCtrlCenter) {
-        this.rootCtrlCenter = rootCtrlCenter;
-    }
-
-    private RootCtrlCenter rootCtrlCenter;
-
-    public SubResourceNodeBean getSubResourceNodeBean() {
-        return subResourceNodeBean;
-    }
-
-    public void setSubResourceNodeBean(SubResourceNodeBean subResourceNodeBean) {
-        this.subResourceNodeBean = subResourceNodeBean;
-    }
-
-    public TreePoint(int ID, String NNAME, int PARENTID, int DISPLAY_ORDER, boolean isExpand, int layer, boolean hasSubDatas, SubResourceNodeBean subResourceNodeBean, RootCtrlCenter rootCtrlCenter) {
+    public TreePoint(int ID, String NNAME, int PARENTID, int DISPLAY_ORDER, boolean isExpand, int layer, boolean hasSubDatas) {
         this.ID = ID;
         this.NNAME = NNAME;
         this.PARENTID = PARENTID;
@@ -43,8 +22,7 @@ public class TreePoint {
         this.isExpand = isExpand;
         this.layer = layer;
         this.hasSubDatas = hasSubDatas;
-        this.subResourceNodeBean = subResourceNodeBean;
-        this.rootCtrlCenter = rootCtrlCenter;
+
     }
 
 

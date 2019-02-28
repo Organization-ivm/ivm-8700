@@ -1,46 +1,15 @@
 package com.ivms.ivms8700.bean;
 
-import com.hikvision.sdk.net.bean.Camera;
-import com.hikvision.sdk.net.bean.CameraInfo;
-import com.hikvision.sdk.net.bean.DeviceInfo;
-import com.ivms.ivms8700.live.LiveControl;
-import com.ivms.ivms8700.playback.PlayBackControl;
+
+import com.hikvision.sdk.net.bean.SubResourceNodeBean;
 
 public class VideoEntity {
 
     int rowCout=1;
-    private LiveControl mLiveControl = null;
-    private PlayBackControl mPlayBackControl= null;
     private boolean isSelect= false;
-
-    private  Camera camera=null;
-
-    /**
-     * 监控点详细信息
-     */
-    private CameraInfo cameraInfo =null;
-
-    /**
-     * 监控点关联的监控设备信息
-     */
-    private DeviceInfo deviceInfo = null;
+    private SubResourceNodeBean camera; //资源对象
 
 
-    public CameraInfo getCameraInfo() {
-        return cameraInfo;
-    }
-
-    public void setCameraInfo(CameraInfo cameraInfo) {
-        this.cameraInfo = cameraInfo;
-    }
-
-    public DeviceInfo getDeviceInfo() {
-        return deviceInfo;
-    }
-
-    public void setDeviceInfo(DeviceInfo deviceInfo) {
-        this.deviceInfo = deviceInfo;
-    }
 
     public int getRowCout() {
         return rowCout;
@@ -48,22 +17,6 @@ public class VideoEntity {
 
     public void setRowCout(int rowCout) {
         this.rowCout = rowCout;
-    }
-
-    public LiveControl getmLiveControl() {
-        return mLiveControl;
-    }
-
-    public void setmLiveControl(LiveControl mLiveControl) {
-        this.mLiveControl = mLiveControl;
-    }
-
-    public PlayBackControl getmPlayBackControl() {
-        return mPlayBackControl;
-    }
-
-    public void setmPlayBackControl(PlayBackControl mPlayBackControl) {
-        this.mPlayBackControl = mPlayBackControl;
     }
 
     public boolean isSelect() {
@@ -74,11 +27,10 @@ public class VideoEntity {
         isSelect = select;
     }
 
-    public Camera getCamera() {
+    public SubResourceNodeBean getCamera() {
         return camera;
     }
-
-    public void setCamera(Camera camera) {
+    public void setCamera(SubResourceNodeBean camera) {
         this.camera = camera;
     }
 }

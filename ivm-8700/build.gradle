@@ -23,6 +23,9 @@ allprojects {
         maven{ url 'http://maven.aliyun.com/nexus/content/groups/public/'}
         google()
         jcenter()
+        flatDir {
+            dirs 'libs'
+        }
     }
 //    repositories {
 //        google()

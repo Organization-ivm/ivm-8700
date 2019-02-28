@@ -2,9 +2,10 @@ package com.ivms.ivms8700.view.customui;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.SurfaceView;
+
+import com.hikvision.sdk.net.bean.CustomRect;
 
 /**
  * <p>
@@ -16,7 +17,7 @@ import android.view.SurfaceView;
  * @modify by user: {修改人} 2016年4月5日
  * @modify by reason:{方法名}:{原因}
  */
-public class    CustomSurfaceView extends SurfaceView {
+public class  CustomSurfaceView extends SurfaceView {
 
     private static final int INVALID_POINTER = -1;
     private static final float UNIT_SCALE_RATIO = 0.003f;
@@ -40,8 +41,8 @@ public class    CustomSurfaceView extends SurfaceView {
     private float mLastScale = 1;
     private TouchMode mClickMode = TouchMode.NONE;
     private int mActionPointerId = INVALID_POINTER;
-    private final CustomRect mOriginalRect = new CustomRect();
-    private final CustomRect mVirtualRect = new CustomRect();
+    private final com.hikvision.sdk.net.bean.CustomRect mOriginalRect = new com.hikvision.sdk.net.bean.CustomRect();
+    private final com.hikvision.sdk.net.bean.CustomRect mVirtualRect = new com.hikvision.sdk.net.bean.CustomRect();
     private OnZoomListener mZoomListener = null;
     /**
      * 判断是否在等待双击 false - 表示单击，true - 表示双击
@@ -56,9 +57,9 @@ public class    CustomSurfaceView extends SurfaceView {
      */
     private float mLastClickY;
 
-    /** 单拍手势监听 */
-    private GestureDetector mGestureDector;
-
+    /**
+     * 单拍手势监听
+     */
     public CustomSurfaceView(Context context) {
         super(context);
     }
@@ -68,15 +69,12 @@ public class    CustomSurfaceView extends SurfaceView {
     }
 
     public CustomSurfaceView(Context context, AttributeSet attrs, int defStyle) {
-        super(context, attrs);
+        super(context, attrs, defStyle);
     }
 
-    /**
-     * @function setOnZoomListener
-     * @Description 设置电子放大监听，设置“null”时表示取消电子放大监听，设置有效的监听时，当前CustomSurfaceview会截获父控件的touch事件。
-     * @author wuchunyuan
-     * @date 2014-10-21 上午11:23:09
-     * @param listener
+    /***
+     * 设置电子放大监听，设置“null”时表示取消电子放大监听，设置有效的监听时，当前CustomSurfaceview会截获父控件的touch事件。
+     * @param listener 监听者
      */
     public void setOnZoomListener(OnZoomListener listener) {
         mZoomListener = listener;
@@ -92,10 +90,6 @@ public class    CustomSurfaceView extends SurfaceView {
             mRatioY = 1;
             mLastScale = 1;
         }
-    }
-
-    public CustomRect getOriginalRect() {
-        return mOriginalRect;
     }
 
     @Override
@@ -128,9 +122,6 @@ public class    CustomSurfaceView extends SurfaceView {
         final int action = ev.getAction();
         boolean isEventConsume = false;
 
-        if (mGestureDector != null) {
-            mGestureDector.onTouchEvent(ev);
-        }
         switch (action & MotionEvent.ACTION_MASK) {
             case MotionEvent.ACTION_DOWN:
                 mLastClickX = ev.getX(0);
@@ -204,8 +195,7 @@ public class    CustomSurfaceView extends SurfaceView {
 
                     mLastMotionX = x;
                     mLastMotionY = y;
-                } else
-                if (TouchMode.ZOOM_SCALE == mClickMode) {
+                } else if (TouchMode.ZOOM_SCALE == mClickMode) {
                     if (ev.getPointerCount() != 2) {
                         return;
                     }
@@ -251,7 +241,7 @@ public class    CustomSurfaceView extends SurfaceView {
         float x = event.getX(0) - event.getX(1);
         float y = event.getY(0) - event.getY(1);
 
-        return (float)Math.sqrt(x * x + y * y);
+        return (float) Math.sqrt(x * x + y * y);
     }
 
     private void scale(float newScale) {
@@ -277,8 +267,8 @@ public class    CustomSurfaceView extends SurfaceView {
         float x = event.getX(0) + event.getX(1);
         float y = event.getY(0) + event.getY(1);
 
-        mRatioX = (float)(Math.abs(x / 2 - mVirtualRect.getLeft()) / mVirtualRect.getWidth());
-        mRatioY = (float)(Math.abs(y / 2 - mVirtualRect.getTop()) / mVirtualRect.getHeight());
+        mRatioX = Math.abs(x / 2 - mVirtualRect.getLeft()) / mVirtualRect.getWidth();
+        mRatioY = Math.abs(y / 2 - mVirtualRect.getTop()) / mVirtualRect.getHeight();
 
     }
 
@@ -286,8 +276,8 @@ public class    CustomSurfaceView extends SurfaceView {
         float x = event.getX(0);
         float y = event.getY(0);
 
-        mRatioX = (float)(Math.abs(x - mVirtualRect.getLeft()) / mVirtualRect.getWidth());
-        mRatioY = (float)(Math.abs(y - mVirtualRect.getTop()) / mVirtualRect.getHeight());
+        mRatioX = Math.abs(x - mVirtualRect.getLeft()) / mVirtualRect.getWidth();
+        mRatioY = Math.abs(y - mVirtualRect.getTop()) / mVirtualRect.getHeight();
     }
 
     private void move(float lastX, float lastY, float curX, float curY) {
@@ -329,7 +319,7 @@ public class    CustomSurfaceView extends SurfaceView {
 
     }
 
-    private void judge(CustomRect oRect, CustomRect curRect) {
+    private void judge(com.hikvision.sdk.net.bean.CustomRect oRect, com.hikvision.sdk.net.bean.CustomRect curRect) {
 
         float oL = oRect.getLeft();
         float oT = oRect.getTop();
@@ -338,8 +328,8 @@ public class    CustomSurfaceView extends SurfaceView {
 
         float newL = curRect.getLeft();
         float newT = curRect.getTop();
-        float newR = curRect.getRight();
-        float newB = curRect.getBottom();
+        float newR;
+        float newB;
 
         float newW = curRect.getWidth();
         float newH = curRect.getHeight();
@@ -367,15 +357,14 @@ public class    CustomSurfaceView extends SurfaceView {
     }
 
     public interface OnZoomListener {
-
-        public void onZoomChange(CustomRect oRect, CustomRect curRect);
+        void onZoomChange(com.hikvision.sdk.net.bean.CustomRect oRect, CustomRect curRect);
     }
 
     private enum TouchMode {
         NONE, ZOOM_DRAG, ZOOM_SCALE
     }
 
-    class ProcessSingleClick implements Runnable {
+    private class ProcessSingleClick implements Runnable {
 
         public void run() {
             if (!mWaitDouble) {
@@ -387,28 +376,14 @@ public class    CustomSurfaceView extends SurfaceView {
         }
     }
 
-    /**
-     * @function isClick
-     * @Description 判断是否是点击事件
-     * @param deltaX
-     * @param deltaY
-     * @return
+    /***
+     * 判断是否是点击事件
+     * @param deltaX 点击位置X坐标
+     * @param deltaY 点击位置Y坐标
+     * @return 是否为点击
      */
     private boolean isClick(float deltaX, float deltaY) {
-        if ((Math.abs(deltaX) > TOUCH_SLOP) || (Math.abs(deltaY) > TOUCH_SLOP)) {
-            return false;
-        } else {
-            return true;
-        }
+        return !((Math.abs(deltaX) > TOUCH_SLOP) || (Math.abs(deltaY) > TOUCH_SLOP));
     }
 
-    /**
-     * @function setGestureDetector
-     * @Description 设置手势监听
-     * @param detector
-     */
-    public void setGestureDetector(GestureDetector detector) {
-        mGestureDector = detector;
-    }
 }
-

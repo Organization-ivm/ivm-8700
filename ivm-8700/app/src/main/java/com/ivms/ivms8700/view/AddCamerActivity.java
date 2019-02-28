@@ -20,11 +20,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hikvision.sdk.VMSNetSDK;
-import com.hikvision.sdk.net.bean.Camera;
 import com.hikvision.sdk.net.bean.SubResourceNodeBean;
 import com.ivms.ivms8700.R;
 import com.ivms.ivms8700.bean.MenuTree;
-import com.ivms.ivms8700.mysdk.MyVMSNetSDK;
 import com.ivms.ivms8700.utils.GetData;
 
 import java.util.ArrayList;
@@ -75,17 +73,18 @@ public class AddCamerActivity extends Activity implements View.OnClickListener {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (!menuTreeShowList.get(position).isHasChild()) {// 没有子节点
-//                    Toast.makeText(AddCamerActivity.this, menuTreeShowList.get(position).getText(), Toast.LENGTH_SHORT).show();
-                    // 构造camera对象
-                    Camera camera = new Camera();
-                    camera.setID(menuTreeShowList.get(position).getId().toString());
-                    camera.setName(menuTreeShowList.get(position).getText().toString());
-                    MyVMSNetSDK.getInstance().getCameraInfoById(menuTreeShowList.get(position).getId().toString());
+                    Toast.makeText(AddCamerActivity.this, menuTreeShowList.get(position).getText(), Toast.LENGTH_SHORT).show();
+                    // 监控点资源
+                    SubResourceNodeBean mCamera = new SubResourceNodeBean();
+
+                    mCamera.setPid(menuTreeShowList.get(position).getId().toString());
+                    mCamera.setName(menuTreeShowList.get(position).getText().toString());
+                    mCamera.setSysCode(menuTreeShowList.get(position).getSyscode().toString());
                     // 设置返回数据
                     Bundle bundle = new Bundle();
                     Intent intent = new Intent();
                     // 把Persion数据放入到bundle中
-                    bundle.putSerializable("camera",camera);
+                    bundle.putSerializable("camera",mCamera);
                     bundle.putSerializable("item",(MenuTree)menuTreeShowList.get(position));
                     intent.putExtras(bundle);
                     // 返回intent

@@ -1,16 +1,12 @@
 package com.ivms.ivms8700.utils;
 
 import android.Manifest;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.net.wifi.WifiManager;
 import android.support.v4.content.ContextCompat;
 import android.telephony.TelephonyManager;
 import android.widget.Toast;
 
-import com.hikvision.sdk.VMSNetSDK;
-import com.ivms.ivms8700.R;
 import com.ivms.ivms8700.view.customui.MyProgressDialog;
 
 import java.text.SimpleDateFormat;
@@ -49,11 +45,6 @@ public final class UIUtil {
 		}
 	}
 
-	public static String getErrorDesc() {
-		int errorCode = VMSNetSDK.getInstance().getLastErrorCode();
-		String errorDesc = VMSNetSDK.getInstance().getLastErrorDesc();
-		return "errorCode:" + errorCode + ",errorDesc:" + errorDesc;
-	}
 	public static String timeStamp2Date(String seconds) {
 		if (seconds == null || seconds.isEmpty() || seconds.equals("null")) {
 			return "";

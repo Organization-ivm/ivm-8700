@@ -54,12 +54,13 @@
         </provider>
 
         <activity
-            android:name=".view.AddMonitoryActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/dialogstyle" />
-        <activity
             android:name=".view.FaceClockActivity"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".view.AddCamerActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/dialogstyle" />
+
         <activity
             android:name=".view.FaceDetailActivity"
             android:screenOrientation="portrait" />
@@ -79,9 +80,6 @@
             android:name=".view.ViewPagerActivity"
             android:theme="@style/PhotoTheme"
             android:screenOrientation="portrait" />
-        <activity
-            android:name=".view.AddCamerActivity"
-            android:theme="@style/dialogstyle" />
 
         <service android:name=".service.CheckService" />
         <service android:name=".service.MsgService" />
