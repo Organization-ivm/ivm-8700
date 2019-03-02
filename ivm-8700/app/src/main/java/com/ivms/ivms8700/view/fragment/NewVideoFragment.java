@@ -38,6 +38,7 @@ import com.hikvision.sdk.net.bean.RecordSegment;
 import com.hikvision.sdk.net.bean.SubResourceNodeBean;
 import com.hikvision.sdk.net.business.OnVMSNetSDKBusiness;
 import com.hikvision.sdk.utils.CNetSDKLog;
+import com.hikvision.sdk.utils.FileUtils;
 import com.hikvision.sdk.utils.SDKUtil;
 import com.ivms.ivms8700.R;
 import com.ivms.ivms8700.bean.MenuTree;
@@ -84,8 +85,6 @@ public class NewVideoFragment extends Fragment implements View.OnClickListener, 
     private ImageView add_video;
     List<VideoEntity> videList = null;
     private ImageView playBackRecord_img;
-    private LinearLayout fangda_lay;
-    private ImageView fangda_img;
     private LinearLayout voice_intercom;
     private GridLayoutManager manager;
     /****    预览相关 start  ***********************************************************/
@@ -397,7 +396,6 @@ public class NewVideoFragment extends Fragment implements View.OnClickListener, 
                     case CAMERA_INFO_FAILURE:
                         UIUtil.cancelProgressDialog();
                         UIUtil.showToast(activity, R.string.loading_camera_info_failure);
-                        activity.finish();
                         break;
                     case QUERY_SUCCESS:
                         //录像片段查询成功
@@ -434,7 +432,9 @@ public class NewVideoFragment extends Fragment implements View.OnClickListener, 
         if(mHandler!=null){
             mHandler.removeCallbacksAndMessages(null);
         }
-        mMessageHandler = new MyPlayBackHandler(this);
+        if(mMessageHandler==null) {
+            mMessageHandler = new MyPlayBackHandler(this);
+        }
         Calendar calendar = Calendar.getInstance();
         int year = calendar.get(Calendar.YEAR);
         int month = calendar.get(Calendar.MONTH);
@@ -540,7 +540,7 @@ public class NewVideoFragment extends Fragment implements View.OnClickListener, 
 
         double x = ((osd - begin) * PROGRESS_MAX_VALUE) / (double) (end - begin);
         int progress = (int) (x);
-        mProgressSeekBar.setProgress(progress);
+//        mProgressSeekBar.setProgress(progress);
     }
     /**
      * 启动定时器
@@ -590,8 +590,6 @@ public class NewVideoFragment extends Fragment implements View.OnClickListener, 
             playBackRecord = (LinearLayout) view.findViewById(R.id.playBackRecord); //本地录像
             playBackRecord_img = (ImageView) view.findViewById(R.id.playBackRecord_img);
             playBackCapture = (LinearLayout) view.findViewById(R.id.playBackCapture); //本地截图
-            fangda_lay = (LinearLayout) view.findViewById(R.id.fangda_lay);
-            fangda_img = (ImageView) view.findViewById(R.id.fangda_img);
 
             one_view_img = (ImageView) view.findViewById(R.id.one_view_img);
             four_view_img = (ImageView) view.findViewById(R.id.four_view_img);
@@ -606,7 +604,6 @@ public class NewVideoFragment extends Fragment implements View.OnClickListener, 
             playBackRecord.setOnClickListener(this);
             playBackCapture.setOnClickListener(this);
             contrl_lay.setOnClickListener(this);
-            fangda_lay.setOnClickListener(this);
             DisplayMetrics dm = getActivity().getResources().getDisplayMetrics();
             LinearLayout.LayoutParams linearParams = new LinearLayout.LayoutParams(
                     dm.widthPixels,
@@ -616,6 +613,65 @@ public class NewVideoFragment extends Fragment implements View.OnClickListener, 
             video_recyclerview = (RecyclerView) view.findViewById(R.id.video_recyclerview);
             video_recyclerview.setLayoutParams(linearParams);
             setGrilView(VIDEO_VIEW_COUNT, 1);
+            mProgressSeekBar = (SeekBar) view.findViewById(R.id.progress_seekbar);
+            mProgressSeekBar.setVisibility(View.GONE);
+            mProgressSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                /**
+                 * 拖动条停止拖动的时候调用
+                 */
+                @Override
+                public void onStopTrackingTouch(SeekBar arg0) {
+                    VMSNetSDK.getInstance().stopPlayBackOpt(PLAY_WINDOW_ONE);
+                    stopUpdateTimer();
+                    int progress = arg0.getProgress();
+                    long begin = mFirstStartTime.getTimeInMillis();
+                    long end = mEndTime.getTimeInMillis();
+                    long avg = (end - begin) / PROGRESS_MAX_VALUE;
+                    long trackTime = begin + (progress * avg);
+                    Calendar track = Calendar.getInstance();
+                    track.setTimeInMillis(trackTime);
+                    mStartTime = track;
+                    VMSNetSDK.getInstance().startPlayBackOpt(PLAY_WINDOW_ONE, mSurfaceView, mRecordInfo.getSegmentListPlayUrl(), mStartTime, mEndTime, new OnVMSNetSDKBusiness() {
+                        @Override
+                        public void onFailure() {
+                            mMessageHandler.sendEmptyMessage(START_FAILURE);
+                        }
+
+                        @Override
+                        public void onSuccess(Object obj) {
+                            mMessageHandler.sendEmptyMessage(START_SUCCESS);
+                        }
+
+                        @Override
+                        public void onStatusCallback(int status) {
+                            //录像片段回放结束
+                            if (status == RtspClient.RTSPCLIENT_MSG_PLAYBACK_FINISH) {
+                                mMessageHandler.post(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        UIUtil.showToast(getActivity(),"回放结束");
+                                    }
+                                });
+                            }
+                        }
+                    });
+                }
+
+                /**
+                 * 拖动条开始拖动的时候调用
+                 */
+                @Override
+                public void onStartTrackingTouch(SeekBar arg0) {
+                }
+
+                /**
+                 * 拖动条进度改变的时候调用
+                 */
+                @Override
+                public void onProgressChanged(SeekBar arg0, int arg1, boolean arg2) {
+
+                }
+            });
         }
         return view;
     }
@@ -625,23 +681,52 @@ public class NewVideoFragment extends Fragment implements View.OnClickListener, 
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.live_lay:
+                if(mIsRecord){
+                    UIUtil.showToast(getActivity(),"处于录像状态");
+                    return;
+                }
+                myInit();
+                mProgressSeekBar.setVisibility(View.GONE);
                 palyType = 1;
                 live_view.setVisibility(View.VISIBLE);
                 huifang_view.setVisibility(View.INVISIBLE);
                 break;
             case R.id.huifang_lay:
+                if(mIsRecord){
+                    UIUtil.showToast(getActivity(),"处于录像状态");
+                    return;
+                }
+                myInit();
+                mProgressSeekBar.setVisibility(View.VISIBLE);
                 palyType = 2;
                 live_view.setVisibility(View.INVISIBLE);
                 huifang_view.setVisibility(View.VISIBLE);
                 break;
             case R.id.playBackRecord://本地录像
-
-                break;
-            case R.id.fangda_lay://电子放大
-
+                if(palyType==1){
+                    playBackRecordLive();
+                }else{
+                    playBackRecordBack();
+                }
                 break;
             case R.id.playBackCapture://本地截图
-
+                //抓拍按钮点击操作
+                Log.d("Alan",FileUtils.getPictureDirPath().getAbsolutePath()+"=-="+"Picture" + System.currentTimeMillis() + ".jpg");
+                int opt = VMSNetSDK.getInstance().captureLiveOpt(PLAY_WINDOW_ONE, FileUtils.getPictureDirPath().getAbsolutePath(), "Picture" + System.currentTimeMillis() + ".jpg");
+                switch (opt) {
+                    case SDKConstant.LiveSDKConstant.SD_CARD_UN_USABLE:
+                        UIUtil.showToast(getActivity(), R.string.sd_card_fail);
+                        break;
+                    case SDKConstant.LiveSDKConstant.SD_CARD_SIZE_NOT_ENOUGH:
+                        UIUtil.showToast(getActivity(), R.string.sd_card_not_enough);
+                        break;
+                    case SDKConstant.LiveSDKConstant.CAPTURE_FAILED:
+                        UIUtil.showToast(getActivity(), R.string.capture_fail);
+                        break;
+                    case SDKConstant.LiveSDKConstant.CAPTURE_SUCCESS:
+                        UIUtil.showToast(getActivity(), R.string.capture_success);
+                        break;
+                }
                 break;
             case R.id.contrl_lay://云台控制
                 if (palyType == 1) {
@@ -652,7 +737,10 @@ public class NewVideoFragment extends Fragment implements View.OnClickListener, 
                 break;
             case R.id.one_view_img://一屏
                 if (VIDEO_VIEW_COUNT != 1) {
-                    fangda_img.setBackgroundResource(R.drawable.fangda);
+                    if(mIsRecord){
+                        UIUtil.showToast(getActivity(),"处于录像状态");
+                        return;
+                    }
                     VIDEO_VIEW_COUNT = 1;
                     for (int i = 0; i < videList.size(); i++) {
                         videList.get(i).setRowCout(1);
@@ -668,7 +756,10 @@ public class NewVideoFragment extends Fragment implements View.OnClickListener, 
                 break;
             case R.id.four_view_img://四屏
                 if (VIDEO_VIEW_COUNT != 4) {
-                    fangda_img.setBackgroundResource(R.drawable.fangda);
+                    if(mIsRecord){
+                        UIUtil.showToast(getActivity(),"处于录像状态");
+                        return;
+                    }
                     VIDEO_VIEW_COUNT = 4;
                     for (int i = 0; i < videList.size(); i++) {
                         videList.get(i).setRowCout(2);
@@ -683,7 +774,10 @@ public class NewVideoFragment extends Fragment implements View.OnClickListener, 
                 break;
             case R.id.nine_view_img://九屏
                 if (VIDEO_VIEW_COUNT != 9) {
-                    fangda_img.setBackgroundResource(R.drawable.fangda);
+                    if(mIsRecord){
+                        UIUtil.showToast(getActivity(),"处于录像状态");
+                        return;
+                    }
                     VIDEO_VIEW_COUNT = 9;
                     for (int i = 0; i < videList.size(); i++) {
                         videList.get(i).setRowCout(3);
@@ -700,6 +794,60 @@ public class NewVideoFragment extends Fragment implements View.OnClickListener, 
             case R.id.voice_intercom:
                 UIUtil.showToast(getActivity(), "正在建设中..");
                 break;
+        }
+    }
+    //预览录像
+    private void playBackRecordLive() {
+        if (!mIsRecord) {
+            int recordOpt = VMSNetSDK.getInstance().startLiveRecordOpt(PLAY_WINDOW_ONE, FileUtils.getVideoDirPath().getAbsolutePath(), "Video" + System.currentTimeMillis() + ".mp4");
+            switch (recordOpt) {
+                case SDKConstant.LiveSDKConstant.SD_CARD_UN_USABLE:
+                    UIUtil.showToast(getActivity(), R.string.sd_card_fail);
+                    break;
+                case SDKConstant.LiveSDKConstant.SD_CARD_SIZE_NOT_ENOUGH:
+                    UIUtil.showToast(getActivity(), R.string.sd_card_not_enough);
+                    break;
+                case SDKConstant.LiveSDKConstant.RECORD_FAILED:
+                    mIsRecord = false;
+                    UIUtil.showToast(getActivity(), R.string.start_record_fail);
+                    break;
+                case SDKConstant.LiveSDKConstant.RECORD_SUCCESS:
+                    mIsRecord = true;
+                    UIUtil.showToast(getActivity(), R.string.start_record_success);
+                    break;
+            }
+        } else {
+            VMSNetSDK.getInstance().stopLiveRecordOpt(PLAY_WINDOW_ONE);
+            mIsRecord = false;
+            UIUtil.showToast(getActivity(), R.string.stop_record_success);
+        }
+    }
+
+    //回放录像
+    private void playBackRecordBack() {
+        //录像按钮点击操作
+        if (!mIsRecord) {
+            int recordOpt = VMSNetSDK.getInstance().startPlayBackRecordOpt(PLAY_WINDOW_ONE, FileUtils.getVideoDirPath().getAbsolutePath(), "Video" + System.currentTimeMillis() + ".mp4");
+            switch (recordOpt) {
+                case SDKConstant.LiveSDKConstant.SD_CARD_UN_USABLE:
+                    UIUtil.showToast(getActivity(), R.string.sd_card_fail);
+                    break;
+                case SDKConstant.LiveSDKConstant.SD_CARD_SIZE_NOT_ENOUGH:
+                    UIUtil.showToast(getActivity(), R.string.sd_card_not_enough);
+                    break;
+                case SDKConstant.PlayBackSDKConstant.RECORD_FAILED:
+                    mIsRecord = false;
+                    UIUtil.showToast(getActivity(), R.string.start_record_fail);
+                    break;
+                case SDKConstant.PlayBackSDKConstant.RECORD_SUCCESS:
+                    mIsRecord = true;
+                    UIUtil.showToast(getActivity(), R.string.start_record_success);
+                    break;
+            }
+        } else {
+            VMSNetSDK.getInstance().stopPlayBackRecordOpt(PLAY_WINDOW_ONE);
+            mIsRecord = false;
+            UIUtil.showToast(getActivity(), R.string.stop_record_success);
         }
     }
 
@@ -776,11 +924,9 @@ public class NewVideoFragment extends Fragment implements View.OnClickListener, 
         switch (requestCode) {
             case RECULET_CODE://监控列表回调
                 if (resultCode == RESULT_OK) {
-
                     if (null != add_video) {
                         add_video.setVisibility(GONE);
                     }
-
                     Bundle extras = data.getExtras();
                     SubResourceNodeBean camera = (SubResourceNodeBean) extras.get("camera");
                     mCamera = camera;
@@ -886,6 +1032,15 @@ public class NewVideoFragment extends Fragment implements View.OnClickListener, 
             if (mHandler != null) {
                 mHandler.removeCallbacksAndMessages(null);
             }
+            if(mIsRecord){//处于录像状态
+
+                if(palyType==1){
+                    VMSNetSDK.getInstance().stopLiveRecordOpt(PLAY_WINDOW_ONE);
+                }else{
+                    VMSNetSDK.getInstance().stopPlayBackRecordOpt(PLAY_WINDOW_ONE);
+                }
+                mIsRecord = false;
+            }
             palyType = 1;
             live_view.setVisibility(View.VISIBLE);
             huifang_view.setVisibility(View.INVISIBLE);
@@ -897,13 +1052,7 @@ public class NewVideoFragment extends Fragment implements View.OnClickListener, 
 
     private void myInit() {
         //停止预览
-        for (int i = 0; i < videList.size(); i++) {
-            boolean stopLiveResult = VMSNetSDK.getInstance().stopLiveOpt(i + 1);
-            if (stopLiveResult) {
-                Log.d("Alan", "停止预览成功" + (i + 1));
-            }
-        }
-        fangda_img.setBackgroundResource(R.drawable.fangda);
+        stopVideo();
         VIDEO_VIEW_COUNT = 1;
         PLAY_WINDOW_ONE = 1;
         setGrilView(VIDEO_VIEW_COUNT, 1);
@@ -930,9 +1079,8 @@ public class NewVideoFragment extends Fragment implements View.OnClickListener, 
                             if (palyType == 1) {//预览
                                 gotoLive(mCamera);
                             } else if (palyType == 2) {//回放
-                              initPlayBackData();
+                               initPlayBackData();
                             }
-
                             if (null != add_video) {
                                 add_video.setVisibility(GONE);
                             }
@@ -977,12 +1125,21 @@ public class NewVideoFragment extends Fragment implements View.OnClickListener, 
 
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
-        //停止预览
+        stopVideo();
+    }
+    //停止预览和回放
+    private void stopVideo() {
         for (int i = 0; i < videList.size(); i++) {
             boolean stopLiveResult = VMSNetSDK.getInstance().stopLiveOpt(i + 1);
             if (stopLiveResult) {
-                Log.d("Alan", "surfaceDestroyed() 停止预览成功" + (i + 1));
+                Log.d("Alan", "停止预览成功" + (i + 1));
+            }
+            boolean stopPlayBackOpt = VMSNetSDK.getInstance().stopPlayBackOpt(i + 1);
+            if (stopPlayBackOpt) {
+                stopUpdateTimer();
+                Log.d("Alan", "停止回放成功" + (i + 1));
             }
         }
     }
+
 }

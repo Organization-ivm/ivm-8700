@@ -104,6 +104,8 @@
                     android:progressDrawable="@drawable/remote_seekbar_style"
                     android:thumb="@drawable/remote_seekbar_thumb" />
 
+
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp48"
@@ -155,19 +157,6 @@
                 android:background="#ffffff"
                 android:orientation="horizontal">
 
-                <LinearLayout
-                    android:id="@+id/fangda_lay"
-                    android:layout_width="@dimen/dp0"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center">
-
-                    <ImageView
-                        android:id="@+id/fangda_img"
-                        android:layout_width="@dimen/dp22"
-                        android:layout_height="@dimen/dp20"
-                        android:background="@drawable/fangda" />
-                </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/contrl_lay"

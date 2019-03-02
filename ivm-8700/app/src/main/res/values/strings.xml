@@ -133,6 +133,13 @@
     <string name="table">表  格</string>
     <string name="line">折线图</string>
     <string name="viewpager_indicator">第几</string>
+    <string name="capture_success">抓拍成功</string>
+    <string name="capture_fail">抓拍失败</string>
+    <string name="sd_card_fail">SD卡不可用</string>
+    <string name="sd_card_not_enough">SD卡空间不足</string>
+    <string name="start_record_success">启动录像成功</string>
+    <string name="start_record_fail">启动录像失败</string>
+    <string name="stop_record_success">停止录像成功</string>
 </resources>
 
 
