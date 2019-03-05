@@ -27,6 +27,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 
 import com.hik.mcrsdk.rtsp.RtspClient;
@@ -87,6 +88,12 @@ public class NewVideoFragment extends Fragment implements View.OnClickListener, 
     private ImageView playBackRecord_img;
     private LinearLayout voice_intercom;
     private GridLayoutManager manager;
+    private LinearLayout operation_lay;
+    private RelativeLayout contrl_all_lay;
+    private LinearLayout view_count_lay;
+
+    private ImageView  close_btn;
+
     /****    预览相关 start  ***********************************************************/
     /**
      * 获取监控点信息成功
@@ -116,50 +123,7 @@ public class NewVideoFragment extends Fragment implements View.OnClickListener, 
      * 预览控制菜单
      */
     private LinearLayout mPreviewLayout;
-    /**
-     * 录像按钮
-     */
-    private Button mRecordBtn;
-    /**
-     * 音频按钮
-     */
-    private Button mAudioBtn;
-    /**
-     * 语音对讲按钮
-     */
-    private Button mTalkBtn;
-    /**
-     * 云台控制
-     */
-    private Button mPtzBtn;
-    /**
-     * 云台控制菜单
-     */
-    private LinearLayout mPtzLayout;
-    /**
-     * 云台控制命令组one
-     */
-    private RadioGroup mPtzRadioGroup;
-    /**
-     * 云台控制命令组two
-     */
-    private RadioGroup mPtzTwoRadioGroup;
-    /**
-     * 云台控制命令组three
-     */
-    private RadioGroup mPtzThreeRadioGroup;
-    /**
-     * 云台控制命令组four
-     */
-    private RadioGroup mPtzFourRadioGroup;
-    /**
-     * 预置点输入框
-     */
-    private EditText mPresetEdit;
-    /**
-     * 电子放大控件
-     */
-    private CheckBox mZoom;
+
 
     /**
      * 是否正在云台控制
@@ -293,27 +257,12 @@ public class NewVideoFragment extends Fragment implements View.OnClickListener, 
      * 存储介质选择控件
      */
     private RadioGroup mStorageTypesRG;
-    /**
-     * 暂停按钮
-     */
-    private Button mPauseButton;
-    /**
-     * 录像按钮
-     */
-    private Button mRecordButton;
-    /**
-     * 音频按钮
-     */
-    private Button mAudioButton;
+
     /**
      * 播放进度条控件
      */
     private SeekBar mProgressSeekBar = null;
 
-    /**
-     * 是否暂停标志
-     */
-    private boolean mIsPause;
     /**
      * 监控点详情
      */
@@ -540,7 +489,7 @@ public class NewVideoFragment extends Fragment implements View.OnClickListener, 
 
         double x = ((osd - begin) * PROGRESS_MAX_VALUE) / (double) (end - begin);
         int progress = (int) (x);
-//        mProgressSeekBar.setProgress(progress);
+        mProgressSeekBar.setProgress(progress);
     }
     /**
      * 启动定时器
@@ -590,11 +539,17 @@ public class NewVideoFragment extends Fragment implements View.OnClickListener, 
             playBackRecord = (LinearLayout) view.findViewById(R.id.playBackRecord); //本地录像
             playBackRecord_img = (ImageView) view.findViewById(R.id.playBackRecord_img);
             playBackCapture = (LinearLayout) view.findViewById(R.id.playBackCapture); //本地截图
+            operation_lay= (LinearLayout) view.findViewById(R.id.operation_lay); //功能界面
+            contrl_all_lay= (RelativeLayout) view.findViewById(R.id.contrl_all_lay); //云台控制界面
+            view_count_lay= (LinearLayout) view.findViewById(R.id.view_count_lay);
+            close_btn= (ImageView) view.findViewById(R.id.close_btn);
+
 
             one_view_img = (ImageView) view.findViewById(R.id.one_view_img);
             four_view_img = (ImageView) view.findViewById(R.id.four_view_img);
             nine_view_img = (ImageView) view.findViewById(R.id.nine_view_img);
 
+            close_btn.setOnClickListener(this);
             voice_intercom.setOnClickListener(this);
             one_view_img.setOnClickListener(this);
             four_view_img.setOnClickListener(this);
@@ -621,6 +576,10 @@ public class NewVideoFragment extends Fragment implements View.OnClickListener, 
                  */
                 @Override
                 public void onStopTrackingTouch(SeekBar arg0) {
+                    if(mFirstStartTime==null||mEndTime==null){
+                        UIUtil.showToast(getActivity(),"未开始播放");
+                        return;
+                    }
                     VMSNetSDK.getInstance().stopPlayBackOpt(PLAY_WINDOW_ONE);
                     stopUpdateTimer();
                     int progress = arg0.getProgress();
@@ -696,6 +655,8 @@ public class NewVideoFragment extends Fragment implements View.OnClickListener, 
                     UIUtil.showToast(getActivity(),"处于录像状态");
                     return;
                 }
+                operation_lay.setVisibility(View.VISIBLE);
+                contrl_all_lay.setVisibility(View.GONE);
                 myInit();
                 mProgressSeekBar.setVisibility(View.VISIBLE);
                 palyType = 2;
@@ -730,10 +691,17 @@ public class NewVideoFragment extends Fragment implements View.OnClickListener, 
                 break;
             case R.id.contrl_lay://云台控制
                 if (palyType == 1) {
-
+                    operation_lay.setVisibility(View.GONE);
+                    contrl_all_lay.setVisibility(View.VISIBLE);
+                    view_count_lay.setVisibility(View.GONE);
                 } else {
                     UIUtil.showToast(getActivity(), "远程回放不支持云台控制");
                 }
+                break;
+            case R.id.close_btn:
+                operation_lay.setVisibility(View.VISIBLE);
+                view_count_lay.setVisibility(View.VISIBLE);
+                contrl_all_lay.setVisibility(View.GONE);
                 break;
             case R.id.one_view_img://一屏
                 if (VIDEO_VIEW_COUNT != 1) {
@@ -1051,6 +1019,9 @@ public class NewVideoFragment extends Fragment implements View.OnClickListener, 
     }
 
     private void myInit() {
+        operation_lay.setVisibility(View.VISIBLE);
+        view_count_lay.setVisibility(View.VISIBLE);
+        contrl_all_lay.setVisibility(View.GONE);
         //停止预览
         stopVideo();
         VIDEO_VIEW_COUNT = 1;
