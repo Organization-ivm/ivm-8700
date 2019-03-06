@@ -29,6 +29,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
+import android.widget.Toast;
 
 import com.hik.mcrsdk.rtsp.RtspClient;
 import com.hikvision.sdk.VMSNetSDK;
@@ -53,6 +54,7 @@ import com.ivms.ivms8700.view.AddCamerActivity;
 import com.ivms.ivms8700.view.adapter.AdapterVideoRecyView;
 import com.ivms.ivms8700.view.customui.CustomSurfaceView;
 import com.ivms.ivms8700.view.iview.ILoginView;
+import com.kongqw.rockerlibrary.view.RockerView;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -172,6 +174,8 @@ public class NewVideoFragment extends Fragment implements View.OnClickListener, 
 
     private int PLAY_WINDOW_ONE = 1;//当前播放窗口
     private LoginPresenter presenter;
+    private ImageView fd_btn;
+    private ImageView sx_btn;
 
 
     /**
@@ -543,12 +547,15 @@ public class NewVideoFragment extends Fragment implements View.OnClickListener, 
             contrl_all_lay= (RelativeLayout) view.findViewById(R.id.contrl_all_lay); //云台控制界面
             view_count_lay= (LinearLayout) view.findViewById(R.id.view_count_lay);
             close_btn= (ImageView) view.findViewById(R.id.close_btn);
-
+            fd_btn= (ImageView) view.findViewById(R.id.fd_btn);//放大
+            sx_btn= (ImageView) view.findViewById(R.id.sx_btn);//缩小
 
             one_view_img = (ImageView) view.findViewById(R.id.one_view_img);
             four_view_img = (ImageView) view.findViewById(R.id.four_view_img);
             nine_view_img = (ImageView) view.findViewById(R.id.nine_view_img);
 
+            fd_btn.setOnClickListener(this);
+            sx_btn.setOnClickListener(this);
             close_btn.setOnClickListener(this);
             voice_intercom.setOnClickListener(this);
             one_view_img.setOnClickListener(this);
@@ -568,6 +575,73 @@ public class NewVideoFragment extends Fragment implements View.OnClickListener, 
             video_recyclerview = (RecyclerView) view.findViewById(R.id.video_recyclerview);
             video_recyclerview.setLayoutParams(linearParams);
             setGrilView(VIDEO_VIEW_COUNT, 1);
+            //云台控制圆盘
+            // 21：云台转上 (使摄像头向上转动）
+            // 22：云台转下 (使摄像头向下转动）
+            // 23：云台转左 (使摄像头向左转动）
+            // 24：云台转右 (使摄像头向右转动）
+            // 25：云台转左上 (使摄像头向左上转动）
+            // 27：云台转左下 (使摄像头向左下转动）
+            // 26：云台转右上 (使摄像头向右上转动）
+            // 28：云台转右下 (使摄像头向右下转动）
+            // 29：自动巡航 (使摄像头自动左右转动）
+            // 11：焦距变大 (倍率变大）
+            // 12：焦距变小 (倍率变小）
+            RockerView rockerViewLeft = (RockerView) view.findViewById(R.id.rockerView);
+            if (rockerViewLeft != null) {
+                rockerViewLeft.setCallBackMode(RockerView.CallBackMode.CALL_BACK_MODE_STATE_CHANGE);
+                rockerViewLeft.setOnShakeListener(RockerView.DirectionMode.DIRECTION_8, new RockerView.OnShakeListener() {
+                    @Override
+                    public void onStart() {
+                    }
+
+                    @Override
+                    public void direction(RockerView.Direction direction) {
+                        switch (direction) {
+                            case DIRECTION_LEFT:
+//                                message = "左";
+                                mPtzCommand = SDKConstant.PTZCommandConstant.CUSTOM_CMD_LEFT;
+                                break;
+                            case DIRECTION_RIGHT:
+//                                message = "右";
+                                mPtzCommand = SDKConstant.PTZCommandConstant.CUSTOM_CMD_RIGHT;
+                                break;
+                            case DIRECTION_UP:
+//                                message = "上";
+                                mPtzCommand = SDKConstant.PTZCommandConstant.CUSTOM_CMD_UP;
+                                break;
+                            case DIRECTION_DOWN:
+//                                message = "下";
+                                mPtzCommand = SDKConstant.PTZCommandConstant.CUSTOM_CMD_DOWN;
+                                break;
+                            case DIRECTION_UP_LEFT:
+//                                message = "左上";
+                                mPtzCommand = 25;
+
+                                break;
+                            case DIRECTION_UP_RIGHT:
+//                                message = "右上";
+                                mPtzCommand = 26;
+                                break;
+                            case DIRECTION_DOWN_LEFT:
+//                                message = "左下";
+                                mPtzCommand = 27;
+                                break;
+                            case DIRECTION_DOWN_RIGHT:
+//                                message = "右下";
+                                mPtzCommand = 28;
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+
+                    @Override
+                    public void onFinish() {
+                        contrlDirectional(mPtzCommand);
+                    }
+                });
+            }
             mProgressSeekBar = (SeekBar) view.findViewById(R.id.progress_seekbar);
             mProgressSeekBar.setVisibility(View.GONE);
             mProgressSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -633,6 +707,39 @@ public class NewVideoFragment extends Fragment implements View.OnClickListener, 
             });
         }
         return view;
+    }
+    //云台控制方向
+    private void contrlDirectional(final int mPtzCommand) {
+        Log.d("Alan","mPtzCommand=-="+mPtzCommand);
+        //开始云台操作
+        VMSNetSDK.getInstance().sendPTZCtrlCommand(PLAY_WINDOW_ONE, true, SDKConstant.PTZCommandConstant.ACTION_START, mPtzCommand, 256, new OnVMSNetSDKBusiness() {
+            @Override
+            public void onFailure() {
+            }
+
+            @Override
+            public void onSuccess(Object obj) {
+                //停止
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        //执行的方法
+                        VMSNetSDK.getInstance().sendPTZCtrlCommand(PLAY_WINDOW_ONE, true, SDKConstant.PTZCommandConstant.ACTION_STOP, mPtzCommand, 256, new OnVMSNetSDKBusiness() {
+                            @Override
+                            public void onFailure() {
+                            }
+
+                            @Override
+                            public void onSuccess(Object obj) {
+                            }
+                        });
+                    }
+                }, 1000);//3秒后执行Runnable中的run方法
+            }
+        });
+
+
     }
 
 
@@ -703,6 +810,13 @@ public class NewVideoFragment extends Fragment implements View.OnClickListener, 
                 view_count_lay.setVisibility(View.VISIBLE);
                 contrl_all_lay.setVisibility(View.GONE);
                 break;
+            case R.id.fd_btn:
+                contrlDirectional(11);
+                break;
+            case R.id.sx_btn:
+                contrlDirectional(12);
+                break;
+
             case R.id.one_view_img://一屏
                 if (VIDEO_VIEW_COUNT != 1) {
                     if(mIsRecord){

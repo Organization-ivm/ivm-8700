@@ -154,7 +154,6 @@
                 android:layout_marginTop="@dimen/dp10"
                 android:layout_width="match_parent"
                 android:layout_height="140dp"
-                android:layout_marginBottom="@dimen/dp16"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
                 android:visibility="gone">
@@ -167,12 +166,14 @@
                     android:orientation="vertical">
 
                     <ImageView
+                        android:id="@+id/fd_btn"
                         android:layout_width="@dimen/dp40"
                         android:layout_height="@dimen/dp40"
                         android:background="@drawable/da"
                         />
 
                     <ImageView
+                        android:id="@+id/sx_btn"
                         android:layout_marginTop="@dimen/dp30"
                         android:layout_width="@dimen/dp40"
                         android:layout_height="@dimen/dp40"
@@ -182,12 +183,12 @@
                 </LinearLayout>
 
                 <com.kongqw.rockerlibrary.view.RockerView
-                    android:id="@+id/rockerView_right"
+                    android:id="@+id/rockerView"
                     android:layout_width="136dp"
                     android:layout_height="136dp"
                     android:layout_centerInParent="true"
-                    kongqw:areaBackground="@mipmap/view_big"
-                    kongqw:rockerBackground="@mipmap/view_small"
+                    kongqw:areaBackground="@drawable/default_area_bg"
+                    kongqw:rockerBackground="@drawable/default_rocker_bg"
                     kongqw:rockerRadius="30dp" />
 
                 <LinearLayout
