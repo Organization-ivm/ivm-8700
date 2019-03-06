@@ -57,7 +57,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp4"
                 android:layout_weight="1"
-                android:textSize="16sp" />
+                android:textSize="12sp" />
 
             <TextView
                 android:id="@+id/after_date"
@@ -65,7 +65,14 @@
                 android:layout_marginTop="@dimen/dp4"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:textSize="16sp" />
+                android:textSize="12sp" />
+            <TextView
+                android:id="@+id/three_date"
+                android:layout_width="0dp"
+                android:layout_marginTop="@dimen/dp4"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="12sp" />
         </LinearLayout>
     </LinearLayout>
 

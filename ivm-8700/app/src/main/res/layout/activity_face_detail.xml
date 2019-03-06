@@ -232,6 +232,39 @@
                 android:layout_marginLeft="@dimen/dp10"
                 android:layout_marginRight="@dimen/dp10"
                 android:layout_marginTop="@dimen/dp10" />
+
+            <RelativeLayout
+                android:id="@+id/three_date_lay"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp42"
+                android:layout_marginTop="@dimen/dp1"
+                android:background="#FFFFFF"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dp20"
+                    android:text="@string/three_txt"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/three_rq_txt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="@dimen/dp30"
+                    android:textSize="16sp" />
+            </RelativeLayout>
+
+            <com.polites.android.GestureImageView
+                android:id="@+id/three_user_img"
+                android:layout_width="match_parent"
+                android:layout_height="260dp"
+                android:layout_marginLeft="@dimen/dp10"
+                android:layout_marginRight="@dimen/dp10"
+                android:layout_marginTop="@dimen/dp10" />
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

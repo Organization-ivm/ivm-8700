@@ -52,6 +52,10 @@ public class FaceDetailActivity extends Activity implements View.OnClickListener
     private ImageView after_user_img;
     private TextView after_rq_txt;
     private String after_imageUrl;
+    private RelativeLayout three_date_lay;
+    private ImageView three_user_img;
+    private TextView three_rq_txt;
+    private String three_imageUrl;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,12 +83,16 @@ public class FaceDetailActivity extends Activity implements View.OnClickListener
         after_date_txt=(RelativeLayout)findViewById(R.id.after_date_txt);
         after_user_img=(ImageView)findViewById(R.id.after_user_img);
         Glide.with(this).load(R.drawable._loading).into(after_user_img);//图片占位图
+        three_date_lay=(RelativeLayout)findViewById(R.id.three_date_lay);
+        three_user_img=(ImageView)findViewById(R.id.three_user_img);
+        Glide.with(this).load(R.drawable._loading).into(three_user_img);//图片占位图
         sex_txt=(TextView)findViewById(R.id.sex_txt);
         dw_txt=(TextView)findViewById(R.id.dw_txt);
         bm_txt=(TextView)findViewById(R.id.bm_txt);
         phone_txt=(TextView)findViewById(R.id.phone_txt);
         rq_txt=(TextView)findViewById(R.id.rq_txt);
         after_rq_txt=(TextView)findViewById(R.id.after_rq_txt);
+        three_rq_txt=(TextView)findViewById(R.id.three_rq_txt);
     }
     //初始化数据
     private void initData() {
@@ -119,6 +127,17 @@ public class FaceDetailActivity extends Activity implements View.OnClickListener
                 after_date_txt.setVisibility(View.GONE);
                 after_user_img.setVisibility(View.GONE);
             }
+        if(!faceEntity.getClock3ImagePath().isEmpty()){
+            three_rq_txt.setText(faceEntity.getClock3Time());
+            three_imageUrl =local_url+"/shm/"+faceEntity.getClock3ImagePath();
+            Log.i("Alan","three_imageUrl="+three_imageUrl);
+            Glide.with(this).load(after_imageUrl).into(three_user_img);
+            three_date_lay.setVisibility(View.VISIBLE);
+            three_user_img.setVisibility(View.VISIBLE);
+        }else{
+            three_date_lay.setVisibility(View.GONE);
+            three_user_img.setVisibility(View.GONE);
+        }
     }
 
     //控件监听

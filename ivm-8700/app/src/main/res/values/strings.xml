@@ -112,8 +112,9 @@
     <string name="dw_txt">单位：</string>
     <string name="bm_txt">职务：</string>
     <string name="phone_txt">电话：</string>
-    <string name="rq_txt">上午识别时间：</string>
-    <string name="after_rq_txt">下午识别时间：</string>
+    <string name="rq_txt">第一次打卡时间：</string>
+    <string name="after_rq_txt">第二次打卡时间：</string>
+    <string name="three_txt">第三次打卡时间：</string>
     <string name="your_select">您已经选择了</string>
     <string name="plase_xl">请先选择线路</string>
 

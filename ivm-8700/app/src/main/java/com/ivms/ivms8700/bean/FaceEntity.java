@@ -23,6 +23,10 @@ public class FaceEntity  implements Serializable {
     private String stationName;
     private String  modelPhoto;
 
+
+    private String clock3Time;
+    private String clock3ImagePath;
+
     public String getCount() {
         return count;
     }
@@ -157,5 +161,21 @@ public class FaceEntity  implements Serializable {
 
     public void setAfternoonfaceCapture(String afternoonfaceCapture) {
         this.afternoonfaceCapture = afternoonfaceCapture;
+    }
+
+    public String getClock3Time() {
+        return clock3Time;
+    }
+
+    public void setClock3Time(String clock3Time) {
+        this.clock3Time = clock3Time;
+    }
+
+    public String getClock3ImagePath() {
+        return clock3ImagePath;
+    }
+
+    public void setClock3ImagePath(String clock3ImagePath) {
+        this.clock3ImagePath = clock3ImagePath;
     }
 }

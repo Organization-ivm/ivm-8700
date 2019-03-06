@@ -285,10 +285,12 @@ public class FaceClockActivity extends Activity implements View.OnClickListener,
 //                            JSONObject obj2 = photos.getJSONObject(k);
                             String name = obj.getString("name");
                             String employeeNumber = obj.getString("employeeNumber");
-                            String captureTime = obj.getString("morningCaptureTime");
-                            String faceCapture = obj.getString("morningFaceCapture");
-                            String afternoonCaptureTime = obj.getString("afternoonCaptureTime");
-                            String afternoonFaceCapture = obj.getString("afternoonFaceCapture");
+                            String captureTime = obj.getString("clock1Time");
+                            String faceCapture = obj.getString("clock1ImagePath");
+                            String afternoonCaptureTime = obj.getString("clock2Time");
+                            String afternoonFaceCapture = obj.getString("clock2ImagePath");
+                            String clock3Time = obj.getString("clock3Time");
+                            String clock3ImagePath = obj.getString("clock3ImagePath");
                             String sex = obj.getString("sex");
                             String officeName = obj.getString("officeName");
                             String department = obj.getString("department");
@@ -313,6 +315,8 @@ public class FaceClockActivity extends Activity implements View.OnClickListener,
                             faceEntity.setPosition(position);
                             faceEntity.setPhone(phone);
                             faceEntity.setModelPhoto(modelPhoto);
+                            faceEntity.setClock3Time(clock3Time);
+                            faceEntity.setClock3ImagePath(clock3ImagePath);
                             mFaceList.add(faceEntity);
 //                        }
 //                    }

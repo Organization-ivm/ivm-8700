@@ -50,20 +50,25 @@ public class FaceAdapter  extends RecyclerView.Adapter<FaceAdapter.ViewHolder> {
         final FaceEntity faceEntity = faceList.get(position);
         holder.count.setText((position+1)+"、");
         holder.num.setText("姓名："+faceEntity.getName());
-        if(!faceEntity.getAfternoonfaceCapture().isEmpty()||!faceEntity.getFaceCapture().isEmpty()){
-            if(!faceEntity.getFaceCapture().isEmpty()){
-                holder.date_txt.setText("上午："+faceEntity.getDate());
+        if(!faceEntity.getDate().isEmpty()||!faceEntity.getAfternoondate().isEmpty()||!faceEntity.getClock3Time().isEmpty()){
+            if(!faceEntity.getDate().isEmpty()){
+                holder.date_txt.setText("1、"+faceEntity.getDate());
                 holder.date_txt.setTextColor(mContext.getResources().getColor(R.color.green_txt));
             }else{
                 holder.date_txt.setVisibility(View.GONE);
             }
-            if(!faceEntity.getAfternoonfaceCapture().isEmpty()){
-                holder.after_date.setText("下午："+faceEntity.getAfternoondate());
+            if(!faceEntity.getAfternoondate().isEmpty()){
+                holder.after_date.setText("2、"+faceEntity.getAfternoondate());
                 holder.after_date.setTextColor(mContext.getResources().getColor(R.color.green_txt));
             }else{
                 holder.after_date.setVisibility(View.GONE);
             }
-
+            if(!faceEntity.getClock3Time().isEmpty()){
+                holder.three_date.setText("3、"+faceEntity.getClock3Time());
+                holder.three_date.setTextColor(mContext.getResources().getColor(R.color.green_txt));
+            }else{
+                holder.three_date.setVisibility(View.GONE);
+            }
         }else{
             holder.date_txt.setText("状态："+"无记录");
             holder.date_txt.setTextColor(Color.RED);
@@ -95,6 +100,7 @@ public class FaceAdapter  extends RecyclerView.Adapter<FaceAdapter.ViewHolder> {
         TextView num;
         TextView date_txt;
         TextView after_date;
+        TextView  three_date;
         ImageView user_img;
 
         public ViewHolder(View view) {
@@ -105,6 +111,7 @@ public class FaceAdapter  extends RecyclerView.Adapter<FaceAdapter.ViewHolder> {
             num=(TextView)view.findViewById(R.id.num);
             date_txt=(TextView)view.findViewById(R.id.date_txt);
             after_date=(TextView)view.findViewById(R.id.after_date);
+            three_date=(TextView)view.findViewById(R.id.three_date);
             user_img=(ImageView)view.findViewById(R.id.user_img);
         }
     }
