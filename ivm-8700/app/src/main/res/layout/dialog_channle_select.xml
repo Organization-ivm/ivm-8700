@@ -1,0 +1,86 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center"
+    android:background="@drawable/shape_dialog"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="match_parent"
+        android:layout_height="44dp"
+        android:gravity="center"
+        android:text="@string/select_channel"
+        android:textColor="@color/common_title_bg"
+        android:textSize="16sp" />
+
+    <ImageView
+        android:id="@+id/view_title_divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/tv_title"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:background="#c0c0c0" />
+
+    <ScrollView
+        android:id="@+id/sl"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@+id/view_title_divider"
+        android:layout_marginBottom="25dp">
+
+        <RadioGroup
+            android:id="@+id/rg_channels"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp" >
+        </RadioGroup>
+    </ScrollView>
+
+    <LinearLayout
+        android:id="@+id/ll_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="bottom"
+        android:gravity="center|bottom"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/cancel_btn"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/layout_selector"
+            android:gravity="center"
+            android:padding="16dp"
+            android:text="@string/cancel"
+            android:textColor="#818181"
+            android:textSize="14sp" />
+
+        <ImageView
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="#d6d6d6" />
+
+        <Button
+            android:id="@+id/confirm_btn"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/layout_selector"
+            android:gravity="center"
+            android:padding="16dp"
+            android:text="@string/confirm"
+            android:textColor="#323232"
+            android:textSize="14sp" />
+    </LinearLayout>
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="0.4dp"
+        android:layout_above="@+id/ll_bottom"
+        android:background="#d6d6d6" />
+
+</RelativeLayout>

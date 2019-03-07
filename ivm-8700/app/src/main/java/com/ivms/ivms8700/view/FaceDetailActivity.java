@@ -131,7 +131,7 @@ public class FaceDetailActivity extends Activity implements View.OnClickListener
             three_rq_txt.setText(faceEntity.getClock3Time());
             three_imageUrl =local_url+"/shm/"+faceEntity.getClock3ImagePath();
             Log.i("Alan","three_imageUrl="+three_imageUrl);
-            Glide.with(this).load(after_imageUrl).into(three_user_img);
+            Glide.with(this).load(three_imageUrl).into(three_user_img);
             three_date_lay.setVisibility(View.VISIBLE);
             three_user_img.setVisibility(View.VISIBLE);
         }else{

@@ -20,6 +20,7 @@ import android.view.LayoutInflater;
 import android.view.SurfaceHolder;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -202,21 +203,21 @@ public class NewVideoFragment extends Fragment implements View.OnClickListener, 
                         UIUtil.cancelProgressDialog();
                         UIUtil.showToast(mFragment.getActivity(), R.string.rtsp_fail);
                         break;
-//                    case OPEN_TALK_FAILURE:
-//                        mFragment.mIsTalkOpen = false;
-//                        UIUtil.showToast(mFragment, R.string.start_Talk_fail);
+                    case OPEN_TALK_FAILURE:
+                        mFragment.mIsTalkOpen = false;
+                        UIUtil.showToast(mFragment.getActivity(), R.string.start_Talk_fail);
 //                        mFragment.mTalkBtn.setText(R.string.start_Talk);
-//                        break;
-//                    case OPEN_TALK_SUCCESS:
-//                        mFragment.mIsTalkOpen = true;
-//                        UIUtil.showToast(mFragment, R.string.start_Talk_success);
+                        break;
+                    case OPEN_TALK_SUCCESS:
+                        mFragment.mIsTalkOpen = true;
+                        UIUtil.showToast(mFragment.getActivity(), R.string.start_Talk_success);
 //                        mFragment.mTalkBtn.setText(R.string.stop_Talk);
-//                        break;
-//                    case CLOSE_TALK_SUCCESS:
-//                        activity.mIsTalkOpen = false;
-//                        UIUtil.showToast(activity, R.string.stop_Talk);
+                        break;
+                    case CLOSE_TALK_SUCCESS:
+                        mFragment.mIsTalkOpen = false;
+                        UIUtil.showToast(mFragment.getActivity(), R.string.stop_Talk);
 //                        activity.mTalkBtn.setText(R.string.start_Talk);
-//                        break;
+                        break;
                     default:
                         break;
                 }
@@ -874,10 +875,101 @@ public class NewVideoFragment extends Fragment implements View.OnClickListener, 
                 break;
 
             case R.id.voice_intercom:
-                UIUtil.showToast(getActivity(), "正在建设中..");
+//                if (mIsTalkOpen) {
+//                    VMSNetSDK.getInstance().closeLiveTalkOpt(PLAY_WINDOW_ONE);
+//                    mHandler.sendEmptyMessage(CLOSE_TALK_SUCCESS);
+//                } else {
+//                    try {
+//                        talkChannels = VMSNetSDK.getInstance().getTalkChannelsOpt(PLAY_WINDOW_ONE);
+//                        if (talkChannels <= 0) {
+//                            UIUtil.showToast(getActivity(), R.string.no_Talk_channels);
+//                        } else if (talkChannels > 1) {
+//                            showChannelSelectDialog();
+//                        } else {
+//                            channelNo = 1;
+//                            startTalk();
+//                        }
+//                    }catch (Exception e){
+//                        e.printStackTrace();
+//                        Log.d("Alan","未开启播放");
+//                    }
+//
+//                }
+                UIUtil.showToast(getActivity(),"正在建设中..");
                 break;
         }
     }
+    /**
+     * 选择通道号开始语音对讲
+     *
+     * @author lvlingdi 2016-5-18 上午10:29:36
+     */
+    private void showChannelSelectDialog() {
+        // 创建对话框
+        final AlertDialog mChannelSelectDialog = new AlertDialog.Builder(getActivity()).create();
+        // 显示对话框
+        mChannelSelectDialog.show();
+        mChannelSelectDialog.setCanceledOnTouchOutside(false);
+        final Window window = mChannelSelectDialog.getWindow();
+        window.setContentView(R.layout.dialog_channle_select);
+        RadioGroup channels = (RadioGroup) window.findViewById(R.id.rg_channels);
+
+        for (int i = 1; i <= talkChannels; i++) {
+            RadioButton rb = new RadioButton(window.getContext());
+            rb.setTag(i);
+            //应ui设计要求，自定义RadioButton样式图片
+            rb.setButtonDrawable(R.drawable.selector_radiobtn);
+            String name = getResources().getString(R.string.analog_channel, i);
+            rb.setText(name);
+            rb.setPadding(0, 10, 10, 10);
+            channels.addView(rb);
+        }
+
+        channels.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+
+            @Override
+            public void onCheckedChanged(RadioGroup arg0, int arg1) {
+                int radioButtonId = arg0.getCheckedRadioButtonId();
+                RadioButton rb = (RadioButton) window.findViewById(radioButtonId);
+                channelNoTemp = rb.getTag().toString();
+            }
+        });
+        Button cancel_btn = (Button) window.findViewById(R.id.cancel_btn);
+        cancel_btn.setOnClickListener(new View.OnClickListener() {
+
+            public void onClick(View v) {
+                mChannelSelectDialog.cancel();
+            }
+        });
+
+        Button confirm_btn = (Button) window.findViewById(R.id.confirm_btn);
+        confirm_btn.setOnClickListener(new View.OnClickListener() {
+
+            public void onClick(View v) {
+                channelNo = Integer.valueOf(channelNoTemp);
+                startTalk();
+                mChannelSelectDialog.cancel();
+            }
+        });
+    }
+
+    /**
+     * 开启语音播放
+     */
+    private void startTalk() {
+        VMSNetSDK.getInstance().openLiveTalkOpt(PLAY_WINDOW_ONE, channelNo, new OnVMSNetSDKBusiness() {
+            @Override
+            public void onFailure() {
+                mHandler.sendEmptyMessage(OPEN_TALK_FAILURE);
+            }
+
+            @Override
+            public void onSuccess(Object obj) {
+                mHandler.sendEmptyMessage(OPEN_TALK_SUCCESS);
+            }
+        });
+    }
+
     //预览录像
     private void playBackRecordLive() {
         if (!mIsRecord) {

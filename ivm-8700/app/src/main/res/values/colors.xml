@@ -19,4 +19,7 @@
     <color name="blue">#142D3E</color>
     <color name="blue_dark">#001425</color>
     <color name="green_txt">#279434</color>
+    <color name="white">#ffffff</color>
+    <color name="common_title_bg">#CA2C32</color>
+    <color name="layout_gray">#dedede</color>
 </resources>

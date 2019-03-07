@@ -141,6 +141,14 @@
     <string name="start_record_success">启动录像成功</string>
     <string name="start_record_fail">启动录像失败</string>
     <string name="stop_record_success">停止录像成功</string>
+    <string name="start_Talk_success">开启语音对讲成功</string>
+    <string name="no_Talk_channels">该设备无可对讲通道</string>
+    <string name="select_channel">请选择通道号</string>
+    <string name="analog_channel">对讲通道%d</string>
+    <string name="confirm">确定</string>
+    <string name="cancel">取消</string>
+    <string name="start_Talk_fail">开启语音对讲失败</string>
+    <string name="stop_Talk">关闭语音对讲</string>
 </resources>
 
 
