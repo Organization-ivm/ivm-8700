@@ -972,6 +972,7 @@ public class NewVideoFragment extends Fragment implements View.OnClickListener, 
 
     //预览录像
     private void playBackRecordLive() {
+        playBackRecord_img.setBackgroundResource(R.drawable.luxiang);
         if (!mIsRecord) {
             int recordOpt = VMSNetSDK.getInstance().startLiveRecordOpt(PLAY_WINDOW_ONE, FileUtils.getVideoDirPath().getAbsolutePath(), "Video" + System.currentTimeMillis() + ".mp4");
             switch (recordOpt) {
@@ -987,6 +988,7 @@ public class NewVideoFragment extends Fragment implements View.OnClickListener, 
                     break;
                 case SDKConstant.LiveSDKConstant.RECORD_SUCCESS:
                     mIsRecord = true;
+                    playBackRecord_img.setBackgroundResource(R.drawable.lupin);
                     UIUtil.showToast(getActivity(), R.string.start_record_success);
                     break;
             }
@@ -999,6 +1001,7 @@ public class NewVideoFragment extends Fragment implements View.OnClickListener, 
 
     //回放录像
     private void playBackRecordBack() {
+        playBackRecord_img.setBackgroundResource(R.drawable.luxiang);
         //录像按钮点击操作
         if (!mIsRecord) {
             int recordOpt = VMSNetSDK.getInstance().startPlayBackRecordOpt(PLAY_WINDOW_ONE, FileUtils.getVideoDirPath().getAbsolutePath(), "Video" + System.currentTimeMillis() + ".mp4");
@@ -1015,6 +1018,7 @@ public class NewVideoFragment extends Fragment implements View.OnClickListener, 
                     break;
                 case SDKConstant.PlayBackSDKConstant.RECORD_SUCCESS:
                     mIsRecord = true;
+                    playBackRecord_img.setBackgroundResource(R.drawable.lupin);
                     UIUtil.showToast(getActivity(), R.string.start_record_success);
                     break;
             }
@@ -1214,10 +1218,12 @@ public class NewVideoFragment extends Fragment implements View.OnClickListener, 
                     VMSNetSDK.getInstance().stopPlayBackRecordOpt(PLAY_WINDOW_ONE);
                 }
                 mIsRecord = false;
+                playBackRecord_img.setBackgroundResource(R.drawable.luxiang);
             }
             palyType = 1;
             live_view.setVisibility(View.VISIBLE);
             huifang_view.setVisibility(View.INVISIBLE);
+            mProgressSeekBar.setVisibility(View.GONE);
             myInit();
         } else { // 相当于Fragment的onResume
 
@@ -1228,6 +1234,7 @@ public class NewVideoFragment extends Fragment implements View.OnClickListener, 
         operation_lay.setVisibility(View.VISIBLE);
         view_count_lay.setVisibility(View.VISIBLE);
         contrl_all_lay.setVisibility(View.GONE);
+
         //停止预览
         stopVideo();
         VIDEO_VIEW_COUNT = 1;
