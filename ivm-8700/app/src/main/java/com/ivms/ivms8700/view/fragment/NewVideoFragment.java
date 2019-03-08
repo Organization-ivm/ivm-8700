@@ -177,6 +177,7 @@ public class NewVideoFragment extends Fragment implements View.OnClickListener, 
     private LoginPresenter presenter;
     private ImageView fd_btn;
     private ImageView sx_btn;
+    private ImageView duijiang_img;//对讲
 
 
     /**
@@ -550,6 +551,7 @@ public class NewVideoFragment extends Fragment implements View.OnClickListener, 
             close_btn= (ImageView) view.findViewById(R.id.close_btn);
             fd_btn= (ImageView) view.findViewById(R.id.fd_btn);//放大
             sx_btn= (ImageView) view.findViewById(R.id.sx_btn);//缩小
+            duijiang_img = (ImageView) view.findViewById(R.id.duijiang_img);//对讲
 
             one_view_img = (ImageView) view.findViewById(R.id.one_view_img);
             four_view_img = (ImageView) view.findViewById(R.id.four_view_img);
@@ -754,6 +756,7 @@ public class NewVideoFragment extends Fragment implements View.OnClickListener, 
                 }
                 myInit();
                 mProgressSeekBar.setVisibility(View.GONE);
+                duijiang_img.setBackgroundResource(R.drawable.luyin);
                 palyType = 1;
                 live_view.setVisibility(View.VISIBLE);
                 huifang_view.setVisibility(View.INVISIBLE);
@@ -763,6 +766,7 @@ public class NewVideoFragment extends Fragment implements View.OnClickListener, 
                     UIUtil.showToast(getActivity(),"处于录像状态");
                     return;
                 }
+                duijiang_img.setBackgroundResource(R.drawable.luyin);
                 operation_lay.setVisibility(View.VISIBLE);
                 contrl_all_lay.setVisibility(View.GONE);
                 myInit();
@@ -843,6 +847,7 @@ public class NewVideoFragment extends Fragment implements View.OnClickListener, 
                         UIUtil.showToast(getActivity(),"处于录像状态");
                         return;
                     }
+
                     VIDEO_VIEW_COUNT = 4;
                     for (int i = 0; i < videList.size(); i++) {
                         videList.get(i).setRowCout(2);
@@ -875,27 +880,32 @@ public class NewVideoFragment extends Fragment implements View.OnClickListener, 
                 break;
 
             case R.id.voice_intercom:
-//                if (mIsTalkOpen) {
-//                    VMSNetSDK.getInstance().closeLiveTalkOpt(PLAY_WINDOW_ONE);
-//                    mHandler.sendEmptyMessage(CLOSE_TALK_SUCCESS);
-//                } else {
-//                    try {
-//                        talkChannels = VMSNetSDK.getInstance().getTalkChannelsOpt(PLAY_WINDOW_ONE);
-//                        if (talkChannels <= 0) {
-//                            UIUtil.showToast(getActivity(), R.string.no_Talk_channels);
-//                        } else if (talkChannels > 1) {
-//                            showChannelSelectDialog();
-//                        } else {
-//                            channelNo = 1;
-//                            startTalk();
-//                        }
-//                    }catch (Exception e){
-//                        e.printStackTrace();
-//                        Log.d("Alan","未开启播放");
-//                    }
-//
-//                }
-                UIUtil.showToast(getActivity(),"正在建设中..");
+                if(palyType==2){
+                    UIUtil.showToast(getActivity(),"回放不支持对讲功能");
+                    return;
+                }
+                duijiang_img.setBackgroundResource(R.drawable.luyin);
+                if (mIsTalkOpen) {
+                    VMSNetSDK.getInstance().closeLiveTalkOpt(PLAY_WINDOW_ONE);
+                    mHandler.sendEmptyMessage(CLOSE_TALK_SUCCESS);
+                } else {
+                    try {
+                        talkChannels = VMSNetSDK.getInstance().getTalkChannelsOpt(PLAY_WINDOW_ONE);
+                        if (talkChannels <= 0) {
+                            UIUtil.showToast(getActivity(), R.string.no_Talk_channels);
+                        } else if (talkChannels > 1) {
+                            showChannelSelectDialog();
+                        } else {
+                            channelNo = 1;
+                            startTalk();
+                        }
+                    }catch (Exception e){
+                        e.printStackTrace();
+                        Log.d("Alan","未开启播放");
+                    }
+
+                }
+//                UIUtil.showToast(getActivity(),"正在建设中..");
                 break;
         }
     }
@@ -960,11 +970,13 @@ public class NewVideoFragment extends Fragment implements View.OnClickListener, 
         VMSNetSDK.getInstance().openLiveTalkOpt(PLAY_WINDOW_ONE, channelNo, new OnVMSNetSDKBusiness() {
             @Override
             public void onFailure() {
+                duijiang_img.setBackgroundResource(R.drawable.luyin);
                 mHandler.sendEmptyMessage(OPEN_TALK_FAILURE);
             }
 
             @Override
             public void onSuccess(Object obj) {
+                duijiang_img.setBackgroundResource(R.drawable.duijiang);
                 mHandler.sendEmptyMessage(OPEN_TALK_SUCCESS);
             }
         });
@@ -1221,6 +1233,7 @@ public class NewVideoFragment extends Fragment implements View.OnClickListener, 
                 playBackRecord_img.setBackgroundResource(R.drawable.luxiang);
             }
             palyType = 1;
+            duijiang_img.setBackgroundResource(R.drawable.luyin);
             live_view.setVisibility(View.VISIBLE);
             huifang_view.setVisibility(View.INVISIBLE);
             mProgressSeekBar.setVisibility(View.GONE);
@@ -1234,7 +1247,8 @@ public class NewVideoFragment extends Fragment implements View.OnClickListener, 
         operation_lay.setVisibility(View.VISIBLE);
         view_count_lay.setVisibility(View.VISIBLE);
         contrl_all_lay.setVisibility(View.GONE);
-
+        mIsRecord=false;
+        mIsTalkOpen=false;
         //停止预览
         stopVideo();
         VIDEO_VIEW_COUNT = 1;

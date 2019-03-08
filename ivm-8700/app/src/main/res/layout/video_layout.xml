@@ -240,6 +240,7 @@
                     android:gravity="center">
 
                     <ImageView
+                        android:id="@+id/duijiang_img"
                         android:layout_width="@dimen/dp22"
                         android:layout_height="@dimen/dp20"
                         android:background="@drawable/luyin" />
