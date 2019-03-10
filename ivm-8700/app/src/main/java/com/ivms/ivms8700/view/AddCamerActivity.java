@@ -80,6 +80,7 @@ public class AddCamerActivity extends Activity implements View.OnClickListener {
                     mCamera.setPid(menuTreeShowList.get(position).getId().toString());
                     mCamera.setName(menuTreeShowList.get(position).getText().toString());
                     mCamera.setSysCode(menuTreeShowList.get(position).getSyscode().toString());
+
                     // 设置返回数据
                     Bundle bundle = new Bundle();
                     Intent intent = new Intent();

@@ -22,15 +22,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
-import android.widget.Toast;
 
 import com.hik.mcrsdk.rtsp.RtspClient;
 import com.hikvision.sdk.VMSNetSDK;
@@ -880,32 +877,32 @@ public class NewVideoFragment extends Fragment implements View.OnClickListener, 
                 break;
 
             case R.id.voice_intercom:
-                if(palyType==2){
-                    UIUtil.showToast(getActivity(),"回放不支持对讲功能");
-                    return;
-                }
-                duijiang_img.setBackgroundResource(R.drawable.luyin);
-                if (mIsTalkOpen) {
-                    VMSNetSDK.getInstance().closeLiveTalkOpt(PLAY_WINDOW_ONE);
-                    mHandler.sendEmptyMessage(CLOSE_TALK_SUCCESS);
-                } else {
-                    try {
-                        talkChannels = VMSNetSDK.getInstance().getTalkChannelsOpt(PLAY_WINDOW_ONE);
-                        if (talkChannels <= 0) {
-                            UIUtil.showToast(getActivity(), R.string.no_Talk_channels);
-                        } else if (talkChannels > 1) {
-                            showChannelSelectDialog();
-                        } else {
-                            channelNo = 1;
-                            startTalk();
-                        }
-                    }catch (Exception e){
-                        e.printStackTrace();
-                        Log.d("Alan","未开启播放");
-                    }
-
-                }
-//                UIUtil.showToast(getActivity(),"正在建设中..");
+//                if(palyType==2){
+//                    UIUtil.showToast(getActivity(),"回放不支持对讲功能");
+//                    return;
+//                }
+//                duijiang_img.setBackgroundResource(R.drawable.luyin);
+//                if (mIsTalkOpen) {
+//                    VMSNetSDK.getInstance().closeLiveTalkOpt(PLAY_WINDOW_ONE);
+//                    mHandler.sendEmptyMessage(CLOSE_TALK_SUCCESS);
+//                } else {
+//                    try {
+//                        talkChannels = VMSNetSDK.getInstance().getTalkChannelsOpt(PLAY_WINDOW_ONE);
+//                        if (talkChannels <= 0) {
+//                            UIUtil.showToast(getActivity(), R.string.no_Talk_channels);
+//                        } else if (talkChannels > 1) {
+//                            showChannelSelectDialog();
+//                        } else {
+//                            channelNo = 1;
+//                            startTalk();
+//                        }
+//                    }catch (Exception e){
+//                        e.printStackTrace();
+//                        Log.d("Alan","未开启播放");
+//                    }
+//
+//                }
+                UIUtil.showToast(getActivity(),"正在建设中..");
                 break;
         }
     }
