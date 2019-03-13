@@ -1055,7 +1055,13 @@ public class NewVideoFragment extends Fragment implements View.OnClickListener, 
         //适配器
         video_adapter = new AdapterVideoRecyView(getActivity(), videList);
         video_recyclerview.setAdapter(video_adapter);
-        manager = new GridLayoutManager(getActivity(), rowCount);
+        manager = new GridLayoutManager(getActivity(), rowCount){
+            @Override
+            public boolean canScrollVertically() {
+                return false;
+            }
+        };
+
         //布局管理器
         video_recyclerview.setLayoutManager(manager);
 
