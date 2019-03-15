@@ -5,6 +5,7 @@ import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -171,6 +172,9 @@ public class AddCamerActivity extends Activity implements View.OnClickListener {
 
             rl_menu.setPadding(25 * level + 15, 30, 0, 30);
             text.setText(mt.getText());
+
+            text.setTextColor(getResources().getColor(R.color.Translucency));
+
             if (mt.isHasChild()) {
                 if (mt.isExpanded()) {
                     icon.setImageResource(R.mipmap.right_jiantou);
@@ -179,6 +183,10 @@ public class AddCamerActivity extends Activity implements View.OnClickListener {
                 }
             } else if (!mt.isHasChild()) {
                 icon.setImageResource(R.drawable.yuandian);
+                Log.i("Alan","是否在线："+mt.getIsonline());
+                if(null!=mt.getIsonline()&&!mt.getIsonline().equals("0")){
+                    text.setTextColor(getResources().getColor(R.color.main_text_a0a0a0));
+                }
             }
             return convertView;
         }

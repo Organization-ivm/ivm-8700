@@ -32,6 +32,9 @@ import java.io.Serializable;
         private String videouser;
         /** videoPassword */
         private String videopassword;
+
+    /** isonline */
+    private String isonline;
         public MenuTree() {
 
         }
@@ -80,7 +83,7 @@ import java.io.Serializable;
             this.parentId = parentId;
             this.hasChild = hasChild;
             this.level = level;
-            this.expanded = false;// 初始化为折叠
+            this.expanded = false;// 初折叠始化为
         }
 
         public String getId() {
@@ -171,7 +174,15 @@ import java.io.Serializable;
             this.videopassword = videopassword;
         }
 
-        @Override
+    public String getIsonline() {
+        return isonline;
+    }
+
+    public void setIsonline(String isonline) {
+        this.isonline = isonline;
+    }
+
+    @Override
         public String toString() {
             return "MenuTree [id=" + id + ", text=" + text + ", parentId=" + parentId + ", hasChild=" + hasChild + ", level=" + level
                     + ", expanded=" + expanded + "]";

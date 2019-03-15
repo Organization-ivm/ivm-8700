@@ -1,5 +1,7 @@
 package com.ivms.ivms8700.utils;
 
+import android.util.Log;
+
 import com.ivms.ivms8700.bean.MenuTree;
 import com.ivms.ivms8700.control.MyApplication;
 
@@ -41,6 +43,7 @@ public class GetData {
             String videoPort="";
             String videoUser="";
             String videoPassword="";
+            String isOnline="";
 
             JSONArray children=null;
             if(level==0) {
@@ -59,6 +62,8 @@ public class GetData {
                 videoPort = item.optString("videoPort");
                 videoUser = item.optString("videoUser");
                 videoPassword = item.optString("videoPassword");
+                isOnline = item.optString("cameraStatus");
+
                 children  = null;
             }
             if (children != null && children.length() > 0) {
@@ -80,7 +85,7 @@ public class GetData {
                 tree.setVideoport(videoPort);
                 tree.setVideouser(videoUser);
                 tree.setVideopassword(videoPassword);
-
+                tree.setIsonline(isOnline);
                 list.add(tree);
             }
         }
