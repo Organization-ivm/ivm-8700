@@ -94,6 +94,11 @@ public class LoginActivity extends Activity implements ILoginView, View.OnClickL
             username.setText(dbUser);
         }
         pwd = (EditText) findViewById(R.id.pwd);
+        String pwdStr = localDbUtil.getString("password");
+        Log.d("Tony","pwdStr:"+pwdStr);
+        if (!pwdStr.isEmpty()) {
+            pwd.setText(pwdStr);
+        }
     }
 
     @Override
@@ -143,6 +148,7 @@ public class LoginActivity extends Activity implements ILoginView, View.OnClickL
     public void onLoginSuccess() {
         UIUtil.showToast(this, R.string.login_success);
         localDbUtil.setString("userName", userName);
+        localDbUtil.setString("password", password);
         Intent intent = new Intent(this, MainActivity.class);
 //        intent.putExtra(Constants.IntentKey.GET_ROOT_NODE, true);
         startActivity(intent);
@@ -196,6 +202,7 @@ public class LoginActivity extends Activity implements ILoginView, View.OnClickL
 
                     UIUtil.showToast(this, R.string.login_success);
                     localDbUtil.setString("userName", userName);
+                    localDbUtil.setString("password", password);
                     Intent intent = new Intent(this, MainActivity.class);
                     startActivity(intent);
                 } else {
